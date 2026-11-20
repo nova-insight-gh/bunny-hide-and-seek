@@ -636,25 +636,31 @@
         <div id="fever-vignette"></div>
         <div id="danger-vignette"></div>
 
-        <!-- Semi-Transparent Floating Target Tray (Single-Row Swipeable Large Icons) -->
-        <div id="target-tray" class="target-tray absolute top-2 left-2 right-2 z-20 rounded-2xl px-2 py-1.5 flex items-center gap-1.5">
-          <div class="shrink-0 flex flex-col items-center leading-none pr-1">
-            <span class="text-[9px] font-black text-[#6B4F40] whitespace-nowrap mb-1">目標兔兔</span>
-            <span id="hud-progress" class="text-[11px] font-black px-1.5 py-0.5 rounded-lg bg-[#FFEDD5] border border-[#C2410C]/30 text-[#C2410C]">0/3</span>
-            <span id="hud-combo" class="hidden text-[9px] font-black text-[#D97706] mt-0.5">FEVER</span>
+        <!-- Semi-Transparent Floating Target Tray (Unfound Only + Collapsible Found Drawer) -->
+        <div id="target-tray" class="target-tray absolute top-2 left-2 right-2 z-20 rounded-2xl px-2 py-1.5 flex flex-col gap-1">
+          <div class="flex items-center gap-1.5">
+            <div class="shrink-0 flex flex-col items-center leading-none pr-1">
+              <span class="text-[9px] font-black text-[#6B4F40] whitespace-nowrap mb-1">目標兔兔</span>
+              <span id="hud-progress" class="text-[11px] font-black px-1.5 py-0.5 rounded-lg bg-[#FFEDD5] border border-[#C2410C]/30 text-[#C2410C]">0/3</span>
+              <span id="hud-combo" class="hidden text-[9px] font-black text-[#D97706] mt-0.5">FEVER</span>
+            </div>
+            <div id="target-list" class="flex-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" style="flex-wrap:nowrap;justify-content:flex-start;"></div>
+            <button id="btn-toggle-targets" type="button" class="shrink-0 text-[10px] font-black px-1.5 py-1 rounded-lg bg-[#EAD7C0] text-[#5A3A28] whitespace-nowrap" title="查看已找到的兔兔">已找 0 ▼</button>
           </div>
-          <div id="target-list" class="flex-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" style="flex-wrap:nowrap;justify-content:flex-start;"></div>
-          <button id="btn-toggle-targets" type="button" class="shrink-0 text-[10px] font-black px-1.5 py-1 rounded-lg bg-[#EAD7C0] text-[#5A3A28]" title="展開/收起目標欄">▲</button>
+          <div id="found-target-row" class="hidden pt-1 border-t border-[#5A3A28]/15 flex items-center gap-1.5">
+            <span class="shrink-0 text-[9px] font-black text-[#15803D] whitespace-nowrap pr-1">已找到</span>
+            <div id="found-target-list" class="flex-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" style="flex-wrap:nowrap;justify-content:flex-start;"></div>
+          </div>
         </div>
 
-        <div id="golden-alert" class="hidden pointer-events-none absolute left-1/2 -translate-x-1/2 z-20 w-[92%] max-w-[360px]" style="top:82px;">
+        <div id="golden-alert" class="hidden pointer-events-none absolute left-1/2 -translate-x-1/2 z-20 w-[92%] max-w-[360px]" style="top:86px;">
           <div class="game-btn game-btn-gold rounded-full px-3 py-1.5 flex items-center justify-center gap-1.5 text-xs font-black text-[#713F12] shadow-lg animate-bounce">
             <img class="img-star-icon w-4 h-4 object-contain" src="" alt="閃光" />
             <span id="golden-alert-text">閃光逃走兔出現！捉住可得金幣與新卡！</span>
           </div>
         </div>
 
-        <div class="pointer-events-none absolute inset-x-0 bottom-3 px-3 z-20 flex items-end justify-between">
+        <div class="pointer-events-none absolute inset-x-0 bottom-5 px-3 z-20 flex items-end justify-between" style="padding-bottom: env(safe-area-inset-bottom, 0px);">
           <div class="pointer-events-auto flex items-center gap-2">
             <button id="btn-hint" type="button" class="game-btn game-btn-gold rounded-2xl pl-2 pr-3 py-1.5 flex items-center gap-1.5 text-xs font-black text-[#6B3E08]">
               <img id="img-hint-icon" src="" alt="提示" class="w-6 h-6 object-contain" />
@@ -2992,6 +2998,7 @@
       state.worldW = lvl.worldW; state.worldH = lvl.worldH;
       state.targetIds = [...lvl.targets];
       state.foundIds = new Set();
+      state.showFoundDrawer = false;
       state.newlyUnlockedThisRun = [];
       state.pendingLevelClear = false;
       state.score = 0; state.combo = 0; state.wrongTaps = 0;
@@ -3560,7 +3567,7 @@
     // =========================================================================
     function useHint() {
       if (!state.running) return;
-      if (state.hintsLeft <= 0) { buyBonus('hint'); return; }
+      if (state.hintsLeft <= 0) { buyBonus('hint', true); return; }
       const unfound = state.bunnies.find(b => b.isTarget && !b.found);
       if (!unfound) return;
       state.hintsLeft -= 1; state.hintsUsed += 1; SFX.radar();
@@ -3574,23 +3581,27 @@
       state.targetZoom = Math.max(state.zoom, 1.15);
       state.radar = { x: focusX, y: focusY, startTime: performance.now(), duration: 5000 };
       const meta = BUNNY_BY_ID[unfound.spriteKey];
-      showToast(unfound.hiddenInProp ? `撥開附近晃動的草叢尋找「${meta.name}」！` : `雷達鎖定「${meta.name}」附近！`);
+      showToast(unfound.hiddenInProp ? `撥開附近晃動的道具尋找「${meta.name}」！` : `雷達鎖定「${meta.name}」附近！`);
       renderHUD();
     }
 
     const BONUS_COST = { hint: 30, revive: 60 };
-    function buyBonus(mode) {
+    function buyBonus(mode, autoUseHint = false) {
       const cost = BONUS_COST[mode];
-      if (saveData.coins < cost) { showToast(`金幣不足，需要 ${cost} 金幣。`); return; }
-      saveData.coins -= cost; persistSave();
+      if (saveData.coins < cost) { SFX.wrong(); showToast(`金幣不足，需要 ${cost} 金幣！`); return; }
+      saveData.coins -= cost; persistSave(); syncGlobalCounters();
       if (mode === 'revive') {
         document.getElementById('modal-timeout').classList.add('hidden');
         state.timeLeft = 20; state.hintsLeft += 1; state.running = true; state.paused = false;
-        renderHUD(); showToast(`用 ${cost} 金幣續命：+20 秒 + 1 提示！`);
+        renderHUD(); SFX.found(); showToast(`已用 ${cost} 金幣續命：+20 秒 + 1 提示！`);
       } else {
-        state.hintsLeft += 1; renderHUD(); showToast(`用 ${cost} 金幣換到 1 個雷達提示！`);
+        state.hintsLeft += 1; renderHUD();
+        if (autoUseHint && state.running) {
+          useHint();
+        } else {
+          SFX.coin(); showToast(`已用 ${cost} 金幣購買 +1 雷達提示！（目前有 ${state.hintsLeft} 個）`);
+        }
       }
-      SFX.found();
     }
 
     // =========================================================================
@@ -3670,25 +3681,66 @@
 
     function renderTargetBar() {
       const container = document.getElementById('target-list');
+      const foundRow = document.getElementById('found-target-row');
+      const foundList = document.getElementById('found-target-list');
+      const toggleBtn = document.getElementById('btn-toggle-targets');
       container.innerHTML = '';
+      if (foundList) foundList.innerHTML = '';
       const borderMap = { SSR: '#D97706', SR: '#9333EA', R: '#5484A8', N: '#8C6248' };
-      state.targetIds.forEach((tid) => {
-        const meta = BUNNY_BY_ID[tid], isFound = state.foundIds.has(tid);
-        const chip = document.createElement('button');
-        chip.type = 'button';
-        chip.title = `${meta.name}（${meta.rarity}）`;
-        chip.className = `target-chip-lg shrink-0 relative flex items-center justify-center overflow-hidden ${isFound ? 'found' : ''}`;
-        if (!isFound && borderMap[meta.rarity]) chip.style.borderColor = borderMap[meta.rarity];
-        chip.innerHTML = `
-          <img src="${SPRITE_SRCS[tid]}" alt="${meta.name}" />
-          ${isFound ? '<span class="absolute inset-0 bg-[#22C55E]/70 text-white text-xl font-black flex items-center justify-center">✓</span>' : ''}
-        `;
-        chip.addEventListener('click', () => {
-          SFX.tap();
-          showToast(isFound ? `已找到「${meta.name}」✓` : `尋找目標：${meta.name}（${meta.rarity}）`);
+
+      const unfoundIds = state.targetIds.filter(tid => !state.foundIds.has(tid));
+      const foundIdsArr = state.targetIds.filter(tid => state.foundIds.has(tid));
+
+      if (unfoundIds.length === 0) {
+        const doneBadge = document.createElement('span');
+        doneBadge.className = 'text-xs font-black text-[#15803D] px-2.5 py-1 rounded-xl bg-[#ECFDF5] border border-[#16A34A]/40';
+        doneBadge.textContent = '目標兔兔已全部找齊 ✓';
+        container.appendChild(doneBadge);
+      } else {
+        unfoundIds.forEach((tid) => {
+          const meta = BUNNY_BY_ID[tid];
+          const chip = document.createElement('button');
+          chip.type = 'button';
+          chip.title = `${meta.name}（${meta.rarity}）`;
+          chip.className = 'target-chip-lg shrink-0 relative flex items-center justify-center overflow-hidden';
+          if (borderMap[meta.rarity]) chip.style.borderColor = borderMap[meta.rarity];
+          chip.innerHTML = `<img src="${SPRITE_SRCS[tid]}" alt="${meta.name}" />`;
+          chip.addEventListener('click', () => {
+            SFX.tap();
+            showToast(`尋找目標：${meta.name}（${meta.rarity}）`);
+          });
+          container.appendChild(chip);
         });
-        container.appendChild(chip);
-      });
+      }
+
+      if (foundList) {
+        if (foundIdsArr.length === 0) {
+          const emptyTxt = document.createElement('span');
+          emptyTxt.className = 'text-[11px] font-bold text-[#8C6D5D] py-1';
+          emptyTxt.textContent = '尚未找到任何目標兔兔';
+          foundList.appendChild(emptyTxt);
+        } else {
+          foundIdsArr.forEach((tid) => {
+            const meta = BUNNY_BY_ID[tid];
+            const chip = document.createElement('button');
+            chip.type = 'button';
+            chip.title = `已找到：${meta.name}（${meta.rarity}）`;
+            chip.className = 'target-chip-lg found shrink-0 relative flex items-center justify-center overflow-hidden';
+            chip.innerHTML = `
+              <img src="${SPRITE_SRCS[tid]}" alt="${meta.name}" style="filter:grayscale(1) opacity(0.7);" />
+              <span class="absolute inset-0 flex items-center justify-center font-black" style="background:rgba(22,163,74,0.72);color:#FFFFFF;font-size:22px;text-shadow:0 1px 2px rgba(0,0,0,0.35);">✓</span>
+            `;
+            chip.addEventListener('click', () => {
+              SFX.tap();
+              showToast(`已找到「${meta.name}」（${meta.rarity}）✓`);
+            });
+            foundList.appendChild(chip);
+          });
+        }
+      }
+
+      if (foundRow) foundRow.classList.toggle('hidden', !state.showFoundDrawer);
+      if (toggleBtn) toggleBtn.textContent = state.showFoundDrawer ? '收起 ▲' : `已找 ${foundIdsArr.length} ▼`;
     }
 
     function showLevelClearModal() {
@@ -4218,13 +4270,16 @@
       });
 
       // Gameplay Controls
-      document.getElementById('btn-toggle-targets').addEventListener('click', (e) => {
-        state.targetsCollapsed = !state.targetsCollapsed;
-        document.getElementById('target-list').classList.toggle('hidden', state.targetsCollapsed);
-        e.currentTarget.textContent = state.targetsCollapsed ? '▼' : '▲';
+      document.getElementById('btn-toggle-targets').addEventListener('click', () => {
+        SFX.tap();
+        state.showFoundDrawer = !state.showFoundDrawer;
+        renderTargetBar();
       });
       document.getElementById('btn-hint').addEventListener('click', useHint);
-      document.getElementById('btn-watch-ad-direct').addEventListener('click', () => { if (state.running) buyBonus('hint'); });
+      document.getElementById('btn-watch-ad-direct').addEventListener('click', () => {
+        if (!state.running) return;
+        buyBonus('hint', state.hintsLeft <= 0);
+      });
       document.getElementById('btn-revive-ad').addEventListener('click', () => buyBonus('revive'));
       document.getElementById('btn-timeout-retry').addEventListener('click', () => {
         if (state.isDailyChallenge) startDailyChallenge();
