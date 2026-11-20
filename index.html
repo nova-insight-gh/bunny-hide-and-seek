@@ -752,6 +752,18 @@
           </div>
         </div>
 
+        <!-- Fast Tap-Tap-Tap Planting Seed Bar (pick seed once -> tap empty beds or 一鍵種滿!) -->
+        <div id="farm-plant-bar" class="hidden absolute inset-x-2 bottom-20 z-20 game-panel rounded-2xl p-2 flex flex-col gap-1.5">
+          <div class="flex items-center justify-between px-1 gap-1.5">
+            <span id="farm-plant-bar-hint" class="text-[11px] font-black text-[#5A3A28] truncate">選好種子，連點空農田即可快速播種！</span>
+            <div class="flex items-center gap-1 shrink-0">
+              <button id="btn-farm-plant-all" type="button" class="text-[10px] font-black px-2 py-0.5 rounded-lg text-white active:scale-95" style="background:#52A88B;">一鍵種滿</button>
+              <button id="btn-farm-plant-done" type="button" class="text-[10px] font-black px-2 py-0.5 rounded-lg bg-[#F97316] text-white">完成</button>
+            </div>
+          </div>
+          <div id="farm-plant-palette" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" style="touch-action:pan-x;-webkit-overflow-scrolling:touch;"></div>
+        </div>
+
         <!-- Grid Build Mode Palette Strip (appears cleanly above bottom dock) -->
         <div id="garden-build-bar" class="hidden absolute inset-x-2 bottom-20 z-20 game-panel rounded-2xl p-2 flex flex-col gap-1.5">
           <div class="flex items-center justify-between px-1 gap-1.5">
@@ -771,9 +783,13 @@
             <span>主頁</span>
           </button>
           <div class="pointer-events-auto flex items-center gap-1">
-            <button id="btn-farm-market" type="button" class="game-btn game-btn-pink relative rounded-2xl px-2.5 py-2 flex items-center gap-1 text-[11px] font-black text-[#5A3A28]">
+            <button id="btn-farm-plant-mode" type="button" class="game-btn game-btn-mint rounded-2xl px-2.5 py-2 flex items-center gap-1 text-[11px] font-black text-[#2D6A54]">
+              <img src="assets/crop_carrot.png" alt="播種" class="w-4 h-4 object-contain" />
+              <span>播種</span>
+            </button>
+            <button id="btn-farm-market" type="button" class="game-btn game-btn-pink relative rounded-2xl px-2 py-2 flex items-center gap-1 text-[11px] font-black text-[#5A3A28]">
               <img class="img-shop-icon w-4 h-4 object-contain" src="" alt="市集" />
-              <span>農夫市集</span>
+              <span>市集</span>
               <span id="farm-barn-badge" class="hidden absolute -top-1.5 -right-1 px-1.5 py-0.2 rounded-full text-[9px] font-black text-white" style="background:#D97C98;">0</span>
             </button>
             <button id="btn-garden-bunnies" type="button" class="game-btn rounded-2xl px-2 py-2 flex items-center gap-1 text-[11px] font-black text-[#5A3A28]">
@@ -781,10 +797,9 @@
               <span>兔兔</span>
             </button>
             <button id="btn-garden-shop" type="button" class="game-btn game-btn-gold rounded-2xl px-2 py-2 flex items-center gap-1 text-[11px] font-black text-[#6B3E08]">
-              <span>商店</span>
+              <span>擺設</span>
             </button>
-            <button id="btn-garden-bag" type="button" class="game-btn game-btn-mint rounded-2xl px-2 py-2 flex items-center gap-1 text-[11px] font-black text-[#5A3A28]">
-              <img class="img-garden-icon w-4 h-4 object-contain" src="" alt="佈置" />
+            <button id="btn-garden-bag" type="button" class="game-btn rounded-2xl px-2 py-2 flex items-center gap-1 text-[11px] font-black text-[#5A3A28]">
               <span>佈置</span>
             </button>
           </div>
@@ -1565,7 +1580,6 @@
     // 2. GARDEN DECOR SHOP CATALOG (8款可愛花園道具)
     // =========================================================================
     const GARDEN_DECOR_CATALOG = [
-      { id: 'dec_carrot_patch', name: '新鮮紅蘿蔔田', price: 30,  layer: 'ground', attract: true,  tileScale: 1.04, desc: '吸引兔兔圍過來轉圈圈品嚐紅蘿蔔！' },
       { id: 'dec_clover_grass', name: '四葉草軟草地', price: 20,  layer: 'ground', attract: true,  tileScale: 1.06, desc: '兔兔最喜歡在柔軟草地上跳躍與打滾！' },
       { id: 'dec_soil_path',    name: '小泥地碎石路', price: 15,  layer: 'ground', attract: false, tileScale: 1.04, desc: '一格一格鋪出可愛的兔兔散步小路。' },
       { id: 'dec_flower_bed',   name: '雛菊小花圃',   price: 25,  layer: 'ground', attract: true,  tileScale: 1.04, desc: '五顏六色的小花，吸引兔兔圍圈聞花香！' },
@@ -1922,9 +1936,9 @@
       unlockedCards: [],
       levelRecords: {},
       coins: 180,
-      ownedDecor: { dec_carrot_patch: 2, dec_clover_grass: 2, dec_soil_path: 2, dec_teatable: 1 },
+      ownedDecor: { dec_flower_bed: 2, dec_clover_grass: 2, dec_soil_path: 2, dec_teatable: 1 },
       gardenGrid: [
-        { col: 4, row: 4, id: 'dec_carrot_patch' },
+        { col: 4, row: 4, id: 'dec_flower_bed' },
         { col: 5, row: 4, id: 'dec_clover_grass' },
         { col: 4, row: 5, id: 'dec_soil_path' },
         { col: 5, row: 5, id: 'dec_soil_path' },
@@ -1957,9 +1971,16 @@
       if (typeof parsed.coins === 'number') saveData.coins = parsed.coins;
       else saveData.coins = 180 + saveData.unlockedCards.length * 25;
       if (parsed.ownedDecor && typeof parsed.ownedDecor === 'object') {
-        saveData.ownedDecor = { dec_carrot_patch: 2, dec_clover_grass: 2, dec_soil_path: 2, dec_teatable: 1, ...parsed.ownedDecor };
+        const cleanedDecor = { dec_flower_bed: 2, dec_clover_grass: 2, dec_soil_path: 2, dec_teatable: 1, ...parsed.ownedDecor };
+        if (cleanedDecor.dec_carrot_patch) {
+          cleanedDecor.dec_flower_bed = (cleanedDecor.dec_flower_bed || 0) + cleanedDecor.dec_carrot_patch;
+          delete cleanedDecor.dec_carrot_patch;
+        }
+        saveData.ownedDecor = cleanedDecor;
       }
-      if (Array.isArray(parsed.gardenGrid) && parsed.gardenGrid.length > 0) saveData.gardenGrid = parsed.gardenGrid;
+      if (Array.isArray(parsed.gardenGrid) && parsed.gardenGrid.length > 0) {
+        saveData.gardenGrid = parsed.gardenGrid.filter(t => t && t.id !== 'dec_carrot_patch');
+      }
       if (Array.isArray(parsed.gardenBunnies) && parsed.gardenBunnies.length > 0) saveData.gardenBunnies = parsed.gardenBunnies;
       else saveData.gardenBunnies = saveData.unlockedCards.slice(0, 10);
       if (parsed.gardenCoinReadyAt && typeof parsed.gardenCoinReadyAt === 'object') saveData.gardenCoinReadyAt = parsed.gardenCoinReadyAt;
@@ -2063,7 +2084,7 @@
         document.getElementById(`view-${v}`).classList.toggle('hidden', v !== viewName);
       });
       closeAllModals();
-      if (viewName !== 'garden') setGardenEditMode(false);
+      if (viewName !== 'garden') { setGardenEditMode(false); setFarmPlantMode(false); }
 
       if (viewName === 'home') {
         state.paused = true;
@@ -2536,6 +2557,7 @@
     }
 
     function setGardenEditMode(on, preselectId = null) {
+      if (on && gardenState.plantMode) setFarmPlantMode(false);
       gardenState.editMode = on;
       if (preselectId) gardenState.selectedBuildId = preselectId;
       const toggleBtn = document.getElementById('btn-garden-bag');
@@ -2882,7 +2904,7 @@
 
     const CHECKIN_REWARDS = [
       { day: 1, type: 'coins', val: 80,  label: '+80金幣', icon: 'ui_coin' },
-      { day: 2, type: 'decor', val: 'dec_carrot_patch', label: '紅蘿蔔田', icon: 'dec_carrot_patch' },
+      { day: 2, type: 'decor', val: 'dec_flower_bed', label: '雛菊花圃', icon: 'dec_flower_bed' },
       { day: 3, type: 'coins', val: 120, label: '+120金幣', icon: 'ui_coin' },
       { day: 4, type: 'decor', val: 'dec_swing', label: '木鞦韆', icon: 'dec_swing' },
       { day: 5, type: 'coins', val: 180, label: '+180金幣', icon: 'ui_coin' },
@@ -4573,16 +4595,16 @@
     // 12B. PHASE 1 BUNNY FARM ENGINE (10特色作物 · 動態無限擴張 · 3格小幫手 · 市集)
     // =========================================================================
     const FARM_CROPS = [
-      { id: 'crop_carrot',      name: '新鮮紅蘿蔔',   unlockBunny: null,             growMin: 30,  seedCost: 10, sellPrice: 25,  img: 'dec_carrot_patch',    bedImg: 'dec_carrot_patch',    tag: '30分鐘' },
-      { id: 'crop_strawberry',  name: '蜜糖草莓',     unlockBunny: 'sp_strawberry',  growMin: 45,  seedCost: 15, sellPrice: 38,  img: 'farm_bed_strawberry', bedImg: 'farm_bed_strawberry', tag: '45分鐘' },
-      { id: 'crop_eggette',     name: '金黃雞蛋仔',   unlockBunny: 'sp_eggette',     growMin: 60,  seedCost: 20, sellPrice: 52,  img: 'farm_bed_eggette',    bedImg: 'farm_bed_eggette',    tag: '1小時' },
-      { id: 'crop_watermelon',  name: '冰涼大西瓜',   unlockBunny: 'b_watermelon',   growMin: 90,  seedCost: 28, sellPrice: 75,  img: 'farm_bed_watermelon', bedImg: 'farm_bed_watermelon', tag: '1.5小時' },
-      { id: 'crop_sakura',      name: '粉紅櫻花束',   unlockBunny: 'sp_sakura',      growMin: 120, seedCost: 35, sellPrice: 98,  img: 'farm_bed_sakura',     bedImg: 'farm_bed_sakura',     tag: '2小時' },
-      { id: 'crop_milktea',     name: '港式絲襪奶茶', unlockBunny: 'sp_milktea',     growMin: 180, seedCost: 45, sellPrice: 135, img: 'farm_bed_milktea',    bedImg: 'farm_bed_milktea',    tag: '3小時' },
-      { id: 'crop_marshmallow', name: '營火烤棉花糖', unlockBunny: 'sp_marshmallow', growMin: 210, seedCost: 50, sellPrice: 155, img: 'farm_bed_marshmallow',bedImg: 'farm_bed_marshmallow',tag: '3.5小時' },
-      { id: 'crop_bolobao',     name: '冰火菠蘿油',   unlockBunny: 'sp_bolobao',     growMin: 240, seedCost: 60, sellPrice: 190, img: 'farm_bed_bolobao',    bedImg: 'farm_bed_bolobao',    tag: '4小時' },
-      { id: 'crop_pumpkin',     name: '秋日黃金南瓜', unlockBunny: 'b_pumpkin',      growMin: 300, seedCost: 75, sellPrice: 245, img: 'farm_bed_pumpkin',    bedImg: 'farm_bed_pumpkin',    tag: '5小時' },
-      { id: 'crop_macaron',     name: '彩虹馬卡龍',   unlockBunny: 'sp_macaron',     growMin: 360, seedCost: 95, sellPrice: 320, img: 'farm_bed_macaron',    bedImg: 'farm_bed_macaron',    tag: '6小時' }
+      { id: 'crop_carrot',      name: '新鮮紅蘿蔔',   unlockBunny: null,             growMin: 30,  seedCost: 10, sellPrice: 25,  img: 'crop_carrot',      bedImg: 'dec_carrot_patch',    tag: '30分鐘' },
+      { id: 'crop_strawberry',  name: '蜜糖草莓',     unlockBunny: 'sp_strawberry',  growMin: 45,  seedCost: 15, sellPrice: 38,  img: 'crop_strawberry',  bedImg: 'farm_bed_strawberry', tag: '45分鐘' },
+      { id: 'crop_eggette',     name: '金黃雞蛋仔',   unlockBunny: 'sp_eggette',     growMin: 60,  seedCost: 20, sellPrice: 52,  img: 'crop_eggette',     bedImg: 'farm_bed_eggette',    tag: '1小時' },
+      { id: 'crop_watermelon',  name: '冰涼大西瓜',   unlockBunny: 'b_watermelon',   growMin: 90,  seedCost: 28, sellPrice: 75,  img: 'crop_watermelon',  bedImg: 'farm_bed_watermelon', tag: '1.5小時' },
+      { id: 'crop_sakura',      name: '粉紅櫻花束',   unlockBunny: 'sp_sakura',      growMin: 120, seedCost: 35, sellPrice: 98,  img: 'crop_sakura',      bedImg: 'farm_bed_sakura',     tag: '2小時' },
+      { id: 'crop_milktea',     name: '港式絲襪奶茶', unlockBunny: 'sp_milktea',     growMin: 180, seedCost: 45, sellPrice: 135, img: 'crop_milktea',     bedImg: 'farm_bed_milktea',    tag: '3小時' },
+      { id: 'crop_marshmallow', name: '營火烤棉花糖', unlockBunny: 'sp_marshmallow', growMin: 210, seedCost: 50, sellPrice: 155, img: 'crop_marshmallow', bedImg: 'farm_bed_marshmallow',tag: '3.5小時' },
+      { id: 'crop_bolobao',     name: '冰火菠蘿油',   unlockBunny: 'sp_bolobao',     growMin: 240, seedCost: 60, sellPrice: 190, img: 'crop_bolobao',     bedImg: 'farm_bed_bolobao',    tag: '4小時' },
+      { id: 'crop_pumpkin',     name: '秋日黃金南瓜', unlockBunny: 'b_pumpkin',      growMin: 300, seedCost: 75, sellPrice: 245, img: 'crop_pumpkin',     bedImg: 'farm_bed_pumpkin',    tag: '5小時' },
+      { id: 'crop_macaron',     name: '彩虹馬卡龍',   unlockBunny: 'sp_macaron',     growMin: 360, seedCost: 95, sellPrice: 320, img: 'crop_macaron',     bedImg: 'farm_bed_macaron',    tag: '6小時' }
     ];
     const FARM_CROP_BY_ID = Object.fromEntries(FARM_CROPS.map(c => [c.id, c]));
 
@@ -4819,6 +4841,16 @@
           if (sproutBed && sproutBed.complete && sproutBed.naturalWidth > 0) {
             c.drawImage(sproutBed, left, top, sz, sz);
           }
+          // Mini corner badge showing clearly WHICH crop is growing in this bed!
+          const gCrop = FARM_CROP_BY_ID[p.cropId];
+          const gIcon = gCrop ? IMAGES[gCrop.img] : null;
+          if (gIcon && gIcon.complete && gIcon.naturalWidth > 0) {
+            c.fillStyle = 'rgba(255, 252, 244, 0.94)';
+            c.strokeStyle = '#6CA6D9';
+            c.lineWidth = 1.6;
+            c.beginPath(); c.arc(left + sz - 9, top + 9, 13, 0, Math.PI * 2); c.fill(); c.stroke();
+            c.drawImage(gIcon, left + sz - 19, top - 1, 20, 20);
+          }
           const rem = Math.max(0, p.readyAt - nowMs);
           c.fillStyle = '#EDF6FC';
           c.strokeStyle = '#6CA6D9';
@@ -4836,6 +4868,120 @@
 
     let activeSeedPlotIdx = 0;
 
+    function setFarmPlantMode(on, preselectCropId = null) {
+      if (on && gardenState.editMode) setGardenEditMode(false);
+      gardenState.plantMode = on;
+      if (preselectCropId) gardenState.selectedCropId = preselectCropId;
+      if (!gardenState.selectedCropId) gardenState.selectedCropId = 'crop_carrot';
+      const btn = document.getElementById('btn-farm-plant-mode');
+      if (btn) {
+        btn.querySelector('span').textContent = on ? '完成' : '播種';
+        btn.classList.toggle('game-btn-orange', on);
+      }
+      const bar = document.getElementById('farm-plant-bar');
+      if (bar) bar.classList.toggle('hidden', !on);
+      const toastWrap = document.getElementById('toast-container');
+      if (toastWrap) toastWrap.style.bottom = on ? '196px' : '';
+      if (on) renderFarmPlantPalette();
+    }
+
+    function renderFarmPlantPalette() {
+      const list = document.getElementById('farm-plant-palette');
+      if (!list) return;
+      list.innerHTML = '';
+      const bonus = getFarmBonuses();
+      FARM_CROPS.forEach(c => {
+        const unlocked = !c.unlockBunny || saveData.unlockedCards.includes(c.unlockBunny);
+        const active = unlocked && gardenState.selectedCropId === c.id;
+        const effMin = Math.max(5, Math.round(c.growMin * (1 - bonus.speedPct / 100)));
+        const timeStr = effMin >= 60 ? (effMin % 60 === 0 ? `${effMin/60}時` : `${Math.floor(effMin/60)}時${effMin%60}分`) : `${effMin}分`;
+        const reqName = c.unlockBunny && BUNNY_BY_ID[c.unlockBunny] ? BUNNY_BY_ID[c.unlockBunny].name : '';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'shrink-0 rounded-2xl border-2 px-2 py-1.5 flex items-center gap-1.5 text-left transition-all active:scale-95';
+        btn.style.cssText = active
+          ? 'background:#E8F8F2;border-color:#52A88B;'
+          : unlocked
+            ? 'background:rgba(255,255,255,0.95);border-color:rgba(90,58,40,0.22);'
+            : 'background:#F2EAE0;border-color:#D2C2B2;opacity:0.72;';
+        btn.innerHTML = `
+          <img src="${SPRITE_SRCS[c.img]}" alt="${c.name}" class="w-9 h-9 object-contain shrink-0 ${unlocked ? '' : 'locked-silhouette'}" />
+          <div class="leading-tight">
+            <div class="text-[10px] font-black text-[#5A3A28] whitespace-nowrap">${c.name}</div>
+            <div class="text-[9px] font-bold whitespace-nowrap" style="color:${unlocked ? '#4B82B0' : '#8C7B6E'};">${unlocked ? `${timeStr} · ${c.seedCost}幣` : `需${reqName}`}</div>
+          </div>
+        `;
+        btn.addEventListener('click', () => {
+          if (!unlocked) {
+            SFX.wrong();
+            showToast(`收服「${reqName}」即可解鎖「${c.name}」種子！`);
+            return;
+          }
+          gardenState.selectedCropId = c.id;
+          SFX.tap();
+          renderFarmPlantPalette();
+        });
+        list.appendChild(btn);
+      });
+    }
+
+    function plantCropInPlot(idx, cropId, silent = false) {
+      ensureFarmState();
+      const p = saveData.farm.plots[idx];
+      const c = FARM_CROP_BY_ID[cropId];
+      if (!p || p.cropId || !c) return false;
+      const unlocked = !c.unlockBunny || saveData.unlockedCards.includes(c.unlockBunny);
+      if (!unlocked) {
+        if (!silent) { SFX.wrong(); showToast('這款種子尚未解鎖喔！'); }
+        return false;
+      }
+      if (saveData.coins < c.seedCost) {
+        if (!silent) { SFX.wrong(); showToast(`金幣不足，播種「${c.name}」需要 ${c.seedCost} 金幣！`); }
+        return false;
+      }
+      const b = getFarmBonuses();
+      const growMs = Math.max(5, Math.round(c.growMin * (1 - b.speedPct / 100))) * 60 * 1000;
+      saveData.coins -= c.seedCost;
+      p.cropId = c.id;
+      p.plantedAt = Date.now();
+      p.readyAt = Date.now() + growMs;
+      const m = getGridMetrics();
+      const center = cellCenter(p.col, p.row, m);
+      for (let i = 0; i < 8; i++) {
+        const ang = (Math.PI * 2 * i) / 8;
+        gardenState.particles.push({ x: center.x, y: center.y, vx: Math.cos(ang) * 42, vy: Math.sin(ang) * 42 - 26, size: 3, color: i % 2 === 0 ? '#6BC4A6' : '#FEF08A', life: 0.45, maxLife: 0.45 });
+      }
+      if (!silent) {
+        persistSave(); syncGlobalCounters(); SFX.found();
+        gardenState.floatingTexts.push({ x: center.x, y: center.y - 20, text: `種下${c.name}`, color: '#E8F8F2', life: 0.9, maxLife: 0.9 });
+      }
+      return true;
+    }
+
+    function plantAllEmptyPlots() {
+      ensureFarmState();
+      const cid = gardenState.selectedCropId || 'crop_carrot';
+      const c = FARM_CROP_BY_ID[cid];
+      if (!c) return;
+      const emptyIndices = [];
+      saveData.farm.plots.forEach((p, i) => { if (p && !p.cropId) emptyIndices.push(i); });
+      if (emptyIndices.length === 0) {
+        SFX.tap(); showToast('所有農田都已經種滿作物囉！'); return;
+      }
+      let planted = 0;
+      for (const idx of emptyIndices) {
+        if (plantCropInPlot(idx, cid, true)) planted += 1;
+        else break;
+      }
+      if (planted > 0) {
+        persistSave(); syncGlobalCounters(); SFX.win();
+        showToast(`一鍵種滿完成！已在 ${planted} 塊空田種下「${c.name}」！`);
+      } else {
+        SFX.wrong();
+        showToast(`金幣不足，播種「${c.name}」每塊需要 ${c.seedCost} 金幣！`);
+      }
+    }
+
     function handleFarmCanvasTap(worldX, worldY, m) {
       ensureFarmState();
       const col = Math.floor((worldX - m.originX) / m.cell);
@@ -4845,7 +4991,12 @@
       const p = saveData.farm.plots[idx];
       const center = cellCenter(p.col, p.row, m);
       if (!p.cropId) {
-        openFarmSeedModal(idx);
+        if (gardenState.plantMode && gardenState.selectedCropId) {
+          plantCropInPlot(idx, gardenState.selectedCropId, false);
+        } else {
+          setFarmPlantMode(true);
+          showToast('請選好種子後直接連點空農田，或按「一鍵種滿」！');
+        }
       } else if (Date.now() >= p.readyAt) {
         const crop = FARM_CROP_BY_ID[p.cropId];
         harvestPlot(idx);
@@ -5102,6 +5253,9 @@
       document.getElementById('btn-farm-helpers').addEventListener('click', openFarmHelpersModal);
       document.getElementById('btn-close-farm-helpers').addEventListener('click', () => document.getElementById('modal-farm-helpers').classList.add('hidden'));
       document.getElementById('btn-farm-expand').addEventListener('click', expandFarmPlot);
+      document.getElementById('btn-farm-plant-mode').addEventListener('click', () => setFarmPlantMode(!gardenState.plantMode));
+      document.getElementById('btn-farm-plant-done').addEventListener('click', () => setFarmPlantMode(false));
+      document.getElementById('btn-farm-plant-all').addEventListener('click', plantAllEmptyPlots);
       document.getElementById('btn-farm-harvest-all').addEventListener('click', harvestAllReadyPlots);
       document.getElementById('btn-close-clear').addEventListener('click', () => switchView('home'));
       document.getElementById('btn-clear-home').addEventListener('click', () => switchView('home'));
