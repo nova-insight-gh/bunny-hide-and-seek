@@ -4,7 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>兔兔躲貓貓 · 100 隻兔兔與夢幻後花園</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <!-- tw.css is built from this file by Tailwind 3.4.17. After adding new Tailwind classes, rebuild it:
+       npx tailwindcss@3.4.17 --content index.html -o tw.css --minify -->
+  <link rel="stylesheet" href="tw.css" />
+  <meta name="description" content="收集 100 隻繪本兔兔，草叢收服兔兔，佈置夢幻後花園。" />
+  <meta name="theme-color" content="#FFF4E0" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-180.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="兔兔躲貓貓" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="兔兔躲貓貓" />
+  <meta property="og:description" content="收集 100 隻繪本兔兔，草叢收服兔兔，佈置夢幻後花園。" />
+  <!-- ponytail: og:image is relative; WhatsApp/Facebook need the full https:// URL once the GitHub Pages address is known. -->
+  <meta property="og:image" content="og.jpg" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Noto+Sans+TC:wght@500;700;900&display=swap');
 
@@ -467,15 +481,8 @@
             <img class="img-coin-icon w-4 h-4 object-contain" src="" alt="金幣" />
             <span class="coin-display tabular-nums">150</span>
           </div>
-          <button id="btn-garden-home-top" type="button" class="game-btn rounded-xl px-2 py-1 text-[11px] font-black text-[#5A3A28] flex items-center gap-1" title="返回主頁">
-            <img class="img-home-icon w-4 h-4 object-contain" src="" alt="主頁" />
-            <span>主頁</span>
-          </button>
           <button id="btn-garden-photo" type="button" class="game-btn game-btn-pink rounded-xl px-2 py-1 text-[11px] font-black text-[#831843]">
             影相
-          </button>
-          <button id="btn-garden-edit-toggle" type="button" class="game-btn game-btn-mint rounded-xl px-2.5 py-1 text-[11px] font-black text-[#14532D]">
-            砌格子
           </button>
         </div>
       </header>
@@ -1263,7 +1270,7 @@
 
 
     // =========================================================================
-    // 4. WEB AUDIO SFX & WARM ACOUSTIC BGM + CUSTOM MP3 LOADER
+    // 4. WEB AUDIO SFX & WARM ACOUSTIC BGM
     // =========================================================================
     const SFX = {
       ctx: null, muted: false,
@@ -1366,13 +1373,6 @@
         gain.gain.linearRampToValueAtTime(vol, now + 0.025);
         gain.gain.exponentialRampToValueAtTime(0.0008, now + dur);
         osc1.start(now); osc2.start(now); osc1.stop(now + dur + 0.04); osc2.stop(now + dur + 0.04);
-      },
-      setCustomFile(themeId, file) {
-        if (!file) return;
-        if (CUSTOM_BGM_URLS[themeId] && CUSTOM_BGM_URLS[themeId].startsWith('blob:')) URL.revokeObjectURL(CUSTOM_BGM_URLS[themeId]);
-        CUSTOM_BGM_URLS[themeId] = URL.createObjectURL(file);
-        if (this.currentThemeId === themeId) { this.started = true; this.playTheme(themeId); }
-        showToast('已套用自訂 MP3 配樂！');
       },
       syncMute() { if (this.audioEl) this.audioEl.muted = SFX.muted; },
       playTheme(themeId) {
@@ -1857,8 +1857,8 @@
     function setGardenEditMode(on, preselectId = null) {
       gardenState.editMode = on;
       if (preselectId) gardenState.selectedBuildId = preselectId;
-      const toggleBtn = document.getElementById('btn-garden-edit-toggle');
-      toggleBtn.textContent = on ? '完成' : '砌格子';
+      const toggleBtn = document.getElementById('btn-garden-bag');
+      toggleBtn.querySelector('span').textContent = on ? '完成' : '砌格子';
       toggleBtn.classList.toggle('game-btn-orange', on);
       document.getElementById('garden-build-bar').classList.toggle('hidden', !on);
       if (on) renderGardenPalette();
@@ -3081,11 +3081,6 @@
             <span>${theme.name}</span>
           </div>
           <div class="flex items-center gap-1.5">
-            <label class="cursor-pointer flex items-center gap-1 text-[10px] font-black px-2 py-0.5 rounded-full bg-[#ECFDF5] border border-[#16A34A]/30 text-[#15803D]">
-              <img src="${SPRITE_SRCS.ui_sound}" alt="配樂" class="w-3.5 h-3.5 object-contain" />
-              <span>${CUSTOM_BGM_URLS[theme.id] ? '已換MP3' : '換MP3'}</span>
-              <input type="file" accept="audio/*" data-bgm-theme="${theme.id}" class="bgm-file-input hidden" />
-            </label>
             <span class="flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#FFF7ED] border border-[#C2410C]/20 text-[#C2410C]">
               <img src="${SPRITE_SRCS.ui_album}" alt="圖鑑" class="w-3.5 h-3.5 object-contain" />
               <span>${unlockedInTheme}/${themeCards.length}</span>
@@ -3117,12 +3112,6 @@
 
       body.querySelectorAll('.pick-level-btn').forEach(btn => {
         btn.addEventListener('click', () => startLevel(Number(btn.dataset.pickTheme), Number(btn.dataset.pickLevel)));
-      });
-      body.querySelectorAll('.bgm-file-input').forEach(inp => {
-        inp.addEventListener('change', (ev) => {
-          const f = ev.target.files && ev.target.files[0];
-          if (f) { BGM.setCustomFile(inp.dataset.bgmTheme, f); openLevelsModal(); }
-        });
       });
       document.getElementById('modal-levels').classList.remove('hidden');
     }
@@ -3250,7 +3239,6 @@
 
       // Garden navigation & modals
       document.getElementById('btn-garden-home').addEventListener('click', () => switchView('home'));
-      document.getElementById('btn-garden-home-top').addEventListener('click', () => switchView('home'));
       document.getElementById('btn-garden-shop').addEventListener('click', openShopModal);
       document.getElementById('btn-close-shop').addEventListener('click', closeAllModals);
       document.getElementById('btn-garden-bag').addEventListener('click', openBagModal);
@@ -3258,7 +3246,6 @@
       document.getElementById('btn-garden-bunnies').addEventListener('click', openGardenBunniesModal);
       document.getElementById('btn-close-garden-bunnies').addEventListener('click', closeAllModals);
 
-      document.getElementById('btn-garden-edit-toggle').addEventListener('click', () => setGardenEditMode(!gardenState.editMode));
       document.getElementById('btn-garden-build-done').addEventListener('click', () => setGardenEditMode(false));
 
       // Account Login / Binding Modal
