@@ -326,7 +326,7 @@
       .logo-text  { animation: logoFade 0.45s ease 1.82s forwards; }
     }
 
-    /* Looping Bunny-Carrot Loading Screen */
+    /* Looping Bunny-Carrot Loading Screen (full edge-to-edge mobile width + natural rabbit hop) */
     #bunny-loader {
       position: absolute; inset: 0; z-index: 95;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -335,62 +335,92 @@
     }
     #bunny-loader.is-hidden { opacity: 0; pointer-events: none; }
     .loader-stage {
-      position: relative; width: 270px; height: 112px; overflow: hidden;
-      border-bottom: 3px dashed rgba(90, 58, 40, 0.24);
+      position: relative; width: 100%; height: 126px; overflow: hidden;
+      border-bottom: 3px dashed rgba(90, 58, 40, 0.22);
       margin-bottom: 16px;
     }
     .loader-ground-carrot {
-      position: absolute; left: 50%; bottom: 6px; width: 38px; height: 38px;
+      position: absolute; left: 50%; bottom: 8px; width: 38px; height: 38px;
       transform: translateX(-50%);
-      animation: loaderGroundCarrot 2.6s linear infinite;
+      animation: loaderGroundCarrot 2.8s linear infinite;
     }
     .loader-sparkle {
-      position: absolute; left: 50%; bottom: 42px; width: 24px; height: 24px;
+      position: absolute; left: 50%; bottom: 48px; width: 24px; height: 24px;
       transform: translateX(-50%) scale(0);
-      animation: loaderSparkle 2.6s linear infinite;
+      animation: loaderSparkle 2.8s linear infinite;
     }
     .loader-runner {
-      position: absolute; left: 50%; bottom: 4px; width: 62px; height: 74px;
-      margin-left: -31px;
-      animation: loaderRunnerX 2.6s linear infinite;
+      position: absolute; bottom: 8px; width: 64px; height: 76px;
+      margin-left: -32px;
+      animation: loaderRunnerX 2.8s linear infinite;
+    }
+    .loader-shadow {
+      position: absolute; left: 50%; bottom: -2px; width: 42px; height: 10px;
+      margin-left: -21px; border-radius: 9999px; background: rgba(90, 58, 40, 0.2);
+      animation: loaderShadowPulse 2.8s ease-in-out infinite;
     }
     .loader-bunny-wrap {
-      position: relative; width: 100%; height: 100%;
-      animation: loaderBunnyHop 2.6s ease-in-out infinite;
+      position: relative; width: 100%; height: 100%; transform-origin: 50% 92%;
+      animation: loaderBunnyHop 2.8s ease-in-out infinite;
     }
-    .loader-bunny-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 3px 3px rgba(90, 58, 40, 0.2)); }
+    .loader-bunny-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 2px 2px rgba(90, 58, 40, 0.16)); }
     .loader-carry-carrot {
       position: absolute; right: -8px; bottom: 12px; width: 34px; height: 34px; object-fit: contain;
       transform: rotate(16deg);
-      animation: loaderCarryCarrot 2.6s linear infinite;
+      animation: loaderCarryCarrot 2.8s linear infinite;
     }
+    /* Starts completely off left edge (-80px) -> center (50%) -> completely off right edge (100% + 80px) */
     @keyframes loaderRunnerX {
-      0%   { transform: translateX(-165px); }
-      40%  { transform: translateX(-10px); }
-      54%  { transform: translateX(-10px); }
-      96%  { transform: translateX(175px); }
-      100% { transform: translateX(175px); }
+      0%   { left: -80px; }
+      40%  { left: 49%; }
+      54%  { left: 49%; }
+      96%  { left: calc(100% + 80px); }
+      100% { left: calc(100% + 80px); }
     }
+    /* Natural rabbit hop: crouch -> lean forward takeoff -> arc -> soft landing squash */
     @keyframes loaderBunnyHop {
-      0%, 14%, 28%, 40%, 54%, 68%, 82%, 96%, 100% { transform: translateY(0) scaleY(0.95) scaleX(1.04); }
-      7%, 21%, 34%, 61%, 75%, 89% { transform: translateY(-24px) scaleY(1.06) scaleX(0.95); }
-      47% { transform: translateY(-10px) scaleY(0.92) scaleX(1.08); }
+      0%, 13%, 27%, 40%, 54%, 68%, 82%, 96%, 100% { transform: translateY(0) scaleX(1.08) scaleY(0.88) rotate(0deg); }
+      3%, 17%, 31%, 58%, 72%, 86% { transform: translateY(-14px) scaleX(0.93) scaleY(1.10) rotate(9deg); }
+      7%, 21%, 34%, 61%, 75%, 89% { transform: translateY(-28px) scaleX(0.96) scaleY(1.05) rotate(2deg); }
+      10%, 24%, 37%, 65%, 79%, 93% { transform: translateY(-10px) scaleX(0.98) scaleY(1.03) rotate(-6deg); }
+      46% { transform: translateY(2px) scaleX(1.12) scaleY(0.84) rotate(6deg); }
+      50% { transform: translateY(-12px) scaleX(0.95) scaleY(1.08) rotate(-4deg); }
+    }
+    @keyframes loaderShadowPulse {
+      0%, 13%, 27%, 40%, 54%, 68%, 82%, 96%, 100% { transform: scaleX(1.12); opacity: 0.24; }
+      7%, 21%, 34%, 61%, 75%, 89% { transform: scaleX(0.62); opacity: 0.11; }
+      46% { transform: scaleX(1.18); opacity: 0.26; }
     }
     @keyframes loaderGroundCarrot {
-      0%, 44%  { opacity: 1; transform: translateX(-50%) scale(1); }
-      47%, 95% { opacity: 0; transform: translateX(-50%) scale(0.3); }
+      0%, 45%  { opacity: 1; transform: translateX(-50%) scale(1); }
+      48%, 95% { opacity: 0; transform: translateX(-50%) scale(0.3); }
       98%, 100%{ opacity: 1; transform: translateX(-50%) scale(1); }
     }
     @keyframes loaderCarryCarrot {
-      0%, 45%  { opacity: 0; transform: rotate(16deg) scale(0.4); }
-      48%, 96% { opacity: 1; transform: rotate(16deg) scale(1); }
+      0%, 46%  { opacity: 0; transform: rotate(16deg) scale(0.4); }
+      49%, 96% { opacity: 1; transform: rotate(16deg) scale(1); }
       100%     { opacity: 0; transform: rotate(16deg) scale(0.4); }
     }
     @keyframes loaderSparkle {
-      0%, 42%  { opacity: 0; transform: translateX(-50%) scale(0.2) rotate(0deg); }
+      0%, 43%  { opacity: 0; transform: translateX(-50%) scale(0.2) rotate(0deg); }
       50%      { opacity: 1; transform: translateX(-50%) scale(1.15) rotate(24deg); }
       60%, 100%{ opacity: 0; transform: translateX(-50%) scale(0.2) rotate(45deg); }
     }
+
+    /* Album Card Detail Interactive Bounce */
+    @keyframes cardInteractBounce {
+      0%   { transform: translateY(0) scale(1, 1) rotate(0deg); }
+      20%  { transform: translateY(4px) scale(1.14, 0.86) rotate(-5deg); }
+      48%  { transform: translateY(-24px) scale(0.94, 1.12) rotate(8deg); }
+      72%  { transform: translateY(-6px) scale(1.06, 0.94) rotate(-6deg); }
+      100% { transform: translateY(0) scale(1, 1) rotate(0deg); }
+    }
+    .is-card-interacting { animation: cardInteractBounce 0.56s cubic-bezier(0.34, 1.56, 0.64, 1) !important; }
+    @keyframes floatSparkPop {
+      0%   { opacity: 1; transform: translate(0, 0) scale(0.5); }
+      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(1.15) rotate(25deg); }
+    }
+    .card-fx-star { position: absolute; width: 22px; height: 22px; pointer-events: none; animation: floatSparkPop 0.65s ease-out forwards; }
   </style>
 </head>
 <body>
@@ -411,6 +441,7 @@
         <img class="loader-ground-carrot" src="assets/ui_carrot_single.png" alt="紅蘿蔔" />
         <img class="loader-sparkle" src="assets/ui_star.webp" alt="" />
         <div class="loader-runner">
+          <div class="loader-shadow"></div>
           <div class="loader-bunny-wrap">
             <img class="loader-bunny-img" src="assets/decoy_white.webp" alt="兔兔" />
             <img class="loader-carry-carrot" src="assets/ui_carrot_single.png" alt="" />
@@ -459,12 +490,12 @@
           收集 100 隻韓日繪本兔兔・草叢收服＆佈置後花園
         </p>
 
-        <!-- Bouncing Mascot Showcase -->
+        <!-- Bouncing Mascot Showcase (Tap any bunny to customize!) -->
         <div class="relative w-full max-w-[330px] h-40 mb-5 flex items-end justify-center gap-1">
-          <img id="home-b1" src="" alt="兔兔1" class="h-24 w-auto object-contain animate-bunny-hop drop-shadow-md" style="animation-delay:0s" />
-          <img id="home-b2" src="" alt="兔兔2" class="h-32 w-auto object-contain animate-bunny-hop drop-shadow-lg -mx-2 z-10" style="animation-delay:0.25s" />
-          <img id="home-b3" src="" alt="兔兔3" class="h-28 w-auto object-contain animate-bunny-hop drop-shadow-md" style="animation-delay:0.5s" />
-          <img id="home-b4" src="" alt="兔兔4" class="h-24 w-auto object-contain animate-bunny-hop drop-shadow-md -ml-2" style="animation-delay:0.75s" />
+          <img id="home-b1" data-slot="0" src="" alt="兔兔1" title="點擊更換首頁兔兔" class="home-mascot-slot cursor-pointer h-24 w-auto object-contain animate-bunny-hop drop-shadow-md active:scale-95" style="animation-delay:0s" />
+          <img id="home-b2" data-slot="1" src="" alt="兔兔2" title="點擊更換首頁兔兔" class="home-mascot-slot cursor-pointer h-32 w-auto object-contain animate-bunny-hop drop-shadow-lg -mx-2 z-10 active:scale-95" style="animation-delay:0.25s" />
+          <img id="home-b3" data-slot="2" src="" alt="兔兔3" title="點擊更換首頁兔兔" class="home-mascot-slot cursor-pointer h-28 w-auto object-contain animate-bunny-hop drop-shadow-md active:scale-95" style="animation-delay:0.5s" />
+          <img id="home-b4" data-slot="3" src="" alt="兔兔4" title="點擊更換首頁兔兔" class="home-mascot-slot cursor-pointer h-24 w-auto object-contain animate-bunny-hop drop-shadow-md -ml-2 active:scale-95" style="animation-delay:0.75s" />
         </div>
 
         <!-- Primary Navigation Buttons -->
@@ -549,14 +580,14 @@
           </div>
         </div>
 
-        <!-- Slim Target Mission Strip -->
-        <div class="flex items-center gap-1.5">
-          <div class="shrink-0 flex flex-col items-center leading-none pr-0.5">
+        <!-- Target Mission Strip (auto-wraps cleanly into 2 rows, zero horizontal scrolling or name clipping!) -->
+        <div class="flex items-start gap-1.5">
+          <div class="shrink-0 flex flex-col items-center leading-none pr-0.5 pt-1">
             <span id="hud-progress" class="text-[11px] font-black px-1.5 py-0.5 rounded-lg bg-[#FFEDD5] border border-[#C2410C]/30 text-[#C2410C]">0/3</span>
             <span id="hud-combo" class="hidden text-[9px] font-black text-[#D97706] mt-0.5">FEVER</span>
           </div>
-          <div id="target-list" class="flex-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5"></div>
-          <button id="btn-toggle-targets" type="button" class="shrink-0 text-[10px] font-black px-1.5 py-1 rounded-lg bg-[#EAD7C0] text-[#5A3A28]" title="展開/收起目標欄">▲</button>
+          <div id="target-list" class="flex-1 flex flex-wrap items-center gap-1 py-0.5"></div>
+          <button id="btn-toggle-targets" type="button" class="shrink-0 mt-0.5 text-[10px] font-black px-1.5 py-1 rounded-lg bg-[#EAD7C0] text-[#5A3A28]" title="展開/收起目標欄">▲</button>
         </div>
       </header>
 
@@ -926,8 +957,9 @@
           <span id="cd-theme" class="text-xs font-bold text-[#7C5A46]">野餐公園</span>
         </div>
 
-        <div id="cd-stage" class="bg-white/88 rounded-2xl border-2 border-[#5A3A28]/20 h-44 flex flex-col items-center justify-center relative mb-3 cursor-pointer">
-          <img id="cd-img" src="" alt="兔兔卡片" class="h-36 w-auto object-contain animate-bunny-hop drop-shadow-md" />
+        <div id="cd-stage" class="bg-white/88 rounded-2xl border-2 border-[#5A3A28]/20 h-44 flex flex-col items-center justify-center relative mb-3 cursor-pointer overflow-hidden">
+          <div id="cd-speech" class="hidden absolute top-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-[#FFF7ED] border border-[#D97706]/50 text-[11px] font-black text-[#9A3412] whitespace-nowrap shadow-xs z-20 animate-pop">好開心！</div>
+          <img id="cd-img" src="" alt="兔兔卡片" class="h-36 w-auto object-contain animate-bunny-hop drop-shadow-md select-none" />
           <span class="absolute bottom-1.5 right-2.5 text-[10px] font-bold text-[#8C6D5D] bg-[#FFF9F0] border border-[#5A3A28]/20 px-2 py-0.5 rounded-full">點一下互動</span>
         </div>
 
@@ -1029,6 +1061,19 @@
             </button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL: CUSTOMIZE HOME MASCOT (自訂首頁兔兔) ================= -->
+    <div id="modal-home-mascot" class="hidden absolute inset-0 z-50 bg-black/55 backdrop-blur-[2px] flex items-end sm:items-center justify-center p-3">
+      <div class="game-panel animate-pop w-full max-h-[84%] rounded-3xl px-4 pb-4 pt-6 flex flex-col relative">
+        <button id="btn-close-home-mascot" type="button" class="game-btn absolute top-2.5 right-2.5 rounded-xl w-9 h-9 flex items-center justify-center font-black z-30 text-sm">✕</button>
+        <div class="banner-header">
+          <img class="img-banner-ribbon" src="" alt="橫幅" />
+          <span class="banner-header-title">更換首頁兔兔</span>
+        </div>
+        <p class="shrink-0 text-[11px] font-bold text-[#8C6D5D] text-center mb-2.5">選擇你喜歡的兔兔放到首頁展示！</p>
+        <div id="home-mascot-grid" class="flex-1 min-h-0 grid grid-cols-3 gap-2 overflow-y-auto no-scrollbar pt-0.5 pb-2 content-start"></div>
       </div>
     </div>
   </div>
@@ -1553,6 +1598,7 @@
       ],
       gardenBunnies: [],
       gardenCoinReadyAt: {},
+      homeMascots: ['sp_strawberry', 'sp_farmer', 'sp_sakura', 'sp_macaron'],
       account: { bound: false, provider: '', nickname: '兔兔玩家', avatar: 'sp_strawberry' },
       levelsClearedTotal: 0,
       cardProgress: {},
@@ -1576,6 +1622,7 @@
           if (Array.isArray(parsed.gardenBunnies) && parsed.gardenBunnies.length > 0) saveData.gardenBunnies = parsed.gardenBunnies;
           else saveData.gardenBunnies = saveData.unlockedCards.slice(0, 10);
           if (parsed.gardenCoinReadyAt && typeof parsed.gardenCoinReadyAt === 'object') saveData.gardenCoinReadyAt = parsed.gardenCoinReadyAt;
+          if (Array.isArray(parsed.homeMascots) && parsed.homeMascots.length === 4) saveData.homeMascots = parsed.homeMascots;
           if (parsed.account && typeof parsed.account === 'object') saveData.account = { ...saveData.account, ...parsed.account };
           if (typeof parsed.levelsClearedTotal === 'number') saveData.levelsClearedTotal = parsed.levelsClearedTotal;
           if (parsed.cardProgress && typeof parsed.cardProgress === 'object') saveData.cardProgress = parsed.cardProgress;
@@ -1685,10 +1732,7 @@
       document.getElementById('img-home-bg').src = SPRITE_SRCS.bg_home_story;
       document.getElementById('img-account-avatar').src = SPRITE_SRCS[saveData.account.avatar || 'sp_strawberry'];
       updateHomeNotificationDots();
-      document.getElementById('home-b1').src = SPRITE_SRCS.sp_strawberry;
-      document.getElementById('home-b2').src = SPRITE_SRCS.ssr_cloud_ride;
-      document.getElementById('home-b3').src = SPRITE_SRCS.sp_sakura;
-      document.getElementById('home-b4').src = SPRITE_SRCS.sp_macaron;
+      renderHomeMascots();
 
       const classMap = {
         'img-coin-icon': SPRITE_SRCS.ui_coin,
@@ -2505,9 +2549,9 @@
       document.getElementById('cap-progress-text').textContent = `${capState.taps} / ${capState.needed} 下`;
 
       if (capState.taps >= capState.needed) {
-        // Rarity catch chance: N=100%, R=92%, SR=82%, SSR=65% (feels exciting like Pokemon GO!)
+        // Rarity catch chance: SSR=20%, SR=40%, R=65%, N=90%
         const meta = BUNNY_BY_ID[capState.cardId];
-        const chance = meta.rarity === 'SSR' ? 0.65 : meta.rarity === 'SR' ? 0.82 : meta.rarity === 'R' ? 0.92 : 1.0;
+        const chance = meta.rarity === 'SSR' ? 0.20 : meta.rarity === 'SR' ? 0.40 : meta.rarity === 'R' ? 0.65 : 0.90;
         finishCaptureAttempt(Math.random() <= chance);
       }
     }
@@ -3251,6 +3295,55 @@
       }
     }
 
+    const DEFAULT_HOME_MASCOTS = ['sp_strawberry', 'sp_farmer', 'sp_sakura', 'sp_macaron'];
+
+    function renderHomeMascots() {
+      const list = (Array.isArray(saveData.homeMascots) && saveData.homeMascots.length === 4)
+        ? saveData.homeMascots
+        : DEFAULT_HOME_MASCOTS;
+      list.forEach((id, i) => {
+        const el = document.getElementById(`home-b${i + 1}`);
+        if (!el) return;
+        const safeId = SPRITE_SRCS[id] ? id : DEFAULT_HOME_MASCOTS[i];
+        el.src = SPRITE_SRCS[safeId];
+        el.alt = BUNNY_BY_ID[safeId] ? BUNNY_BY_ID[safeId].name : `兔兔${i + 1}`;
+      });
+    }
+
+    function openHomeMascotPicker(slotIdx) {
+      const grid = document.getElementById('home-mascot-grid');
+      grid.innerHTML = '';
+      const currentId = (saveData.homeMascots && saveData.homeMascots[slotIdx]) || DEFAULT_HOME_MASCOTS[slotIdx];
+      const pool = [...new Set([...DEFAULT_HOME_MASCOTS, ...saveData.unlockedCards])].filter(id => BUNNY_BY_ID[id] && SPRITE_SRCS[id]);
+      pool.forEach((cid) => {
+        const b = BUNNY_BY_ID[cid];
+        const isSelected = cid === currentId;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `rounded-2xl border-2 p-2 flex flex-col items-center text-center transition-all active:scale-95 ${isSelected ? 'bg-[#FEF3C7] border-[#D97706]' : 'bg-white border-[#5A3A28]/20'}`;
+        btn.innerHTML = `
+          <div class="h-14 flex items-center justify-center mb-1">
+            <img src="${SPRITE_SRCS[cid]}" alt="${b.name}" class="max-h-14 w-auto object-contain" />
+          </div>
+          <div class="text-[11px] font-black text-[#5A3A28] line-clamp-1">${b.name}</div>
+          <div class="text-[9px] font-bold mt-0.5 ${isSelected ? 'text-[#B45309]' : 'text-[#9A7B69]'}">${isSelected ? '目前展示中' : '點擊更換'}</div>
+        `;
+        btn.addEventListener('click', () => {
+          if (!Array.isArray(saveData.homeMascots) || saveData.homeMascots.length !== 4) {
+            saveData.homeMascots = [...DEFAULT_HOME_MASCOTS];
+          }
+          saveData.homeMascots[slotIdx] = cid;
+          persistSave();
+          renderHomeMascots();
+          closeAllModals();
+          SFX.squeak();
+          showToast(`已更換為「${b.name}」！`);
+        });
+        grid.appendChild(btn);
+      });
+      document.getElementById('modal-home-mascot').classList.remove('hidden');
+    }
+
     function renderTargetBar() {
       const container = document.getElementById('target-list');
       container.innerHTML = '';
@@ -3258,15 +3351,13 @@
         const meta = BUNNY_BY_ID[tid], isFound = state.foundIds.has(tid);
         const chip = document.createElement('button');
         chip.type = 'button';
-        chip.className = `target-chip shrink-0 flex flex-col items-center justify-center rounded-xl px-1.5 py-1 ${isFound ? 'found' : ''}`;
-        chip.style.minWidth = '62px';
-        chip.style.maxWidth = '76px';
+        chip.className = `target-chip shrink-0 flex items-center gap-1 rounded-xl px-1.5 py-0.5 ${isFound ? 'found' : ''}`;
         chip.innerHTML = `
-          <div class="w-9 h-8 rounded-lg bg-[#FFF7ED] flex items-center justify-center overflow-hidden relative">
-            <img src="${SPRITE_SRCS[tid]}" alt="${meta.name}" class="h-7 w-auto object-contain" />
-            ${isFound ? '<span class="absolute inset-0 bg-[#22C55E]/75 text-white text-xs font-black flex items-center justify-center">✓</span>' : ''}
+          <div class="w-6 h-6 rounded-lg bg-[#FFF7ED] flex items-center justify-center overflow-hidden relative shrink-0">
+            <img src="${SPRITE_SRCS[tid]}" alt="${meta.name}" class="h-5 w-auto object-contain" />
+            ${isFound ? '<span class="absolute inset-0 bg-[#22C55E]/75 text-white text-[10px] font-black flex items-center justify-center">✓</span>' : ''}
           </div>
-          <span class="text-[9.5px] font-black leading-tight mt-0.5 truncate w-full text-center ${isFound ? 'line-through text-[#15803D]' : 'text-[#5A3A28]'}">${meta.name}</span>
+          <span class="text-[11px] font-black leading-none whitespace-nowrap ${isFound ? 'line-through text-[#15803D]' : 'text-[#5A3A28]'}">${meta.name}</span>
         `;
         chip.addEventListener('click', () => showToast(isFound ? `已找到「${meta.name}」` : `尋找目標：${meta.name}（${meta.rarity}）`));
         container.appendChild(chip);
@@ -3479,6 +3570,13 @@
         openCaptureMiniGame(capState.cardId);
       });
       document.getElementById('btn-home-sound').addEventListener('click', toggleSoundGlobal);
+      document.querySelectorAll('.home-mascot-slot').forEach(el => {
+        el.addEventListener('click', () => {
+          SFX.tap();
+          openHomeMascotPicker(Number(el.dataset.slot));
+        });
+      });
+      document.getElementById('btn-close-home-mascot').addEventListener('click', closeAllModals);
 
       // Play navigation
       document.getElementById('btn-play-home').addEventListener('click', () => switchView('home'));
@@ -3526,13 +3624,39 @@
       document.getElementById('btn-reveal-to-garden').addEventListener('click', () => closeNewCardReveal(true));
       document.getElementById('btn-reveal-continue').addEventListener('click', () => closeNewCardReveal(false));
 
-      // Card Detail
+      // Card Detail Interactive Tap (real bounce + speech bubble + hand-drawn star sparkles)
+      let cdSpeechTimer = null;
+      const CD_QUOTES = ['好開心！', '一起去後花園玩吧！', '紅蘿蔔最好吃！', '再摸我一下！', '最喜歡你了！', '跳高高！'];
       document.getElementById('btn-close-card-detail').addEventListener('click', () => document.getElementById('modal-card-detail').classList.add('hidden'));
       document.getElementById('cd-stage').addEventListener('click', () => {
         SFX.squeak();
+        const stage = document.getElementById('cd-stage');
         const img = document.getElementById('cd-img');
-        img.style.transform = 'scale(1.18) translateY(-10px)';
-        setTimeout(() => { img.style.transform = ''; }, 180);
+        const speech = document.getElementById('cd-speech');
+        img.classList.remove('is-card-interacting');
+        void img.offsetWidth;
+        img.classList.add('is-card-interacting');
+        setTimeout(() => img.classList.remove('is-card-interacting'), 580);
+
+        if (speech) {
+          speech.textContent = CD_QUOTES[Math.floor(Math.random() * CD_QUOTES.length)];
+          speech.classList.remove('hidden');
+          if (cdSpeechTimer) clearTimeout(cdSpeechTimer);
+          cdSpeechTimer = setTimeout(() => speech.classList.add('hidden'), 1300);
+        }
+        for (let i = 0; i < 5; i++) {
+          const star = document.createElement('img');
+          star.src = SPRITE_SRCS.ui_star;
+          star.className = 'card-fx-star';
+          const angle = (-Math.PI * 0.85) + (i / 4) * (Math.PI * 0.7) + (Math.random() - 0.5) * 0.25;
+          const dist = 48 + Math.random() * 34;
+          star.style.left = 'calc(50% - 11px)';
+          star.style.top = '52%';
+          star.style.setProperty('--tx', `${Math.round(Math.cos(angle) * dist)}px`);
+          star.style.setProperty('--ty', `${Math.round(Math.sin(angle) * dist)}px`);
+          stage.appendChild(star);
+          setTimeout(() => star.remove(), 680);
+        }
       });
       document.getElementById('btn-cd-toggle-garden').addEventListener('click', () => {
         if (!state.detailCardId) return;
@@ -3576,7 +3700,7 @@
 
 
       // Backdrop click closes any info/menu modal reliably!
-      ['modal-levels', 'modal-album', 'modal-card-detail', 'modal-shop', 'modal-bag', 'modal-garden-bunnies', 'modal-login', 'modal-quests', 'modal-checkin', 'modal-photo'].forEach(mid => {
+      ['modal-levels', 'modal-album', 'modal-card-detail', 'modal-shop', 'modal-bag', 'modal-garden-bunnies', 'modal-login', 'modal-quests', 'modal-checkin', 'modal-photo', 'modal-home-mascot'].forEach(mid => {
         const el = document.getElementById(mid);
         if (el) el.addEventListener('click', (ev) => {
           if (ev.target === el) {
@@ -3624,27 +3748,16 @@
       hydrateStaticUIImages();
       bindEvents();
       const splash = document.getElementById('logo-splash');
-      let splashDone = false, gameReady = false, loaderShownAt = 0, bootFinished = false;
-
-      const finishBoot = () => {
-        if (bootFinished || !splashDone || !gameReady) return;
-        const elapsed = Date.now() - loaderShownAt;
-        const waitMore = Math.max(0, 2200 - elapsed);
-        bootFinished = true;
-        setTimeout(() => {
-          showBunnyLoader('準備完成！', 100);
-          setTimeout(() => hideBunnyLoader(), 220);
-        }, waitMore);
-      };
+      let splashDone = false, gameReady = false, currentPct = 10;
 
       const leaveSplash = () => {
         if (splashDone) return;
         splashDone = true;
-        loaderShownAt = Date.now();
-        showBunnyLoader('正在準備兔兔樂園…', gameReady ? 100 : 25);
+        if (!gameReady) {
+          showBunnyLoader(`正在載入兔兔資源… ${currentPct}%`, currentPct);
+        }
         splash.classList.add('is-leaving');
         setTimeout(() => splash.remove(), 420);
-        finishBoot();
       };
 
       setTimeout(leaveSplash, 3100);
@@ -3652,7 +3765,10 @@
 
       preloadImages(
         (pct) => {
-          if (splashDone && !bootFinished) showBunnyLoader(`正在準備兔兔樂園… ${pct}%`, pct);
+          currentPct = pct;
+          if (splashDone && !gameReady) {
+            showBunnyLoader(`正在載入兔兔資源… ${pct}%`, pct);
+          }
         },
         () => {
           gameReady = true;
@@ -3661,7 +3777,7 @@
           lastFrameTime = performance.now();
           if (state.rafId) cancelAnimationFrame(state.rafId);
           state.rafId = requestAnimationFrame(mainLoop);
-          finishBoot();
+          hideBunnyLoader();
         }
       );
     };
