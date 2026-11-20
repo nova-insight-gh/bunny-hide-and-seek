@@ -1532,6 +1532,17 @@
       crop_bolobao: "assets/crop_bolobao.png",
       crop_pumpkin: "assets/crop_pumpkin.png",
       crop_macaron: "assets/crop_macaron.png",
+      farm_bed_empty: "assets/farm_bed_empty.png",
+      farm_bed_sprout: "assets/farm_bed_sprout.png",
+      farm_bed_strawberry: "assets/farm_bed_strawberry.png",
+      farm_bed_eggette: "assets/farm_bed_eggette.png",
+      farm_bed_watermelon: "assets/farm_bed_watermelon.png",
+      farm_bed_sakura: "assets/farm_bed_sakura.png",
+      farm_bed_milktea: "assets/farm_bed_milktea.png",
+      farm_bed_marshmallow: "assets/farm_bed_marshmallow.png",
+      farm_bed_bolobao: "assets/farm_bed_bolobao.png",
+      farm_bed_pumpkin: "assets/farm_bed_pumpkin.png",
+      farm_bed_macaron: "assets/farm_bed_macaron.png",
       bg_meadow: "assets/bg_meadow.webp",
       bg_sakura: "assets/bg_sakura.webp",
       bg_hk: "assets/bg_hk.webp",
@@ -4526,16 +4537,16 @@
     // 12B. PHASE 1 BUNNY FARM ENGINE (10特色作物 · 動態無限擴張 · 3格小幫手 · 市集)
     // =========================================================================
     const FARM_CROPS = [
-      { id: 'crop_carrot',      name: '新鮮紅蘿蔔',   unlockBunny: null,             growMin: 30,  seedCost: 10, sellPrice: 25,  img: 'crop_carrot',      tag: '30分鐘' },
-      { id: 'crop_strawberry',  name: '蜜糖草莓',     unlockBunny: 'sp_strawberry',  growMin: 45,  seedCost: 15, sellPrice: 38,  img: 'crop_strawberry',  tag: '45分鐘' },
-      { id: 'crop_eggette',     name: '金黃雞蛋仔',   unlockBunny: 'sp_eggette',     growMin: 60,  seedCost: 20, sellPrice: 52,  img: 'crop_eggette',     tag: '1小時' },
-      { id: 'crop_watermelon',  name: '冰涼大西瓜',   unlockBunny: 'b_watermelon',   growMin: 90,  seedCost: 28, sellPrice: 75,  img: 'crop_watermelon',  tag: '1.5小時' },
-      { id: 'crop_sakura',      name: '粉紅櫻花束',   unlockBunny: 'sp_sakura',      growMin: 120, seedCost: 35, sellPrice: 98,  img: 'crop_sakura',      tag: '2小時' },
-      { id: 'crop_milktea',     name: '港式絲襪奶茶', unlockBunny: 'sp_milktea',     growMin: 180, seedCost: 45, sellPrice: 135, img: 'crop_milktea',     tag: '3小時' },
-      { id: 'crop_marshmallow', name: '營火烤棉花糖', unlockBunny: 'sp_marshmallow', growMin: 210, seedCost: 50, sellPrice: 155, img: 'crop_marshmallow', tag: '3.5小時' },
-      { id: 'crop_bolobao',     name: '冰火菠蘿油',   unlockBunny: 'sp_bolobao',     growMin: 240, seedCost: 60, sellPrice: 190, img: 'crop_bolobao',     tag: '4小時' },
-      { id: 'crop_pumpkin',     name: '秋日黃金南瓜', unlockBunny: 'b_pumpkin',      growMin: 300, seedCost: 75, sellPrice: 245, img: 'crop_pumpkin',     tag: '5小時' },
-      { id: 'crop_macaron',     name: '彩虹馬卡龍',   unlockBunny: 'sp_macaron',     growMin: 360, seedCost: 95, sellPrice: 320, img: 'crop_macaron',     tag: '6小時' }
+      { id: 'crop_carrot',      name: '新鮮紅蘿蔔',   unlockBunny: null,             growMin: 30,  seedCost: 10, sellPrice: 25,  img: 'dec_carrot_patch',    bedImg: 'dec_carrot_patch',    tag: '30分鐘' },
+      { id: 'crop_strawberry',  name: '蜜糖草莓',     unlockBunny: 'sp_strawberry',  growMin: 45,  seedCost: 15, sellPrice: 38,  img: 'farm_bed_strawberry', bedImg: 'farm_bed_strawberry', tag: '45分鐘' },
+      { id: 'crop_eggette',     name: '金黃雞蛋仔',   unlockBunny: 'sp_eggette',     growMin: 60,  seedCost: 20, sellPrice: 52,  img: 'farm_bed_eggette',    bedImg: 'farm_bed_eggette',    tag: '1小時' },
+      { id: 'crop_watermelon',  name: '冰涼大西瓜',   unlockBunny: 'b_watermelon',   growMin: 90,  seedCost: 28, sellPrice: 75,  img: 'farm_bed_watermelon', bedImg: 'farm_bed_watermelon', tag: '1.5小時' },
+      { id: 'crop_sakura',      name: '粉紅櫻花束',   unlockBunny: 'sp_sakura',      growMin: 120, seedCost: 35, sellPrice: 98,  img: 'farm_bed_sakura',     bedImg: 'farm_bed_sakura',     tag: '2小時' },
+      { id: 'crop_milktea',     name: '港式絲襪奶茶', unlockBunny: 'sp_milktea',     growMin: 180, seedCost: 45, sellPrice: 135, img: 'farm_bed_milktea',    bedImg: 'farm_bed_milktea',    tag: '3小時' },
+      { id: 'crop_marshmallow', name: '營火烤棉花糖', unlockBunny: 'sp_marshmallow', growMin: 210, seedCost: 50, sellPrice: 155, img: 'farm_bed_marshmallow',bedImg: 'farm_bed_marshmallow',tag: '3.5小時' },
+      { id: 'crop_bolobao',     name: '冰火菠蘿油',   unlockBunny: 'sp_bolobao',     growMin: 240, seedCost: 60, sellPrice: 190, img: 'farm_bed_bolobao',    bedImg: 'farm_bed_bolobao',    tag: '4小時' },
+      { id: 'crop_pumpkin',     name: '秋日黃金南瓜', unlockBunny: 'b_pumpkin',      growMin: 300, seedCost: 75, sellPrice: 245, img: 'farm_bed_pumpkin',    bedImg: 'farm_bed_pumpkin',    tag: '5小時' },
+      { id: 'crop_macaron',     name: '彩虹馬卡龍',   unlockBunny: 'sp_macaron',     growMin: 360, seedCost: 95, sellPrice: 320, img: 'farm_bed_macaron',    bedImg: 'farm_bed_macaron',    tag: '6小時' }
     ];
     const FARM_CROP_BY_ID = Object.fromEntries(FARM_CROPS.map(c => [c.id, c]));
 
@@ -4672,47 +4683,45 @@
       const nowMs = Date.now();
       const tSec = now / 1000;
 
-      // Cozy wooden-fenced farm pasture backdrop
+      // Soft airy pasture border (lets the round wooden planter beds sit naturally on the grass!)
       c.save();
-      c.fillStyle = 'rgba(248, 240, 220, 0.48)';
-      c.strokeStyle = '#9C724E';
-      c.lineWidth = 5;
-      roundRect(c, fl.zoneX, fl.zoneY, fl.zoneW, fl.zoneH, 24);
+      c.fillStyle = 'rgba(255, 250, 236, 0.24)';
+      c.strokeStyle = 'rgba(156, 114, 78, 0.55)';
+      c.lineWidth = 3.5;
+      c.setLineDash([10, 7]);
+      roundRect(c, fl.zoneX, fl.zoneY, fl.zoneW, fl.zoneH, 28);
       c.fill(); c.stroke();
+      c.setLineDash([]);
 
-      // Cute wooden fence posts along top & bottom border
-      c.fillStyle = '#B88960';
-      c.strokeStyle = '#5A3A28';
-      c.lineWidth = 2;
-      for (let fx = fl.zoneX + 18; fx <= fl.zoneX + fl.zoneW - 18; fx += 38) {
-        roundRect(c, fx - 4, fl.zoneY - 8, 8, 16, 3); c.fill(); c.stroke();
-        roundRect(c, fx - 4, fl.zoneY + fl.zoneH - 8, 8, 16, 3); c.fill(); c.stroke();
-      }
-
-      // Draw each big farm plot
       for (const s of fl.slots) {
+        const cx = s.x + s.w / 2, cy = s.y + s.h / 2;
         if (s.locked) {
           const req = getNextPlotRequirement(s.idx);
           const canFree = saveData.unlockedCards.length >= req.reqBunnies;
-          c.fillStyle = canFree ? 'rgba(232, 248, 242, 0.86)' : 'rgba(232, 214, 190, 0.78)';
+          const emptyBed = IMAGES.farm_bed_empty;
+          if (emptyBed && emptyBed.complete && emptyBed.naturalWidth > 0) {
+            c.save();
+            c.globalAlpha = canFree ? 0.65 : 0.45;
+            c.drawImage(emptyBed, s.x - 2, s.y - 2, s.w + 4, s.h + 4);
+            c.restore();
+          }
+          // Cozy pastel unlock badge
+          c.fillStyle = canFree ? 'rgba(232, 248, 242, 0.94)' : 'rgba(255, 249, 240, 0.92)';
           c.strokeStyle = canFree ? '#52A88B' : '#9C7A5C';
-          c.lineWidth = 3;
-          c.setLineDash([6, 4]);
-          roundRect(c, s.x, s.y, s.w, s.h, 18);
+          c.lineWidth = 2.2;
+          roundRect(c, s.x + 6, cy - 28, s.w - 12, 56, 14);
           c.fill(); c.stroke();
-          c.setLineDash([]);
 
-          c.fillStyle = canFree ? '#2D6A54' : '#6B4F40';
-          c.font = '900 13px "Noto Sans TC", sans-serif';
-          c.textAlign = 'center';
-          c.textBaseline = 'middle';
-          c.fillText(canFree ? '可免費開墾！' : '開墾新農地', s.x + s.w / 2, s.y + s.h * 0.36);
-          c.font = '700 11px "Noto Sans TC", sans-serif';
+          c.fillStyle = canFree ? '#2D6A54' : '#5A3A28';
+          c.font = '900 12px "Noto Sans TC", sans-serif';
+          c.textAlign = 'center'; c.textBaseline = 'middle';
+          c.fillText(canFree ? '可免費開墾！' : '開墾新農地', cx, cy - 12);
+          c.font = '700 10px "Noto Sans TC", sans-serif';
           c.fillStyle = canFree ? '#52A88B' : '#8C6D5D';
-          c.fillText(canFree ? '點擊立即解鎖' : `收滿${req.reqBunnies}隻免費`, s.x + s.w / 2, s.y + s.h * 0.56);
+          c.fillText(canFree ? '點擊立即解鎖' : `收滿${req.reqBunnies}隻免費`, cx, cy + 4);
           if (!canFree) {
             c.fillStyle = '#B45309';
-            c.fillText(`或 ${req.coinCost} 幣開墾`, s.x + s.w / 2, s.y + s.h * 0.74);
+            c.fillText(`或 ${req.coinCost} 幣開墾`, cx, cy + 18);
           }
           continue;
         }
@@ -4720,65 +4729,58 @@
         const p = saveData.farm.plots[s.idx];
         const isReady = p && nowMs >= p.readyAt;
 
-        // Warm watercolor soil plot tile
-        c.fillStyle = isReady ? '#D6B189' : '#C9A27B';
-        c.strokeStyle = isReady ? '#52A88B' : '#7D583B';
-        c.lineWidth = isReady ? 3.5 : 2.5;
-        roundRect(c, s.x, s.y, s.w, s.h, 18);
-        c.fill(); c.stroke();
-
-        // Soft soil furrow lines
-        c.strokeStyle = 'rgba(90, 58, 40, 0.16)';
-        c.lineWidth = 2;
-        for (let r = 1; r <= 3; r++) {
-          const fy = s.y + (s.h / 4) * r;
-          c.beginPath(); c.moveTo(s.x + 14, fy); c.lineTo(s.x + s.w - 14, fy); c.stroke();
-        }
+        // Soft grass shadow under round wooden bed
+        c.fillStyle = 'rgba(60, 40, 25, 0.20)';
+        c.beginPath();
+        c.ellipse(cx, s.y + s.h - 2, s.w * 0.46, 10, 0, 0, Math.PI * 2);
+        c.fill();
 
         if (!p) {
-          // Empty plot prompt
-          c.fillStyle = 'rgba(255, 250, 240, 0.85)';
-          roundRect(c, s.x + 16, s.y + s.h / 2 - 14, s.w - 32, 28, 12);
-          c.fill();
-          c.fillStyle = '#6B4F40';
-          c.font = '900 12px "Noto Sans TC", sans-serif';
+          const emptyBed = IMAGES.farm_bed_empty;
+          if (emptyBed && emptyBed.complete && emptyBed.naturalWidth > 0) {
+            c.drawImage(emptyBed, s.x - 3, s.y - 3, s.w + 6, s.h + 6);
+          }
+          c.fillStyle = 'rgba(255, 250, 240, 0.90)';
+          c.strokeStyle = 'rgba(90, 58, 40, 0.35)';
+          c.lineWidth = 1.5;
+          roundRect(c, s.x + 14, cy - 13, s.w - 28, 26, 13);
+          c.fill(); c.stroke();
+          c.fillStyle = '#5A3A28';
+          c.font = '900 11px "Noto Sans TC", sans-serif';
           c.textAlign = 'center'; c.textBaseline = 'middle';
-          c.fillText('+ 點擊播種', s.x + s.w / 2, s.y + s.h / 2);
+          c.fillText('+ 點擊播種', cx, cy);
         } else if (isReady) {
           const crop = FARM_CROP_BY_ID[p.cropId];
-          const img = crop ? IMAGES[crop.img] : null;
-          const bob = Math.sin(tSec * 4.5 + s.idx) * 3.5;
-          if (img && img.complete && img.naturalWidth > 0) {
-            const sz = s.w * 0.74;
-            c.drawImage(img, s.x + (s.w - sz) / 2, s.y + 12 + bob, sz, sz);
+          const bedImg = crop ? IMAGES[crop.bedImg] : IMAGES.dec_carrot_patch;
+          const bob = Math.sin(tSec * 4.5 + s.idx) * 2.5;
+          if (bedImg && bedImg.complete && bedImg.naturalWidth > 0) {
+            c.drawImage(bedImg, s.x - 4, s.y - 4 + bob * 0.4, s.w + 8, s.h + 8);
           }
-          // Pastel mint "可收成" pill at top
+          // Pastel mint "可收成" floating pill
           c.fillStyle = '#E8F8F2';
           c.strokeStyle = '#52A88B';
           c.lineWidth = 2;
-          roundRect(c, s.x + 16, s.y - 10 + bob * 0.5, s.w - 32, 22, 11);
+          roundRect(c, s.x + 16, s.y - 10 + bob, s.w - 32, 22, 11);
           c.fill(); c.stroke();
           c.fillStyle = '#2D6A54';
           c.font = '900 11px "Noto Sans TC", sans-serif';
           c.textAlign = 'center'; c.textBaseline = 'middle';
-          c.fillText('可收成', s.x + s.w / 2, s.y + 1 + bob * 0.5);
+          c.fillText('可收成', cx, s.y + 1 + bob);
         } else {
-          // Growing sprout + baby blue countdown pill
-          const sprout = IMAGES.crop_sprout;
-          if (sprout && sprout.complete && sprout.naturalWidth > 0) {
-            const sz = s.w * 0.58;
-            c.drawImage(sprout, s.x + (s.w - sz) / 2, s.y + 8, sz, sz);
+          const sproutBed = IMAGES.farm_bed_sprout;
+          if (sproutBed && sproutBed.complete && sproutBed.naturalWidth > 0) {
+            c.drawImage(sproutBed, s.x - 3, s.y - 3, s.w + 6, s.h + 6);
           }
           const rem = Math.max(0, p.readyAt - nowMs);
           c.fillStyle = '#EDF6FC';
           c.strokeStyle = '#6CA6D9';
           c.lineWidth = 2;
-          roundRect(c, s.x + 12, s.y + s.h - 28, s.w - 24, 22, 11);
+          roundRect(c, s.x + 12, s.y + s.h - 24, s.w - 24, 22, 11);
           c.fill(); c.stroke();
           c.fillStyle = '#3B6E9C';
           c.font = '900 11px "Noto Sans TC", sans-serif';
           c.textAlign = 'center'; c.textBaseline = 'middle';
-          c.fillText(formatFarmCountdown(rem), s.x + s.w / 2, s.y + s.h - 17);
+          c.fillText(formatFarmCountdown(rem), cx, s.y + s.h - 13);
         }
       }
       c.restore();
