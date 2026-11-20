@@ -113,7 +113,7 @@
     .game-btn-pink   { --plate: url('assets/ui_btn/pink_fresh.png'); }
     .game-btn-coral  { --plate: url('assets/ui_btn/pink_fresh.png'); }
     .game-btn-mint   { --plate: url('assets/ui_btn/mint_fresh.png'); }
-    .game-btn-gold   { --plate: url('assets/ui_btn/gold.webp'); }
+    .game-btn-gold   { --plate: url('assets/ui_btn/gold_fresh.png'); }
     .game-btn-orange { --plate: url('assets/ui_btn/orange.webp'); color: #FFFAF2; text-shadow: 0 1px 2px rgba(110, 52, 22, 0.5); }
     #btn-home-garden, #btn-home-album { color: #5A3A28; }
     #home-garden-sub { color: #3A7D5C; }
@@ -393,7 +393,7 @@
             <button id="btn-home-garden" type="button" class="game-btn game-btn-mint py-3 px-2 rounded-3xl flex flex-col items-center justify-center gap-1 text-sm font-black">
               <img class="img-garden-icon w-9 h-9 object-contain drop-shadow-xs" src="" alt="後花園" />
               <span>兔兔後花園</span>
-              <span id="home-garden-sub" class="text-[10px] font-bold">佈置＆摸兔兔</span>
+              <span id="home-garden-sub" class="text-[10px] font-bold">打造專屬兔兔樂園</span>
             </button>
             <button id="btn-home-album" type="button" class="game-btn game-btn-pink py-3 px-2 rounded-3xl flex flex-col items-center justify-center gap-1 text-sm font-black">
               <img class="img-album-icon w-9 h-9 object-contain drop-shadow-xs" src="" alt="圖鑑" />
@@ -483,7 +483,7 @@
         <div id="golden-alert" class="hidden pointer-events-none absolute top-2.5 left-1/2 -translate-x-1/2 z-20 w-[92%] max-w-[360px]">
           <div class="game-btn game-btn-gold rounded-full px-3 py-1.5 flex items-center justify-center gap-1.5 text-xs font-black text-[#713F12] shadow-lg animate-bounce">
             <img class="img-star-icon w-4 h-4 object-contain" src="" alt="閃光" />
-            <span id="golden-alert-text">閃光逃走兔出現！捉住送金幣同新卡！</span>
+            <span id="golden-alert-text">閃光逃走兔出現！捉住可得金幣與新卡！</span>
           </div>
         </div>
 
@@ -511,21 +511,21 @@
     </section>
 
     <!-- ===================================================================== -->
-    <!-- VIEW 3: INTERACTIVE TILE-GRID BUNNY GARDEN (6×7 格子砌花園)             -->
+    <!-- VIEW 3: INTERACTIVE EXPANDABLE BUNNY GARDEN (10×12 兔兔樂園)          -->
     <!-- ===================================================================== -->
     <section id="view-garden" class="screen-view hidden">
       <header class="game-hud-bar shrink-0 z-20 pl-12 pr-2.5 py-2 flex items-center justify-between gap-2">
         <div class="leading-tight min-w-0">
           <div class="text-sm font-black text-[#5A3A28] truncate">夢幻兔兔後花園</div>
-          <div id="garden-status-sub" class="text-[10px] font-bold text-[#7C5A46] truncate">兔兔會圍住紅蘿蔔同草地轉圈圈！</div>
+          <div id="garden-status-sub" class="text-[10px] font-bold text-[#7C5A46] truncate">拖曳探索大草地，自由佈置專屬兔兔樂園！</div>
         </div>
         <div class="flex items-center gap-1.5 shrink-0">
           <div class="game-btn game-btn-gold rounded-2xl px-2 py-1 flex items-center gap-1 text-xs font-black text-[#6B3E08]">
             <img class="img-coin-icon w-4 h-4 object-contain" src="" alt="金幣" />
             <span class="coin-display tabular-nums">150</span>
           </div>
-          <button id="btn-garden-photo" type="button" class="game-btn game-btn-pink rounded-xl px-2 py-1 text-[11px] font-black text-[#831843]">
-            影相
+          <button id="btn-garden-photo" type="button" class="game-btn game-btn-pink rounded-xl px-2 py-1 text-[11px] font-black text-[#5A3A28]">
+            拍照
           </button>
         </div>
       </header>
@@ -536,7 +536,7 @@
         <!-- Grid Build Mode Palette Strip (appears cleanly above bottom dock) -->
         <div id="garden-build-bar" class="hidden absolute inset-x-2 bottom-16 z-20 game-panel rounded-2xl p-2 flex flex-col gap-1.5">
           <div class="flex items-center justify-between px-1">
-            <span class="text-[11px] font-black text-[#5A3A28]">點選道具後，點草地格子一格一格砌（點已擺格可收回）</span>
+            <span class="text-[11px] font-black text-[#5A3A28]">選擇擺設後，點擊草地放置（再次點擊可收回）</span>
             <button id="btn-garden-build-done" type="button" class="text-[10px] font-black px-2 py-0.5 rounded-lg bg-[#F97316] text-white">完成</button>
           </div>
           <div id="garden-palette-list" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5"></div>
@@ -549,7 +549,7 @@
             <span>主頁</span>
           </button>
           <div class="pointer-events-auto flex items-center gap-1.5">
-            <button id="btn-garden-bunnies" type="button" class="game-btn game-btn-pink rounded-2xl px-2.5 py-2 flex items-center gap-1 text-xs font-black text-[#831843]">
+            <button id="btn-garden-bunnies" type="button" class="game-btn game-btn-pink rounded-2xl px-2.5 py-2 flex items-center gap-1 text-xs font-black text-[#5A3A28]">
               <img class="img-album-icon w-5 h-5 object-contain" src="" alt="放兔兔" />
               <span>放兔兔</span>
             </button>
@@ -557,9 +557,9 @@
               <img class="img-shop-icon w-5 h-5 object-contain" src="" alt="商店" />
               <span>商店</span>
             </button>
-            <button id="btn-garden-bag" type="button" class="game-btn game-btn-mint rounded-2xl px-2.5 py-2 flex items-center gap-1 text-xs font-black text-[#14532D]">
-              <img class="img-garden-icon w-5 h-5 object-contain" src="" alt="砌格子" />
-              <span>砌格子</span>
+            <button id="btn-garden-bag" type="button" class="game-btn game-btn-mint rounded-2xl px-2.5 py-2 flex items-center gap-1 text-xs font-black text-[#5A3A28]">
+              <img class="img-garden-icon w-5 h-5 object-contain" src="" alt="佈置" />
+              <span>佈置</span>
             </button>
           </div>
         </div>
@@ -592,7 +592,7 @@
                 <img class="img-album-icon w-16 h-16 object-contain animate-bunny-hop" src="" alt="卡背" />
               </div>
               <div class="text-base font-black text-[#5A3A28] mb-1">點一下翻開新卡</div>
-              <div class="text-xs font-bold text-[#8C6D5D]">睇下搵到邊隻可愛兔兔！</div>
+              <div class="text-xs font-bold text-[#8C6D5D]">看看找到哪隻可愛兔兔！</div>
             </div>
 
             <!-- Card Front (Hand-drawn Bunny Card) -->
@@ -615,12 +615,12 @@
 
       <!-- Actions shown once flipped -->
       <div id="reveal-actions" class="hidden w-full max-w-[280px] flex flex-col gap-2 mt-4 animate-pop">
-        <button id="btn-reveal-to-garden" type="button" class="game-btn game-btn-mint w-full py-2.5 rounded-2xl text-xs font-black text-[#14532D] flex items-center justify-center gap-1.5">
+        <button id="btn-reveal-to-garden" type="button" class="game-btn game-btn-mint w-full py-2.5 rounded-2xl text-xs font-black text-[#5A3A28] flex items-center justify-center gap-1.5">
           <img class="img-garden-icon w-5 h-5 object-contain" src="" alt="後花園" />
-          <span>放埋入兔兔後花園！</span>
+          <span>邀請到兔兔後花園！</span>
         </button>
         <button id="btn-reveal-continue" type="button" class="game-btn game-btn-orange w-full py-2.5 rounded-2xl text-sm font-black">
-          收進圖鑑・繼續搵兔兔
+          收進圖鑑・繼續找兔兔
         </button>
       </div>
     </div>
@@ -636,7 +636,7 @@
         <!-- Clear High-Contrast Header Row -->
         <div class="flex items-center justify-center gap-1.5 mb-2 flex-wrap">
           <span id="cap-rarity-badge" class="px-2.5 py-0.5 rounded-full text-xs font-black text-white bg-[#C47F17]">SSR</span>
-          <span id="cap-bunny-hint" class="text-xs font-black text-[#4A2E1D] leading-snug">狂撳草叢引兔兔出嚟！</span>
+          <span id="cap-bunny-hint" class="text-xs font-black text-[#4A2E1D] leading-snug">連點草叢吸引兔兔出來！</span>
         </div>
 
         <!-- Countdown Bar -->
@@ -646,7 +646,7 @@
 
         <!-- Bold Tap Prompt ABOVE the bush (never overlaps!) -->
         <div id="cap-tap-hint" class="inline-block mb-2 px-3.5 py-1 rounded-full bg-[#FFFDF8] border-2 border-[#D97706] text-xs font-black text-[#9A3412] animate-bounce">
-          👇 狂撳下面草叢引兔兔出嚟！ 👇
+          👇 連點下方草叢吸引兔兔出來！ 👇
         </div>
 
         <!-- Interactive Shaking Bush Stage -->
@@ -673,12 +673,12 @@
             <img class="img-coin-icon w-4 h-4 object-contain" src="" alt="幣" />
             <span>用 20 金幣餵紅蘿蔔再引一次！</span>
           </button>
-          <button id="btn-cap-add-garden" type="button" class="hidden game-btn game-btn-mint w-full py-2.5 rounded-2xl text-xs font-black text-[#14532D] flex items-center justify-center gap-1.5">
+          <button id="btn-cap-add-garden" type="button" class="hidden game-btn game-btn-mint w-full py-2.5 rounded-2xl text-xs font-black text-[#5A3A28] flex items-center justify-center gap-1.5">
             <img class="img-garden-icon w-4 h-4 object-contain" src="" alt="花園" />
-            <span>邀請兔兔入後花園玩！</span>
+            <span>邀請兔兔進後花園玩耍！</span>
           </button>
           <button id="btn-cap-done" type="button" class="game-btn game-btn-orange w-full py-2.5 rounded-2xl text-sm font-black">
-            繼續搵兔兔
+            繼續找兔兔
           </button>
         </div>
       </div>
@@ -735,7 +735,7 @@
           <img class="img-banner-ribbon" src="" alt="橫幅" />
           <span class="banner-header-title">玩家暱稱</span>
         </div>
-        <p id="login-status-desc" class="text-xs font-bold text-[#7C5A46] mb-3">改個名，紀念相同花園都會用呢個暱稱！</p>
+        <p id="login-status-desc" class="text-xs font-bold text-[#7C5A46] mb-3">取個名字，紀念相片和花園都會顯示這個暱稱！</p>
 
         <div class="bg-white/90 rounded-2xl border-2 border-[#5A3A28]/15 p-3 mb-3 text-left">
           <label for="input-nickname" class="block text-[11px] font-black text-[#5A3A28] mb-1">玩家暱稱</label>
@@ -748,7 +748,7 @@
             儲存暱稱
           </button>
         </div>
-        <p class="text-[10px] font-bold text-[#9A7B69]">遊戲進度只會儲存喺呢部裝置。清除瀏覽器資料或者換機，進度會消失。</p>
+        <p class="text-[10px] font-bold text-[#9A7B69]">遊戲進度僅儲存在此裝置，清除瀏覽器資料或更換裝置時進度將會重置。</p>
       </div>
     </div>
 
@@ -779,7 +779,7 @@
           <img class="img-banner-ribbon" src="" alt="橫幅" />
           <span class="banner-header-title">我的花園倉庫</span>
         </div>
-        <p class="shrink-0 text-[11px] font-bold text-[#8C6D5D] text-center mb-2.5">點選已購買嘅道具即可擺入花園自由拖曳</p>
+        <p class="shrink-0 text-[11px] font-bold text-[#8C6D5D] text-center mb-2.5">點選已購買的擺設，即可放入花園自由佈置</p>
         <div id="bag-grid" class="flex-1 min-h-0 grid grid-cols-2 gap-2.5 overflow-y-auto no-scrollbar pt-0.5 pb-2 content-start"></div>
       </div>
     </div>
@@ -792,7 +792,7 @@
           <img class="img-banner-ribbon" src="" alt="橫幅" />
           <span class="banner-header-title">邀請兔兔入花園</span>
         </div>
-        <p class="shrink-0 text-[11px] font-bold text-[#8C6D5D] text-center mb-2.5">點一下你解鎖咗嘅兔仔卡，決定邊隻出嚟花園玩！</p>
+        <p class="shrink-0 text-[11px] font-bold text-[#8C6D5D] text-center mb-2.5">點擊已解鎖的兔兔卡，選擇要邀請進花園玩耍的兔兔！</p>
         <div id="garden-bunnies-grid" class="flex-1 min-h-0 grid grid-cols-3 gap-2 overflow-y-auto no-scrollbar pt-0.5 pb-2 content-start"></div>
       </div>
     </div>
@@ -878,7 +878,7 @@
         <div class="flex justify-center mb-2">
           <img class="img-clock-icon w-16 h-16 object-contain animate-bunny-hop" src="" alt="鬧鐘" />
         </div>
-        <p id="timeout-subtitle" class="text-xs font-bold text-[#7C5A46] mb-4">仲差 1 隻兔兔就可以過關解鎖可愛卡！</p>
+        <p id="timeout-subtitle" class="text-xs font-bold text-[#7C5A46] mb-4">還差 1 隻兔兔就能過關解鎖可愛卡！</p>
         <div class="flex flex-col gap-2.5">
           <button id="btn-revive-ad" type="button" class="game-btn game-btn-orange w-full py-3 rounded-2xl font-black text-sm flex items-center justify-center gap-2">
             <img class="img-coin-icon w-6 h-6 object-contain" src="" alt="金幣" />
@@ -932,13 +932,13 @@
             挑戰下一關
           </button>
           <div class="grid grid-cols-2 gap-2">
-            <button id="btn-clear-garden" type="button" class="game-btn game-btn-mint py-2 rounded-2xl text-[#14532D] font-black text-xs flex items-center justify-center gap-1">
+            <button id="btn-clear-garden" type="button" class="game-btn game-btn-mint py-2 rounded-2xl text-[#5A3A28] font-black text-xs flex items-center justify-center gap-1">
               <img class="img-garden-icon w-4 h-4 object-contain" src="" alt="後花園" />
-              <span>去後花園買嘢</span>
+              <span>逛花園商店</span>
             </button>
-            <button id="btn-clear-album" type="button" class="game-btn game-btn-pink py-2 rounded-2xl text-[#9F1239] font-black text-xs flex items-center justify-center gap-1">
+            <button id="btn-clear-album" type="button" class="game-btn game-btn-pink py-2 rounded-2xl text-[#5A3A28] font-black text-xs flex items-center justify-center gap-1">
               <img class="img-album-icon w-4 h-4 object-contain" src="" alt="圖鑑" />
-              <span>睇可愛卡</span>
+              <span>查看圖鑑</span>
             </button>
           </div>
         </div>
@@ -1457,12 +1457,12 @@
       coins: 180,
       ownedDecor: { dec_carrot_patch: 2, dec_clover_grass: 2, dec_soil_path: 2, dec_teatable: 1 },
       gardenGrid: [
-        { col: 2, row: 2, id: 'dec_carrot_patch' },
-        { col: 3, row: 2, id: 'dec_clover_grass' },
-        { col: 2, row: 3, id: 'dec_soil_path' },
-        { col: 3, row: 3, id: 'dec_soil_path' },
-        { col: 4, row: 4, id: 'dec_teatable' },
-        { col: 1, row: 4, id: 'dec_clover_grass' }
+        { col: 4, row: 4, id: 'dec_carrot_patch' },
+        { col: 5, row: 4, id: 'dec_clover_grass' },
+        { col: 4, row: 5, id: 'dec_soil_path' },
+        { col: 5, row: 5, id: 'dec_soil_path' },
+        { col: 6, row: 6, id: 'dec_teatable' },
+        { col: 3, row: 6, id: 'dec_clover_grass' }
       ],
       gardenBunnies: [],
       account: { bound: false, provider: '', nickname: '兔兔玩家', avatar: 'sp_strawberry' },
@@ -1529,12 +1529,18 @@
       rafId: null
     };
 
-    // Garden Live State
+    // Garden Live State (10x12 expandable meadow with smooth pan & zoom)
     const gardenState = {
       editMode: false,
       bunnies: [], // animated bunny instances visiting garden
       particles: [],
       floatingTexts: [],
+      camX: 390,
+      camY: 460,
+      zoom: 1.0,
+      minZoom: 0.58,
+      maxZoom: 1.75,
+      initializedCam: false,
       draggingDecorUid: null,
       dragOffsetX: 0,
       dragOffsetY: 0
@@ -1542,6 +1548,8 @@
 
     const pointers = new Map();
     let dragStart = null, isDragging = false, pinchStartDist = 0, pinchStartZoom = 1;
+    const gardenPointers = new Map();
+    let gDragStart = null, gIsDragging = false, gPinchDist = 0, gPinchZoom = 1;
 
     // =========================================================================
     // 7. NAVIGATION & SHARED UI HYDRATION
@@ -1560,6 +1568,8 @@
       } else if (viewName === 'garden') {
         state.paused = true;
         BGM.playTheme('park');
+        if (!gardenState.initializedCam) { centerGardenCamera(); gardenState.initializedCam = true; }
+        else clampGardenCamera();
         rebuildGardenBunnies();
         syncGlobalCounters();
       } else if (viewName === 'play') {
@@ -1575,7 +1585,7 @@
       document.querySelectorAll('.album-count-display').forEach(el => { el.textContent = `${saveData.unlockedCards.length}/${BUNNY_CATALOG.length}`; });
       document.getElementById('home-album-sub').textContent = `已收集 ${saveData.unlockedCards.length}/${BUNNY_CATALOG.length}`;
       const gCount = saveData.gardenBunnies.length;
-      document.getElementById('home-garden-sub').textContent = gCount > 0 ? `${gCount} 隻兔兔圍圈玩緊` : '砌格子＆摸兔兔';
+      document.getElementById('home-garden-sub').textContent = gCount > 0 ? `${gCount} 隻兔兔玩耍中` : '打造專屬兔兔樂園';
       document.getElementById('home-account-label').textContent = saveData.account.nickname || '設定暱稱';
       document.getElementById('img-account-avatar').src = SPRITE_SRCS[saveData.account.avatar || 'sp_strawberry'];
       updateHomeNotificationDots();
@@ -1629,24 +1639,61 @@
     }
 
     // =========================================================================
-    // 8. 6×7 TILE-GRID GARDEN BUILDER & BUNNY CARROT-ORBIT FLOCK AI
+    // 8. 10×12 EXPANDABLE BUNNY GARDEN BUILDER & BUNNY FLOCK AI
     // =========================================================================
-    const GRID_COLS = 6;
-    const GRID_ROWS = 7;
+    const GRID_COLS = 10;
+    const GRID_ROWS = 12;
+    const GARDEN_CELL = 66;
+    const GARDEN_PAD_X = 60;
+    const GARDEN_PAD_Y = 64;
 
     function getGridMetrics() {
       const vw = gardenCanvas.clientWidth || 390;
       const vh = gardenCanvas.clientHeight || 600;
-      const topPad = 18;
-      const botPad = gardenState.editMode ? 156 : 78;
-      const availW = vw - 24;
-      const availH = Math.max(240, vh - topPad - botPad);
-      const cell = Math.floor(Math.min(availW / GRID_COLS, availH / GRID_ROWS));
+      const cell = GARDEN_CELL;
       const gridW = cell * GRID_COLS;
       const gridH = cell * GRID_ROWS;
-      const originX = Math.floor((vw - gridW) / 2);
-      const originY = Math.floor(topPad + (availH - gridH) / 2);
-      return { vw, vh, cell, originX, originY, gridW, gridH };
+      const originX = GARDEN_PAD_X;
+      const originY = GARDEN_PAD_Y;
+      const worldW = gridW + GARDEN_PAD_X * 2;
+      const worldH = gridH + GARDEN_PAD_Y * 2;
+      return { vw, vh, cell, originX, originY, gridW, gridH, worldW, worldH };
+    }
+
+    function clampGardenCamera() {
+      const m = getGridMetrics();
+      const halfW = (m.vw / 2) / gardenState.zoom;
+      const halfH = (m.vh / 2) / gardenState.zoom;
+      if (m.worldW <= halfW * 2) gardenState.camX = m.worldW / 2;
+      else gardenState.camX = Math.max(halfW, Math.min(m.worldW - halfW, gardenState.camX));
+      if (m.worldH <= halfH * 2) gardenState.camY = m.worldH / 2;
+      else gardenState.camY = Math.max(halfH, Math.min(m.worldH - halfH, gardenState.camY));
+    }
+
+    function centerGardenCamera() {
+      const m = getGridMetrics();
+      gardenState.zoom = Math.max(0.82, Math.min(1.05, m.vw / 420));
+      if (saveData.gardenGrid.length > 0) {
+        let sx = 0, sy = 0;
+        for (const t of saveData.gardenGrid) {
+          const c = cellCenter(t.col, t.row, m);
+          sx += c.x; sy += c.y;
+        }
+        gardenState.camX = sx / saveData.gardenGrid.length;
+        gardenState.camY = sy / saveData.gardenGrid.length;
+      } else {
+        gardenState.camX = m.worldW / 2;
+        gardenState.camY = m.worldH / 2;
+      }
+      clampGardenCamera();
+    }
+
+    function gardenScreenToWorld(clientX, clientY) {
+      const rect = gardenCanvas.getBoundingClientRect();
+      return {
+        x: (clientX - rect.left - rect.width / 2) / gardenState.zoom + gardenState.camX,
+        y: (clientY - rect.top - rect.height / 2) / gardenState.zoom + gardenState.camY
+      };
     }
 
     function cellCenter(col, row, m) {
@@ -1666,8 +1713,8 @@
       }
       gardenState.bunnies = saveData.gardenBunnies.filter(id => BUNNY_BY_ID[id]).map((id, idx) => {
         if (existing[id]) return existing[id];
-        const x = m.originX + 30 + Math.random() * Math.max(80, m.gridW - 60);
-        const y = m.originY + 30 + Math.random() * Math.max(80, m.gridH - 60);
+        const x = m.originX + 40 + Math.random() * Math.max(120, m.gridW - 80);
+        const y = m.originY + 40 + Math.random() * Math.max(120, m.gridH - 80);
         return {
           id, x, y,
           facing: Math.random() < 0.5 ? 1 : -1,
@@ -1728,8 +1775,8 @@
           } else {
             b.mode = 'roam';
             b.visitKey = null;
-            b.destX = m.originX + 26 + Math.random() * Math.max(80, m.gridW - 52);
-            b.destY = m.originY + 28 + Math.random() * Math.max(80, m.gridH - 56);
+            b.destX = m.originX + 30 + Math.random() * Math.max(120, m.gridW - 60);
+            b.destY = m.originY + 32 + Math.random() * Math.max(120, m.gridH - 64);
             b.idlePause = 0.6 + Math.random() * 1.4;
             b.modeTimer = 3.2 + Math.random() * 3.8;
           }
@@ -1739,7 +1786,7 @@
         if (b.mode === 'visit' && b.visitTile) {
           const c = cellCenter(b.visitTile.col, b.visitTile.row, m);
           b.orbitAngle += b.orbitSpeed * 0.75 * dt;
-          const rad = Math.min(m.cell * 0.68, 36);
+          const rad = Math.min(m.cell * 0.68, 40);
           targetX = c.x + Math.cos(b.orbitAngle) * rad;
           targetY = c.y + Math.sin(b.orbitAngle) * (rad * 0.72);
         } else if (b.idlePause > 0) {
@@ -1750,7 +1797,7 @@
         const dx = targetX - b.x, dy = targetY - b.y;
         const dist = Math.hypot(dx, dy);
         if (dist > 2) {
-          const spd = b.mode === 'visit' ? 48 : 68;
+          const spd = b.mode === 'visit' ? 52 : 74;
           const step = Math.min(dist, spd * dt);
           const vx = (dx / dist) * step, vy = (dy / dist) * step;
           b.x += vx; b.y += vy;
@@ -1776,7 +1823,7 @@
 
     function renderGarden(now) {
       const m = getGridMetrics();
-      const { vw, vh, cell, originX, originY } = m;
+      const { vw, vh, cell, originX, originY, worldW, worldH } = m;
       if (!vw || !vh) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       if (gardenCanvas.width !== Math.floor(vw * dpr) || gardenCanvas.height !== Math.floor(vh * dpr)) {
@@ -1786,18 +1833,33 @@
 
       gCtx.save();
       gCtx.scale(dpr, dpr);
+      gCtx.fillStyle = '#7BB66E';
+      gCtx.fillRect(0, 0, vw, vh);
 
-      // Soft Meadow Ground
+      // World-space camera transform (supports panning & zooming the 10x12 garden)
+      gCtx.save();
+      gCtx.translate(vw / 2, vh / 2);
+      gCtx.scale(gardenState.zoom, gardenState.zoom);
+      gCtx.translate(-gardenState.camX, -gardenState.camY);
+
+      // Soft Meadow World Backdrop
+      gCtx.save();
+      roundRect(gCtx, 12, 12, worldW - 24, worldH - 24, 34);
+      gCtx.clip();
       const bg = IMAGES.bg_meadow;
       if (bg && bg.complete && bg.naturalWidth > 0) {
-        const scale = Math.max(vw / bg.naturalWidth, vh / bg.naturalHeight);
+        const scale = Math.max(worldW / bg.naturalWidth, worldH / bg.naturalHeight);
         const dw = bg.naturalWidth * scale, dh = bg.naturalHeight * scale;
-        gCtx.drawImage(bg, (vw - dw) / 2, (vh - dh) / 2, dw, dh);
+        gCtx.drawImage(bg, (worldW - dw) / 2, (worldH - dh) / 2, dw, dh);
       } else {
-        gCtx.fillStyle = '#8ED081'; gCtx.fillRect(0, 0, vw, vh);
+        gCtx.fillStyle = '#8ED081'; gCtx.fillRect(0, 0, worldW, worldH);
       }
+      gCtx.restore();
 
-      // Cozy Grid Overlay when building (一格一格清晰格線)
+      roundRect(gCtx, 12, 12, worldW - 24, worldH - 24, 34);
+      gCtx.lineWidth = 6; gCtx.strokeStyle = 'rgba(90, 58, 40, 0.25)'; gCtx.stroke();
+
+      // Cozy Grid Overlay when decorating
       if (gardenState.editMode) {
         gCtx.save();
         for (let r = 0; r < GRID_ROWS; r++) {
@@ -1806,7 +1868,7 @@
             const gy = originY + r * cell;
             const occ = saveData.gardenGrid.some(t => t.col === c && t.row === r);
             gCtx.fillStyle = occ ? 'rgba(254, 240, 138, 0.22)' : 'rgba(255, 252, 240, 0.24)';
-            gCtx.strokeStyle = 'rgba(90, 58, 40, 0.32)';
+            gCtx.strokeStyle = 'rgba(90, 58, 40, 0.30)';
             gCtx.lineWidth = 1.5;
             gCtx.setLineDash([4, 4]);
             roundRect(gCtx, gx + 2, gy + 2, cell - 4, cell - 4, 10);
@@ -1816,7 +1878,7 @@
         gCtx.restore();
       }
 
-      // Pass 1: Draw Ground Layer Tiles (紅蘿蔔田、四葉草草地、泥地、花圃、荷花池)
+      // Pass 1: Draw Ground Layer Tiles
       for (const t of saveData.gardenGrid) {
         const meta = DECOR_BY_ID[t.id], img = IMAGES[t.id];
         if (!meta || meta.layer !== 'ground' || !img || !img.complete) continue;
@@ -1826,7 +1888,7 @@
         gCtx.drawImage(img, c.x - sz / 2, c.y - (sz * aspect) / 2, sz, sz * aspect);
       }
 
-      // Pass 2: Depth-sorted 3D Props & Circling Bunnies (sized proportionally to grid tiles!)
+      // Pass 2: Depth-sorted 3D Props & Circling Bunnies
       const items = [];
       for (const t of saveData.gardenGrid) {
         const meta = DECOR_BY_ID[t.id];
@@ -1853,7 +1915,7 @@
         } else {
           const b = item.obj, img = IMAGES[b.id];
           if (!img || !img.complete) continue;
-          const h = Math.max(46, cell * 0.88);
+          const h = Math.max(52, cell * 0.88);
           const w = h * (img.naturalWidth / (img.naturalHeight || 1));
           let jumpY = Math.abs(Math.sin(b.hopPhase)) * 10;
           if (b.reactTime > 0) jumpY += Math.sin((b.reactTime / 0.45) * Math.PI) * 20;
@@ -1874,16 +1936,6 @@
         }
       }
 
-      if (gardenState.bunnies.length === 0) {
-        gCtx.save();
-        gCtx.fillStyle = 'rgba(255, 250, 242, 0.94)'; gCtx.strokeStyle = '#5A3A28'; gCtx.lineWidth = 2.5;
-        roundRect(gCtx, vw / 2 - 135, 16, 270, 38, 19); gCtx.fill(); gCtx.stroke();
-        gCtx.fillStyle = '#5A3A28'; gCtx.font = '900 12px "Noto Sans TC", sans-serif';
-        gCtx.textAlign = 'center'; gCtx.textBaseline = 'middle';
-        gCtx.fillText('點下方「放兔兔」邀請你嘅兔仔入嚟圍圈玩！', vw / 2, 35);
-        gCtx.restore();
-      }
-
       for (const pt of gardenState.particles) {
         gCtx.save(); gCtx.globalAlpha = Math.max(0, pt.life / pt.maxLife); gCtx.fillStyle = pt.color;
         gCtx.beginPath(); gCtx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2); gCtx.fill(); gCtx.restore();
@@ -1895,13 +1947,25 @@
         gCtx.fillStyle = ft.color; gCtx.fillText(ft.text, ft.x, ft.y); gCtx.restore();
       }
       gCtx.restore();
+
+      // Screen-space banner when no bunnies are in the garden
+      if (gardenState.bunnies.length === 0) {
+        gCtx.save();
+        gCtx.fillStyle = 'rgba(255, 250, 242, 0.94)'; gCtx.strokeStyle = '#5A3A28'; gCtx.lineWidth = 2.5;
+        roundRect(gCtx, vw / 2 - 145, 16, 290, 38, 19); gCtx.fill(); gCtx.stroke();
+        gCtx.fillStyle = '#5A3A28'; gCtx.font = '900 12px "Noto Sans TC", sans-serif';
+        gCtx.textAlign = 'center'; gCtx.textBaseline = 'middle';
+        gCtx.fillText('點擊下方「放兔兔」，邀請兔兔來樂園玩耍！', vw / 2, 35);
+        gCtx.restore();
+      }
+      gCtx.restore();
     }
 
     function setGardenEditMode(on, preselectId = null) {
       gardenState.editMode = on;
       if (preselectId) gardenState.selectedBuildId = preselectId;
       const toggleBtn = document.getElementById('btn-garden-bag');
-      toggleBtn.querySelector('span').textContent = on ? '完成' : '砌格子';
+      toggleBtn.querySelector('span').textContent = on ? '完成' : '佈置';
       toggleBtn.classList.toggle('game-btn-orange', on);
       document.getElementById('garden-build-bar').classList.toggle('hidden', !on);
       if (on) renderGardenPalette();
@@ -1932,11 +1996,9 @@
       });
     }
 
-    // One-tap Grid Placement OR Petting Bunnies
-    gardenCanvas.addEventListener('pointerdown', (e) => {
-      SFX.ensure(); BGM.unlockAndStart();
-      const rect = gardenCanvas.getBoundingClientRect();
-      const x = e.clientX - rect.left, y = e.clientY - rect.top;
+    // Pan, Pinch-Zoom & Tap-to-Decorate / Pet Bunnies on the 10×12 Garden
+    function handleGardenTap(clientX, clientY) {
+      const { x, y } = gardenScreenToWorld(clientX, clientY);
       const m = getGridMetrics();
 
       if (gardenState.editMode) {
@@ -1954,20 +2016,20 @@
             if (getPlacedCount(sid) < total) {
               saveData.gardenGrid.push({ col, row, id: sid });
               persistSave(); SFX.found(); renderGardenPalette();
-              showToast(`已砌好「${DECOR_BY_ID[sid].name}」！`);
+              showToast(`已放置「${DECOR_BY_ID[sid].name}」！`);
             } else {
               SFX.wrong();
-              showToast('呢款道具已全部擺出！去商店買多件啦！');
+              showToast('這款擺設已全數放置！可到商店再購買喔！');
             }
           }
         }
         return;
       }
 
-      // Petting bunnies to collect coins!
+      // Interact with bunnies to collect coins!
       const sortedB = [...gardenState.bunnies].sort((a, b) => b.y - a.y);
       for (const b of sortedB) {
-        if (Math.hypot(x - b.x, y - (b.y - 28)) <= 42) {
+        if (Math.hypot(x - b.x, y - (b.y - 28)) <= 44) {
           b.reactTime = 0.45; SFX.squeak();
           for (let i = 0; i < 10; i++) {
             const ang = (Math.PI * 2 * i) / 10;
@@ -1978,12 +2040,63 @@
             ensureDailyFresh(); saveData.daily.petted += 1; saveData.coins += 5; persistSave(); syncGlobalCounters(); SFX.coin();
             gardenState.floatingTexts.push({ x: b.x, y: b.y - 56, text: '+5 金幣！', color: '#FEF08A', life: 1.0, maxLife: 1.0 });
           } else {
-            gardenState.floatingTexts.push({ x: b.x, y: b.y - 56, text: `${BUNNY_BY_ID[b.id].name}轉圈圈！`, color: '#FBCFE8', life: 0.9, maxLife: 0.9 });
+            gardenState.floatingTexts.push({ x: b.x, y: b.y - 56, text: `${BUNNY_BY_ID[b.id].name}好開心！`, color: '#FBCFE8', life: 0.9, maxLife: 0.9 });
           }
           break;
         }
       }
+    }
+
+    gardenCanvas.addEventListener('pointerdown', (e) => {
+      SFX.ensure(); BGM.unlockAndStart();
+      gardenCanvas.setPointerCapture(e.pointerId);
+      gardenPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (gardenPointers.size === 1) {
+        gDragStart = { x: e.clientX, y: e.clientY, camX: gardenState.camX, camY: gardenState.camY };
+        gIsDragging = false;
+      } else if (gardenPointers.size === 2) {
+        const pts = [...gardenPointers.values()];
+        gPinchDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        gPinchZoom = gardenState.zoom;
+        gIsDragging = true;
+      }
     });
+
+    gardenCanvas.addEventListener('pointermove', (e) => {
+      if (!gardenPointers.has(e.pointerId)) return;
+      gardenPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (gardenPointers.size === 2) {
+        const pts = [...gardenPointers.values()];
+        const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        if (gPinchDist > 10) {
+          gardenState.zoom = Math.max(gardenState.minZoom, Math.min(gardenState.maxZoom, gPinchZoom * (dist / gPinchDist)));
+          clampGardenCamera();
+        }
+      } else if (gardenPointers.size === 1 && gDragStart) {
+        const dx = e.clientX - gDragStart.x, dy = e.clientY - gDragStart.y;
+        if (Math.hypot(dx, dy) > 8) gIsDragging = true;
+        if (gIsDragging) {
+          gardenState.camX = gDragStart.camX - dx / gardenState.zoom;
+          gardenState.camY = gDragStart.camY - dy / gardenState.zoom;
+          clampGardenCamera();
+        }
+      }
+    });
+
+    function onGardenPointerEnd(e) {
+      if (!gardenPointers.has(e.pointerId)) return;
+      const wasTap = gardenPointers.size === 1 && !gIsDragging;
+      gardenPointers.delete(e.pointerId);
+      if (gardenPointers.size === 0) gDragStart = null;
+      if (wasTap) handleGardenTap(e.clientX, e.clientY);
+    }
+    gardenCanvas.addEventListener('pointerup', onGardenPointerEnd);
+    gardenCanvas.addEventListener('pointercancel', onGardenPointerEnd);
+    gardenCanvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      gardenState.zoom = Math.max(gardenState.minZoom, Math.min(gardenState.maxZoom, gardenState.zoom * (e.deltaY < 0 ? 1.12 : 0.89)));
+      clampGardenCamera();
+    }, { passive: false });
 
     function openShopModal() {
       const grid = document.getElementById('shop-grid');
@@ -2012,13 +2125,13 @@
       grid.querySelectorAll('.buy-decor-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const id = btn.dataset.buyDecor, meta = DECOR_BY_ID[id];
-          if (saveData.coins < meta.price) { SFX.wrong(); showToast('金幣唔夠！去搵多幾隻兔兔賺金幣啦！'); return; }
+          if (saveData.coins < meta.price) { SFX.wrong(); showToast('金幣不足！去關卡找更多兔兔賺金幣吧！'); return; }
           saveData.coins -= meta.price;
           saveData.ownedDecor[id] = (saveData.ownedDecor[id] || 0) + 1;
           persistSave(); syncGlobalCounters(); SFX.coin();
           closeAllModals();
           setGardenEditMode(true, id);
-          showToast(`買咗「${meta.name}」！點草地格子即可擺放！`);
+          showToast(`已購買「${meta.name}」！點擊草地即可放置！`);
         });
       });
       document.getElementById('modal-shop').classList.remove('hidden');
@@ -2032,7 +2145,7 @@
       const grid = document.getElementById('garden-bunnies-grid');
       grid.innerHTML = '';
       if (saveData.unlockedCards.length === 0) {
-        grid.innerHTML = `<div class="col-span-3 text-center py-8 text-xs font-bold text-[#8C6D5D]">未解鎖任何兔仔，快去玩關卡搵可愛兔仔啦！</div>`;
+        grid.innerHTML = `<div class="col-span-3 text-center py-8 text-xs font-bold text-[#8C6D5D]">尚未解鎖任何兔兔，快去關卡尋找可愛兔兔吧！</div>`;
       } else {
         saveData.unlockedCards.forEach(cid => {
           const b = BUNNY_BY_ID[cid]; if (!b) return;
@@ -2124,9 +2237,9 @@
     }
 
     const DAILY_QUESTS = [
-      { id: 'q_find',    title: '今日搵到 5 隻目標兔兔', key: 'found',    goal: 5, reward: 80 },
+      { id: 'q_find',    title: '今日找到 5 隻目標兔兔', key: 'found',    goal: 5, reward: 80 },
       { id: 'q_capture', title: '草叢成功收服 2 隻兔兔', key: 'captured', goal: 2, reward: 100 },
-      { id: 'q_pet',     title: '去後花園摸 3 次兔兔',   key: 'petted',   goal: 3, reward: 60 }
+      { id: 'q_pet',     title: '在後花園與兔兔互動 3 次', key: 'petted',   goal: 3, reward: 60 }
     ];
 
     const CHECKIN_REWARDS = [
@@ -2210,7 +2323,7 @@
       if (claimedToday) {
         claimBtn.disabled = true;
         claimBtn.className = 'w-full py-2.5 rounded-2xl text-xs font-black bg-[#E7DDD3] text-[#8C7B6E] border-2 border-[#C9B8A8]';
-        claimBtn.textContent = '今日已簽到！聽日再嚟領禮物！';
+        claimBtn.textContent = '今日已簽到！明天再來領禮物吧！';
       } else if (saveData.checkin.streak >= 7) {
         claimBtn.disabled = true;
         claimBtn.className = 'w-full py-2.5 rounded-2xl text-xs font-black bg-[#E3F0DF] text-[#15803D] border-2 border-[#16A34A]';
@@ -2263,7 +2376,7 @@
       badge.textContent = meta.rarity;
       badge.className = `px-2.5 py-0.5 rounded-full text-xs font-black text-white ${meta.rarity === 'SSR' ? 'bg-[#C47F17]' : meta.rarity === 'SR' ? 'bg-[#8652A8]' : meta.rarity === 'R' ? 'bg-[#4E7FA3]' : 'bg-[#8B735B]'}`;
       document.getElementById('cap-banner-title').textContent = meta.rarity === 'SSR' ? '傳說 SSR 現身！' : '草叢捉兔兔！';
-      document.getElementById('cap-bunny-hint').textContent = `狂撳草叢引「${meta.name}」出嚟跟你返屋企！`;
+      document.getElementById('cap-bunny-hint').textContent = `連點草叢吸引「${meta.name}」出來跟你回家！`;
       document.getElementById('cap-bush-img').src = SPRITE_SRCS.prop_bush;
       document.getElementById('cap-bush-img').classList.remove('hidden');
       document.getElementById('cap-bunny-img').src = SPRITE_SRCS[cardId];
@@ -2329,13 +2442,13 @@
         saveData.daily.captured += 1;
         persistSave(); syncGlobalCounters();
         document.getElementById('cap-banner-title').textContent = '成功收服！';
-        document.getElementById('cap-result-msg').textContent = `太好啦！「${meta.name}」（${meta.rarity}）跟你返屋企並收進圖鑑！`;
+        document.getElementById('cap-result-msg').textContent = `太棒了！「${meta.name}」（${meta.rarity}）跟你回家並收進圖鑑了！`;
         retryBtn.classList.add('hidden');
         gardenBtn.classList.remove('hidden');
       } else {
         SFX.lose();
-        document.getElementById('cap-banner-title').textContent = '差少少走甩咗！';
-        document.getElementById('cap-result-msg').textContent = `「${meta.name}」太怕羞匿返入草叢深處啦！`;
+        document.getElementById('cap-banner-title').textContent = '差一點點溜走了！';
+        document.getElementById('cap-result-msg').textContent = `「${meta.name}」太害羞，躲回草叢深處了！`;
         retryBtn.classList.remove('hidden');
         gardenBtn.classList.add('hidden');
       }
@@ -2507,7 +2620,7 @@
 
       switchView('play');
       renderTargetBar();
-      showToast(`${theme.name} 關卡 ${lvl.levelNum}！搵兔兔賺金幣佈置花園！`);
+      showToast(`${theme.name} 關卡 ${lvl.levelNum}！找兔兔賺金幣佈置花園！`);
     }
 
     function createBunnyEntity(spriteKey, isTarget, x, y) {
@@ -2533,7 +2646,7 @@
         facing: fromLeft ? 1 : -1, timeLeft: 14.0, phase: 0
       };
       SFX.radar();
-      document.getElementById('golden-alert-text').textContent = `閃光「${pick.name}」出現！捉住送 +80 金幣同新卡！`;
+      document.getElementById('golden-alert-text').textContent = `閃光「${pick.name}」出現！捉住可得 +80 金幣與新卡！`;
       document.getElementById('golden-alert').classList.remove('hidden');
     }
 
@@ -2565,7 +2678,7 @@
           dangerEl.classList.remove('active');
           SFX.lose();
           const rem = state.targetIds.length - state.foundIds.size;
-          document.getElementById('timeout-subtitle').textContent = `仲差 ${rem} 隻兔兔就可以過關解鎖可愛卡！`;
+          document.getElementById('timeout-subtitle').textContent = `還差 ${rem} 隻兔兔就能過關解鎖可愛卡！`;
           document.getElementById('modal-timeout').classList.remove('hidden');
         }
       }
@@ -2592,7 +2705,7 @@
         if (g.timeLeft <= 0) {
           state.goldenBunny = null;
           document.getElementById('golden-alert').classList.add('hidden');
-          showToast('閃光兔走甩咗！下次再捉佢！');
+          showToast('閃光兔溜走了！下次再捉住牠！');
         }
       }
 
@@ -2912,7 +3025,7 @@
               if (hiddenB) {
                 hiddenB.hiddenInProp = null; hiddenB.x = p.x; hiddenB.y = p.y + 22;
                 hiddenB.homeX = p.x; hiddenB.homeY = p.y + 34; hiddenB.reactTime = 0.45;
-                state.floatingTexts.push({ x: p.x, y: p.y - 75, text: '嚇咗隻兔仔出嚟！', color: '#BBF7D0', life: 1.1, maxLife: 1.1 });
+                state.floatingTexts.push({ x: p.x, y: p.y - 75, text: '發現躲起來的兔兔！', color: '#BBF7D0', life: 1.1, maxLife: 1.1 });
               }
               return;
             }
@@ -2958,7 +3071,7 @@
         } else if (cleared) {
           setTimeout(showLevelClearModal, 520);
         } else {
-          showToast(`搵到「${BUNNY_BY_ID[hitBunny.spriteKey].name}」！+15 金幣`);
+          showToast(`找到「${BUNNY_BY_ID[hitBunny.spriteKey].name}」！+15 金幣`);
         }
       } else if (!hitBunny.isTarget) {
         hitBunny.reactTime = 0.4; state.combo = 0; state.wrongTaps += 1;
@@ -2967,7 +3080,7 @@
         document.getElementById('fever-vignette').classList.remove('active');
         SFX.wrong();
         spawnBurst(hitBunny.x, hitBunny.y - 35, ['#FFFFFF', '#FCA5A5'], 8);
-        state.floatingTexts.push({ x: hitBunny.x, y: hitBunny.y - 68, text: '唔係我呀', color: '#FCA5A5', life: 0.85, maxLife: 0.85 });
+        state.floatingTexts.push({ x: hitBunny.x, y: hitBunny.y - 68, text: '不是我喔', color: '#FCA5A5', life: 0.85, maxLife: 0.85 });
         renderHUD();
       } else {
         hitBunny.reactTime = 0.3; SFX.squeak();
@@ -3000,7 +3113,7 @@
       state.targetZoom = Math.max(state.zoom, 1.15);
       state.radar = { x: focusX, y: focusY, startTime: performance.now(), duration: 5000 };
       const meta = BUNNY_BY_ID[unfound.spriteKey];
-      showToast(unfound.hiddenInProp ? `撥開附近震緊嘅草叢搵「${meta.name}」！` : `雷達鎖定「${meta.name}」附近！`);
+      showToast(unfound.hiddenInProp ? `撥開附近晃動的草叢尋找「${meta.name}」！` : `雷達鎖定「${meta.name}」附近！`);
       renderHUD();
     }
 
@@ -3060,7 +3173,7 @@
           </div>
           <span class="text-[11px] font-black whitespace-nowrap ${isFound ? 'line-through text-[#15803D]' : 'text-[#5A3A28]'}">${meta.name}</span>
         `;
-        chip.addEventListener('click', () => showToast(isFound ? `已搵到「${meta.name}」` : `尋找目標：${meta.name}（${meta.rarity}）`));
+        chip.addEventListener('click', () => showToast(isFound ? `已找到「${meta.name}」` : `尋找目標：${meta.name}（${meta.rarity}）`));
         container.appendChild(chip);
       });
     }
@@ -3085,7 +3198,7 @@
       persistSave(); syncGlobalCounters();
 
       document.querySelectorAll('.clear-star-img').forEach((img, idx) => img.classList.toggle('star-dim', idx >= stars));
-      document.getElementById('clear-title').textContent = stars === 3 ? '完美三星通關！' : stars === 2 ? '好犀利！過關啦！' : '全部搵齊啦！';
+      document.getElementById('clear-title').textContent = stars === 3 ? '完美三星通關！' : stars === 2 ? '太厲害了！順利過關！' : '全部找齊了！';
       document.getElementById('clear-subtitle').textContent = `${theme.name} · 關卡 ${lvl.levelNum}`;
       document.getElementById('clear-coins-earned').textContent = `過關獎勵 +${coinReward} 紅蘿蔔金幣！`;
       document.getElementById('clear-time').textContent = `+${remSec} 秒`;
@@ -3189,11 +3302,11 @@
             <img src="${SPRITE_SRCS[b.id]}" alt="${unlocked ? b.name : '未解鎖兔兔'}" class="max-h-16 w-auto object-contain ${unlocked ? 'drop-shadow-sm' : 'locked-silhouette'}" />
           </div>
           <div class="text-[11px] font-black text-[#5A3A28] text-center leading-tight line-clamp-1">${unlocked ? b.name : '？？？'}</div>
-          <div class="text-[9px] font-bold text-[#8C6D5D] text-center mt-0.5 truncate w-full">${unlocked ? '點擊睇卡' : b.themeLabel}</div>
+          <div class="text-[9px] font-bold text-[#8C6D5D] text-center mt-0.5 truncate w-full">${unlocked ? '點擊查看' : b.themeLabel}</div>
         `;
         card.addEventListener('click', () => {
           if (unlocked) openCardDetail(b);
-          else { SFX.wrong(); showToast(`去「${b.themeLabel}」搵到佢即可解鎖！`); }
+          else { SFX.wrong(); showToast(`前往「${b.themeLabel}」找到牠即可解鎖！`); }
         });
         grid.appendChild(card);
       });
@@ -3266,7 +3379,7 @@
       document.getElementById('btn-cap-done').addEventListener('click', () => closeCaptureModal(false));
       document.getElementById('btn-cap-add-garden').addEventListener('click', () => closeCaptureModal(true));
       document.getElementById('btn-cap-retry-carrot').addEventListener('click', () => {
-        if (saveData.coins < 20) { SFX.wrong(); showToast('金幣唔夠 20 幣！'); return; }
+        if (saveData.coins < 20) { SFX.wrong(); showToast('金幣不足 20 枚！'); return; }
         saveData.coins -= 20; persistSave(); syncGlobalCounters(); SFX.coin();
         openCaptureMiniGame(capState.cardId);
       });
@@ -3331,7 +3444,7 @@
         toggleBunnyInGarden(state.detailCardId);
         const inG = saveData.gardenBunnies.includes(state.detailCardId);
         document.getElementById('btn-cd-toggle-garden').textContent = inG ? '已在後花園中（點此請回休息）' : '放入兔兔後花園玩！';
-        showToast(inG ? '已邀請入兔兔後花園！' : '已請兔兔返屋企休息');
+        showToast(inG ? '已邀請進入兔兔後花園！' : '已請兔兔回去休息');
       });
 
       // Gameplay Controls
@@ -3377,7 +3490,7 @@
           }
         });
       });
-      window.addEventListener('resize', clampCamera);
+      window.addEventListener('resize', () => { clampCamera(); clampGardenCamera(); });
       document.addEventListener('pointerdown', () => BGM.unlockAndStart(), { once: true });
     }
 
