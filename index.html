@@ -90,31 +90,34 @@
       box-shadow: inset 0 -1px 0 rgba(92, 61, 43, 0.2), 0 3px 8px rgba(72, 46, 28, 0.18);
     }
 
+    /* Picture-book buttons: watercolour wash on paper, thin soft pencil line, no hard 3D drop. */
     .game-btn {
-      background-color: #F6EAD6;
+      --paper: #FBF5E9; --wash: rgba(214, 186, 150, 0.45); --ink: #8C6A52;
+      background-color: var(--paper);
       background-image:
-        radial-gradient(rgba(102, 68, 42, 0.06) 1px, transparent 0),
-        linear-gradient(180deg, #FAF0DF 0%, #ECD8BA 100%);
-      background-size: 12px 12px, 100% 100%;
-      border: 2.5px solid #5C3D2B;
-      box-shadow: inset 0 0 0 2px rgba(255, 250, 240, 0.55), 0 3px 0 #5C3D2B;
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .33 0 0 0 0 .22 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E"),
+        radial-gradient(ellipse 70% 60% at 28% 22%, var(--glow, rgba(255, 253, 247, 0.75)), transparent 70%),
+        radial-gradient(ellipse 80% 75% at 72% 85%, var(--wash), transparent 75%),
+        radial-gradient(ellipse 60% 55% at 12% 90%, var(--wash), transparent 70%);
+      background-size: 140px 140px, 100% 100%, 100% 100%, 100% 100%;
+      border: 1.5px solid var(--ink);
+      box-shadow: inset 0 0 0 3px rgba(255, 252, 244, 0.6), 0 2px 6px rgba(110, 80, 55, 0.14);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
     }
     .game-btn:active {
-      transform: translateY(2px);
-      box-shadow: inset 0 0 0 2px rgba(255, 250, 240, 0.4), 0 1px 0 #5C3D2B;
+      transform: translateY(1px) scale(0.985);
+      box-shadow: inset 0 0 0 3px rgba(255, 252, 244, 0.5), 0 1px 3px rgba(110, 80, 55, 0.12);
     }
 
-    /* Soft Muted Morandi Storybook Tones (Zero Harsh AI Neon) */
-    .game-btn-pink   { background-image: radial-gradient(rgba(120,60,70,0.06) 1px, transparent 0), linear-gradient(180deg, #F8E2E4 0%, #EBC8CC 100%); }
-    .game-btn-mint   { background-image: radial-gradient(rgba(50,95,65,0.06) 1px, transparent 0), linear-gradient(180deg, #E3F0DF 0%, #C8DFC2 100%); }
-    .game-btn-gold   { background-image: radial-gradient(rgba(130,90,30,0.06) 1px, transparent 0), linear-gradient(180deg, #F7E9C4 0%, #E9CE93 100%); }
-    .game-btn-coral  { background-image: radial-gradient(rgba(130,60,65,0.06) 1px, transparent 0), linear-gradient(180deg, #F5DDD8 0%, #E8C0B8 100%); }
-    .game-btn-orange {
-      background-image: radial-gradient(rgba(90,40,15,0.08) 1px, transparent 0), linear-gradient(180deg, #E28F54 0%, #CC7339 100%);
-      color: #FFFBF4;
-      text-shadow: 0 1.5px 0 rgba(78, 42, 20, 0.55);
-    }
+    /* Heavy 900 weight reads as cartoon; a 700 weight sits better with the hand-drawn art. */
+    .game-btn, .game-btn .font-black { font-weight: 700; }
+
+    /* Soft watercolour tints */
+    .game-btn-pink   { --paper: #FBF0EE; --wash: rgba(232, 168, 172, 0.42); --ink: #A9787C; }
+    .game-btn-mint   { --paper: #F1F6EC; --wash: rgba(160, 199, 150, 0.42); --ink: #7E987A; }
+    .game-btn-gold   { --paper: #FBF4E2; --wash: rgba(228, 196, 128, 0.45); --ink: #A88A5A; }
+    .game-btn-coral  { --paper: #FBF0EC; --wash: rgba(232, 170, 156, 0.42); --ink: #AA7D74; }
+    .game-btn-orange { --paper: #D98955; --wash: rgba(178, 88, 44, 0.55); --glow: rgba(255, 226, 196, 0.35); --ink: #9C5A36; color: #FFFAF2; text-shadow: 0 1px 2px rgba(110, 52, 22, 0.45); }
 
     .game-panel {
       background-color: #F3E5CE;
