@@ -39,6 +39,7 @@
       -webkit-tap-highlight-color: transparent;
       user-select: none;
       -webkit-user-select: none;
+      touch-action: manipulation;
     }
 
     html, body {
@@ -47,6 +48,7 @@
       width: 100%;
       height: 100dvh;
       overflow: hidden;
+      overscroll-behavior: none;
       background: #2A1F1A;
       font-family: 'Noto Sans TC', 'Fredoka', -apple-system, BlinkMacSystemFont, sans-serif;
       color: var(--brown);
@@ -196,6 +198,7 @@
       touch-action: none;
       cursor: grab;
     }
+    #cap-stage { touch-action: none; }
     #game-canvas:active, #garden-canvas:active { cursor: grabbing; }
 
     #danger-vignette {
@@ -4139,7 +4142,7 @@
           }
         } catch (e) {}
       });
-      document.getElementById('cap-stage').addEventListener('click', handleCaptureBushTap);
+      document.getElementById('cap-stage').addEventListener('pointerdown', (e) => { e.preventDefault(); handleCaptureBushTap(); });
       document.getElementById('btn-cap-done').addEventListener('click', () => closeCaptureModal(false));
       document.getElementById('btn-cap-add-garden').addEventListener('click', () => closeCaptureModal(true));
       document.getElementById('btn-cap-share').addEventListener('click', () => generateCaptureShareCard(capState.cardId));
@@ -4322,6 +4325,19 @@
         });
       });
       window.addEventListener('resize', () => { clampCamera(); clampGardenCamera(); });
+      // Prevent iOS Safari accidental page double-tap zoom & UI pinch-zoom (canvas pinch-zoom still works)
+      ['gesturestart', 'gesturechange', 'gestureend'].forEach(evt => {
+        document.addEventListener(evt, (e) => e.preventDefault(), { passive: false });
+      });
+      document.addEventListener('touchmove', (e) => {
+        if (e.touches && e.touches.length > 1 && e.target !== canvas && e.target !== gardenCanvas) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+      document.addEventListener('dblclick', (e) => {
+        if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+        e.preventDefault();
+      }, { passive: false });
       document.addEventListener('pointerdown', () => BGM.unlockAndStart(), { once: true });
     }
 
