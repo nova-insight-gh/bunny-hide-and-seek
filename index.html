@@ -90,34 +90,28 @@
       box-shadow: inset 0 -1px 0 rgba(92, 61, 43, 0.2), 0 3px 8px rgba(72, 46, 28, 0.18);
     }
 
-    /* Picture-book buttons: watercolour wash on paper, thin soft pencil line, no hard 3D drop. */
+    /* Picture-book buttons: hand-drawn watercolour plates painted by Gemini (assets/ui_btn/), 9-sliced so
+       the wobbly double line keeps its size on any button shape. Layout is unchanged: the 1.5px border
+       stays, and the plate is drawn 11px into the padding. */
     .game-btn {
-      --paper: #FBF5E9; --wash: rgba(214, 186, 150, 0.45); --ink: #8C6A52;
-      background-color: var(--paper);
-      background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .33 0 0 0 0 .22 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E"),
-        radial-gradient(ellipse 70% 60% at 28% 22%, var(--glow, rgba(255, 253, 247, 0.75)), transparent 70%),
-        radial-gradient(ellipse 80% 75% at 72% 85%, var(--wash), transparent 75%),
-        radial-gradient(ellipse 60% 55% at 12% 90%, var(--wash), transparent 70%);
-      background-size: 140px 140px, 100% 100%, 100% 100%, 100% 100%;
-      border: 1.5px solid var(--ink);
-      box-shadow: inset 0 0 0 3px rgba(255, 252, 244, 0.6), 0 2px 6px rgba(110, 80, 55, 0.14);
-      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      --plate: url('assets/ui_btn/cream.webp');
+      background: transparent;
+      border: 1.5px solid transparent;
+      border-image: var(--plate) 34 fill / 11px stretch;
+      filter: drop-shadow(0 1.5px 2px rgba(110, 80, 55, 0.18));
+      color: #5A3A28;
+      transition: transform 0.12s ease, filter 0.12s ease;
     }
-    .game-btn:active {
-      transform: translateY(1px) scale(0.985);
-      box-shadow: inset 0 0 0 3px rgba(255, 252, 244, 0.5), 0 1px 3px rgba(110, 80, 55, 0.12);
-    }
+    .game-btn:active { transform: translateY(1px) scale(0.985); filter: drop-shadow(0 0.5px 1px rgba(110, 80, 55, 0.14)); }
 
     /* Heavy 900 weight reads as cartoon; a 700 weight sits better with the hand-drawn art. */
     .game-btn, .game-btn .font-black { font-weight: 700; }
 
-    /* Soft watercolour tints */
-    .game-btn-pink   { --paper: #FBF0EE; --wash: rgba(232, 168, 172, 0.42); --ink: #A9787C; }
-    .game-btn-mint   { --paper: #F1F6EC; --wash: rgba(160, 199, 150, 0.42); --ink: #7E987A; }
-    .game-btn-gold   { --paper: #FBF4E2; --wash: rgba(228, 196, 128, 0.45); --ink: #A88A5A; }
-    .game-btn-coral  { --paper: #FBF0EC; --wash: rgba(232, 170, 156, 0.42); --ink: #AA7D74; }
-    .game-btn-orange { --paper: #D98955; --wash: rgba(178, 88, 44, 0.55); --glow: rgba(255, 226, 196, 0.35); --ink: #9C5A36; color: #FFFAF2; text-shadow: 0 1px 2px rgba(110, 52, 22, 0.45); }
+    .game-btn-pink   { --plate: url('assets/ui_btn/pink.webp'); }
+    .game-btn-coral  { --plate: url('assets/ui_btn/pink.webp'); }
+    .game-btn-mint   { --plate: url('assets/ui_btn/mint.webp'); }
+    .game-btn-gold   { --plate: url('assets/ui_btn/gold.webp'); }
+    .game-btn-orange { --plate: url('assets/ui_btn/orange.webp'); color: #FFFAF2; text-shadow: 0 1px 2px rgba(110, 52, 22, 0.5); }
 
     .game-panel {
       background-color: #F3E5CE;
