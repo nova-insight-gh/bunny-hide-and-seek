@@ -737,16 +737,18 @@
         <canvas id="garden-canvas"></canvas>
 
         <!-- Floating Top Helper Bunny Duty Strip + Quick Harvest Button -->
-        <div class="pointer-events-none absolute z-20 flex flex-col items-center gap-1.5" style="top:8px;left:8px;right:8px;width:calc(100% - 16px);">
-          <div id="farm-helper-bar" class="pointer-events-auto target-tray w-full rounded-2xl px-2.5 py-1.5 flex items-center justify-between gap-2">
-            <button id="btn-farm-helpers" type="button" class="flex-1 min-w-0 flex items-center gap-1.5 text-left">
-              <span class="shrink-0 text-[10px] font-black px-1.5 py-0.5 rounded-lg" style="background:#EDF6FC;color:#4B82B0;border:1px solid #B7D5EE;">值班小幫手</span>
-              <div id="farm-helper-slots" class="flex-1 min-w-0 flex items-center gap-1 overflow-x-auto no-scrollbar"></div>
+        <div class="pointer-events-none absolute z-20 flex flex-col items-stretch" style="top:8px;left:8px;right:8px;width:calc(100% - 16px);gap:6px;">
+          <div id="farm-helper-bar" class="pointer-events-auto target-tray w-full rounded-2xl flex items-center justify-between" style="padding:5px 7px;gap:5px;overflow:hidden;">
+            <button id="btn-farm-helpers" type="button" class="flex-1 min-w-0 flex items-center text-left" style="gap:4px;min-width:0;overflow:hidden;">
+              <span class="shrink-0 font-black rounded-lg whitespace-nowrap" style="background:#EDF6FC;color:#4B82B0;border:1px solid #B7D5EE;font-size:10px;padding:3px 5px;line-height:1.1;">小幫手</span>
+              <div id="farm-helper-slots" class="flex-1 min-w-0 flex items-center" style="gap:4px;min-width:0;overflow:hidden;"></div>
             </button>
-            <button id="btn-farm-expand" type="button" class="shrink-0 rounded-xl px-2 py-1 text-[10px] font-black active:scale-95" style="background:#FFF8EB;color:#9A5410;border:1.5px solid #E5B974;">
+            <button id="btn-farm-expand" type="button" class="shrink-0 rounded-xl font-black active:scale-95 whitespace-nowrap" style="background:#FFF8EB;color:#9A5410;border:1.5px solid #E5B974;font-size:10px;padding:4px 7px;line-height:1.1;">
               +開墾
             </button>
-            <button id="btn-farm-harvest-all" type="button" class="hidden shrink-0 rounded-xl px-2.5 py-1 text-[11px] font-black text-white shadow-sm active:scale-95" style="background:#52A88B;border:1.5px solid #3C8A70;">
+          </div>
+          <div class="flex justify-end pointer-events-none">
+            <button id="btn-farm-harvest-all" type="button" class="hidden pointer-events-auto rounded-full font-black text-white shadow-sm active:scale-95 whitespace-nowrap" style="background:#52A88B;border:1.5px solid #3C8A70;font-size:11px;padding:4px 12px;">
               一鍵收成
             </button>
           </div>
@@ -767,7 +769,7 @@
         <!-- Grid Build Mode Palette Strip (appears cleanly above bottom dock) -->
         <div id="garden-build-bar" class="hidden absolute inset-x-2 bottom-20 z-20 game-panel rounded-2xl p-2 flex flex-col gap-1.5">
           <div class="flex items-center justify-between px-1 gap-1.5">
-            <span class="text-[11px] font-black text-[#5A3A28] truncate">選擇擺設點擊草地放置（再點收回）</span>
+            <span id="garden-build-hint" class="text-[11px] font-black text-[#5A3A28] truncate">點擺設放草地・點農田可移動位置</span>
             <div class="flex items-center gap-1 shrink-0">
               <button id="btn-garden-shop-inline" type="button" class="text-[10px] font-black px-2 py-0.5 rounded-lg" style="background:#FEF3C7;color:#9A5410;border:1px solid #E5B974;">買擺設</button>
               <button id="btn-garden-build-done" type="button" class="text-[10px] font-black px-2 py-0.5 rounded-lg bg-[#F97316] text-white">完成</button>
@@ -777,29 +779,29 @@
         </div>
 
         <!-- Bottom Dock -->
-        <div class="pointer-events-none absolute inset-x-0 bottom-5 px-2 z-30 flex items-end justify-between gap-1" style="padding-bottom: env(safe-area-inset-bottom, 0px);">
-          <button id="btn-garden-home" type="button" class="pointer-events-auto game-btn rounded-2xl px-2 py-2 flex items-center gap-1 text-[11px] font-black text-[#5A3A28] shrink-0">
-            <img class="img-home-icon w-4 h-4 object-contain" src="" alt="主頁" />
+        <div class="pointer-events-none absolute inset-x-0 bottom-5 z-30 flex items-end justify-between" style="padding:0 8px;padding-bottom:env(safe-area-inset-bottom, 0px);gap:4px;">
+          <button id="btn-garden-home" type="button" class="pointer-events-auto game-btn rounded-2xl flex items-center font-black text-[#5A3A28] shrink-0 whitespace-nowrap" style="padding:7px 7px;gap:3px;font-size:11px;">
+            <img class="img-home-icon w-4 h-4 object-contain shrink-0" src="" alt="主頁" />
             <span>主頁</span>
           </button>
-          <div class="pointer-events-auto flex items-center gap-1">
-            <button id="btn-farm-plant-mode" type="button" class="game-btn game-btn-mint rounded-2xl px-2.5 py-2 flex items-center gap-1 text-[11px] font-black text-[#2D6A54]">
-              <img src="assets/crop_carrot.png" alt="播種" class="w-4 h-4 object-contain" />
+          <div class="pointer-events-auto flex items-center min-w-0" style="gap:4px;">
+            <button id="btn-farm-plant-mode" type="button" class="game-btn game-btn-mint rounded-2xl flex items-center font-black text-[#2D6A54] whitespace-nowrap" style="padding:7px 7px;gap:3px;font-size:11px;">
+              <img src="assets/crop_sprout.png" alt="播種" class="w-4 h-4 object-contain shrink-0" />
               <span>播種</span>
             </button>
-            <button id="btn-farm-market" type="button" class="game-btn game-btn-pink relative rounded-2xl px-2 py-2 flex items-center gap-1 text-[11px] font-black text-[#5A3A28]">
-              <img class="img-shop-icon w-4 h-4 object-contain" src="" alt="市集" />
+            <button id="btn-farm-market" type="button" class="game-btn game-btn-pink rounded-2xl flex items-center font-black text-[#5A3A28] whitespace-nowrap" style="position:relative;overflow:visible;padding:7px 7px;gap:3px;font-size:11px;">
+              <img class="img-shop-icon w-4 h-4 object-contain shrink-0" src="" alt="市集" />
               <span>市集</span>
-              <span id="farm-barn-badge" class="hidden absolute -top-1.5 -right-1 px-1.5 py-0.2 rounded-full text-[9px] font-black text-white" style="background:#D97C98;">0</span>
+              <span id="farm-barn-badge" style="display:none;position:absolute;top:-7px;right:-5px;min-width:18px;height:18px;padding:0 4px;border-radius:9999px;background:#D97C98;color:#FFFFFF;border:2px solid #FFF9F0;font-size:10px;font-weight:900;line-height:1;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(90,58,40,0.25);pointer-events:none;z-index:5;">0</span>
             </button>
-            <button id="btn-garden-bunnies" type="button" class="game-btn rounded-2xl px-2 py-2 flex items-center gap-1 text-[11px] font-black text-[#5A3A28]">
-              <img class="img-album-icon w-4 h-4 object-contain" src="" alt="兔兔" />
+            <button id="btn-garden-bunnies" type="button" class="game-btn rounded-2xl flex items-center font-black text-[#5A3A28] whitespace-nowrap" style="padding:7px 7px;gap:3px;font-size:11px;">
+              <img class="img-album-icon w-4 h-4 object-contain shrink-0" src="" alt="兔兔" />
               <span>兔兔</span>
             </button>
-            <button id="btn-garden-shop" type="button" class="game-btn game-btn-gold rounded-2xl px-2 py-2 flex items-center gap-1 text-[11px] font-black text-[#6B3E08]">
+            <button id="btn-garden-shop" type="button" class="game-btn game-btn-gold rounded-2xl flex items-center font-black text-[#6B3E08] whitespace-nowrap" style="padding:7px 7px;font-size:11px;">
               <span>擺設</span>
             </button>
-            <button id="btn-garden-bag" type="button" class="game-btn rounded-2xl px-2 py-2 flex items-center gap-1 text-[11px] font-black text-[#5A3A28]">
+            <button id="btn-garden-bag" type="button" class="game-btn rounded-2xl flex items-center font-black text-[#5A3A28] whitespace-nowrap" style="padding:7px 7px;font-size:11px;">
               <span>佈置</span>
             </button>
           </div>
@@ -2056,6 +2058,7 @@
     // Garden Live State (10x12 expandable meadow with smooth pan & zoom)
     const gardenState = {
       editMode: false,
+      movingPlotIdx: null,
       bunnies: [], // animated bunny instances visiting garden
       particles: [],
       floatingTexts: [],
@@ -2123,16 +2126,17 @@
       const bdg = document.getElementById('farm-barn-badge');
       if (bdg) {
         bdg.textContent = barnTotal;
-        bdg.classList.toggle('hidden', barnTotal <= 0);
+        bdg.style.display = barnTotal > 0 ? 'inline-flex' : 'none';
       }
       const expBtn = document.getElementById('btn-farm-expand');
       if (expBtn) {
         const req = getNextPlotRequirement(pCount);
         const canFree = saveData.unlockedCards.length >= req.reqBunnies;
-        expBtn.textContent = canFree ? '+免費開墾' : `+開墾(${req.coinCost}幣)`;
-        expBtn.style.cssText = canFree
+        expBtn.textContent = canFree ? '+免費開墾' : `+開墾(${req.coinCost})`;
+        expBtn.style.cssText = (canFree
           ? 'background:#E8F8F2;color:#2D6A54;border:1.5px solid #52A88B;'
-          : 'background:#FFF8EB;color:#9A5410;border:1.5px solid #E5B974;';
+          : 'background:#FFF8EB;color:#9A5410;border:1.5px solid #E5B974;')
+          + 'font-size:10px;padding:4px 7px;line-height:1.1;';
       }
       const hAllBtn = document.getElementById('btn-farm-harvest-all');
       if (hAllBtn) {
@@ -2459,8 +2463,13 @@
             const gy = originY + r * cell;
             const isFarm = isCellOccupiedByFarm(c, r);
             const occ = saveData.gardenGrid.some(t => t.col === c && t.row === r);
-            gCtx.fillStyle = isFarm ? 'rgba(107, 196, 166, 0.28)' : occ ? 'rgba(254, 240, 138, 0.22)' : 'rgba(255, 252, 240, 0.24)';
-            gCtx.strokeStyle = 'rgba(90, 58, 40, 0.30)';
+            const isMovingFarm = gardenState.movingPlotIdx !== null;
+            gCtx.fillStyle = isFarm
+              ? 'rgba(107, 196, 166, 0.28)'
+              : occ
+                ? 'rgba(254, 240, 138, 0.22)'
+                : isMovingFarm ? 'rgba(82, 168, 139, 0.24)' : 'rgba(255, 252, 240, 0.24)';
+            gCtx.strokeStyle = (isMovingFarm && !isFarm && !occ) ? 'rgba(45, 106, 84, 0.65)' : 'rgba(90, 58, 40, 0.30)';
             gCtx.lineWidth = 1.5;
             gCtx.setLineDash([4, 4]);
             roundRect(gCtx, gx + 2, gy + 2, cell - 4, cell - 4, 10);
@@ -2556,9 +2565,22 @@
       gCtx.restore();
     }
 
+    function updateGardenBuildHint() {
+      const el = document.getElementById('garden-build-hint');
+      if (!el) return;
+      if (gardenState.movingPlotIdx !== null) {
+        el.textContent = '已選取農田！點擊任一空草地格仔即可移動';
+        el.style.color = '#2D6A54';
+      } else {
+        el.textContent = '點擺設放草地・點農田可移動位置（再點擺設收回）';
+        el.style.color = '#5A3A28';
+      }
+    }
+
     function setGardenEditMode(on, preselectId = null) {
       if (on && gardenState.plantMode) setFarmPlantMode(false);
       gardenState.editMode = on;
+      gardenState.movingPlotIdx = null;
       if (preselectId) gardenState.selectedBuildId = preselectId;
       const toggleBtn = document.getElementById('btn-garden-bag');
       toggleBtn.querySelector('span').textContent = on ? '完成' : '佈置';
@@ -2566,6 +2588,7 @@
       document.getElementById('garden-build-bar').classList.toggle('hidden', !on);
       const toastWrap = document.getElementById('toast-container');
       if (toastWrap) toastWrap.style.bottom = on ? '192px' : '';
+      updateGardenBuildHint();
       if (on) renderGardenPalette();
     }
 
@@ -2604,12 +2627,55 @@
         const row = Math.floor((y - m.originY) / m.cell);
         const totalRows = m.dynRows || GRID_ROWS;
         if (col >= 0 && col < GRID_COLS && row >= 0 && row < totalRows) {
-          if (isCellOccupiedByFarm(col, row)) {
-            SFX.wrong();
-            showToast('這格是農地喔！請把擺設放在周圍的草地格仔上。');
+          ensureFarmState();
+          const farmIdx = saveData.farm.plots.findIndex(p => p && p.col === col && p.row === row);
+          const existingIdx = saveData.gardenGrid.findIndex(t => t.col === col && t.row === row);
+
+          // If player already selected a farm plot to move:
+          if (gardenState.movingPlotIdx !== null) {
+            const srcPlot = saveData.farm.plots[gardenState.movingPlotIdx];
+            if (farmIdx === gardenState.movingPlotIdx) {
+              gardenState.movingPlotIdx = null;
+              updateGardenBuildHint();
+              SFX.tap();
+              showToast('已取消移動農田。');
+              return;
+            }
+            if (farmIdx >= 0 && srcPlot) {
+              const dstPlot = saveData.farm.plots[farmIdx];
+              const tmpC = srcPlot.col, tmpR = srcPlot.row;
+              srcPlot.col = dstPlot.col; srcPlot.row = dstPlot.row;
+              dstPlot.col = tmpC; dstPlot.row = tmpR;
+              gardenState.movingPlotIdx = null;
+              updateGardenBuildHint();
+              persistSave(); SFX.found();
+              showToast('已對調兩塊農田的位置！');
+              return;
+            }
+            if (existingIdx >= 0) {
+              SFX.wrong();
+              showToast('這格已有擺設，請點空草地格仔移動農田！');
+              return;
+            }
+            if (srcPlot) {
+              srcPlot.col = col; srcPlot.row = row;
+              gardenState.movingPlotIdx = null;
+              updateGardenBuildHint();
+              persistSave(); SFX.found();
+              showToast('已將農田移到新位置！');
+              return;
+            }
+          }
+
+          // Tapping a farm plot in Edit Mode selects it for moving!
+          if (farmIdx >= 0) {
+            gardenState.movingPlotIdx = farmIdx;
+            updateGardenBuildHint();
+            SFX.tap();
+            showToast('已選取農田！請點擊任一空草地格仔移動過去。');
             return;
           }
-          const existingIdx = saveData.gardenGrid.findIndex(t => t.col === col && t.row === row);
+
           if (existingIdx >= 0) {
             const removed = saveData.gardenGrid.splice(existingIdx, 1)[0];
             persistSave(); SFX.tap(); renderGardenPalette();
@@ -4840,27 +4906,65 @@
           const sproutBed = IMAGES.farm_bed_sprout;
           if (sproutBed && sproutBed.complete && sproutBed.naturalWidth > 0) {
             c.drawImage(sproutBed, left, top, sz, sz);
+          } else if (IMAGES.farm_bed_empty && IMAGES.farm_bed_empty.complete) {
+            c.drawImage(IMAGES.farm_bed_empty, left, top, sz, sz);
           }
-          // Mini corner badge showing clearly WHICH crop is growing in this bed!
+          // Prominent lively swaying seedling right in the middle of the planter bed!
+          const sproutImg = IMAGES.crop_sprout;
+          if (sproutImg && sproutImg.complete && sproutImg.naturalWidth > 0) {
+            const totalMs = Math.max(1, (p.readyAt || nowMs) - (p.plantedAt || nowMs));
+            const prog = Math.max(0, Math.min(1, (nowMs - (p.plantedAt || nowMs)) / totalMs));
+            const sSize = sz * (0.44 + prog * 0.14);
+            const sway = Math.sin(tSec * 3.0 + idx * 1.3) * 0.08;
+            c.save();
+            c.translate(center.x, center.y + 4);
+            c.rotate(sway);
+            c.drawImage(sproutImg, -sSize / 2, -sSize * 0.78, sSize, sSize);
+            c.restore();
+          }
+          // Compact top-right badge showing clearly WHICH crop is growing without covering the seedling
           const gCrop = FARM_CROP_BY_ID[p.cropId];
           const gIcon = gCrop ? IMAGES[gCrop.img] : null;
           if (gIcon && gIcon.complete && gIcon.naturalWidth > 0) {
-            c.fillStyle = 'rgba(255, 252, 244, 0.94)';
+            const bx = left + sz - 6, by = top + 6;
+            c.fillStyle = 'rgba(255, 252, 244, 0.96)';
             c.strokeStyle = '#6CA6D9';
-            c.lineWidth = 1.6;
-            c.beginPath(); c.arc(left + sz - 9, top + 9, 13, 0, Math.PI * 2); c.fill(); c.stroke();
-            c.drawImage(gIcon, left + sz - 19, top - 1, 20, 20);
+            c.lineWidth = 1.5;
+            c.beginPath(); c.arc(bx, by, 10.5, 0, Math.PI * 2); c.fill(); c.stroke();
+            c.drawImage(gIcon, bx - 8, by - 8, 16, 16);
           }
           const rem = Math.max(0, p.readyAt - nowMs);
           c.fillStyle = '#EDF6FC';
           c.strokeStyle = '#6CA6D9';
-          c.lineWidth = 1.6;
-          roundRect(c, center.x - 25, top + sz - 17, 50, 17, 8.5);
+          c.lineWidth = 1.5;
+          roundRect(c, center.x - 23, top + sz - 13, 46, 15, 7.5);
           c.fill(); c.stroke();
           c.fillStyle = '#3B6E9C';
-          c.font = '900 9px "Noto Sans TC", sans-serif';
+          c.font = '900 8.5px "Noto Sans TC", sans-serif';
           c.textAlign = 'center'; c.textBaseline = 'middle';
-          c.fillText(formatFarmCountdown(rem), center.x, top + sz - 8.5);
+          c.fillText(formatFarmCountdown(rem), center.x, top + sz - 5.5);
+        }
+
+        // Edit-Mode visual feedback when moving a farm plot
+        if (gardenState.editMode) {
+          const isSel = gardenState.movingPlotIdx === idx;
+          if (isSel) {
+            const pulse = 1 + Math.sin(tSec * 7) * 0.04;
+            c.save();
+            c.strokeStyle = '#F97316';
+            c.lineWidth = 3;
+            c.beginPath();
+            c.arc(center.x, center.y, (sz * 0.50) * pulse, 0, Math.PI * 2);
+            c.stroke();
+            c.fillStyle = '#F97316';
+            roundRect(c, center.x - 21, top - 10, 42, 16, 8);
+            c.fill();
+            c.fillStyle = '#FFFFFF';
+            c.font = '900 9px "Noto Sans TC", sans-serif';
+            c.textAlign = 'center'; c.textBaseline = 'middle';
+            c.fillText('移動中', center.x, top - 2);
+            c.restore();
+          }
         }
       }
       c.restore();
@@ -5087,14 +5191,16 @@
         const hid = saveData.farm.helpers[i];
         const b = hid ? BUNNY_BY_ID[hid] : null;
         const sk = hid ? getBunnyFarmSkill(hid) : null;
+        const shortLabel = !sk ? '' : sk.type === 'auto_harvest' ? '夜收' : sk.type === 'speed' ? `速${sk.pct}%` : `價+${sk.pct}%`;
         const chip = document.createElement('div');
-        chip.className = 'shrink-0 rounded-xl px-1.5 py-0.5 flex items-center gap-1';
-        chip.style.cssText = b
+        chip.className = 'rounded-xl flex items-center justify-center';
+        chip.style.cssText = (b
           ? `background:${sk.bg};border:1.5px solid ${sk.color};`
-          : 'background:rgba(255,255,255,0.75);border:1.5px dashed #C9B8A8;';
+          : 'background:rgba(255,255,255,0.78);border:1.5px dashed #C9B8A8;')
+          + 'flex:1 1 0;min-width:0;overflow:hidden;padding:2px 3px;gap:2px;';
         chip.innerHTML = b
-          ? `<img src="${SPRITE_SRCS[hid]}" alt="${b.name}" class="w-5 h-5 object-contain" /><span class="text-[9px] font-black whitespace-nowrap" style="color:${sk.color};">${sk.label}</span>`
-          : `<span class="text-[9px] font-bold text-[#9A887A] px-1">+ 派遣</span>`;
+          ? `<img src="${SPRITE_SRCS[hid]}" alt="${b.name}" class="w-4 h-4 object-contain shrink-0" /><span class="font-black whitespace-nowrap truncate" style="color:${sk.color};font-size:9.5px;line-height:1.1;">${shortLabel}</span>`
+          : `<span class="font-bold text-[#9A887A] whitespace-nowrap" style="font-size:9.5px;line-height:1.1;">+派遣</span>`;
         wrap.appendChild(chip);
       }
     }
