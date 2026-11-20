@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>兔兔躲貓貓 · 30 兔兔與夢幻後花園</title>
+  <title>兔兔躲貓貓 · 100 隻兔兔與夢幻後花園</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Noto+Sans+TC:wght@500;700;900&display=swap');
@@ -293,7 +293,7 @@
       <div class="relative z-10 flex items-center justify-end gap-1.5 pl-12 pr-3 pt-3">
         <button id="btn-home-account" type="button" class="game-btn rounded-2xl px-2.5 py-1 flex items-center gap-1 text-[11px] font-black text-[#5A3A28] max-w-[130px] truncate">
           <img id="img-account-avatar" src="" alt="頭像" class="w-4 h-4 object-contain shrink-0" />
-          <span id="home-account-label" class="truncate">登入綁定</span>
+          <span id="home-account-label" class="truncate">設定暱稱</span>
         </button>
         <div class="game-btn game-btn-gold rounded-2xl px-2 py-1 flex items-center gap-1 text-xs font-black text-[#6B3E08]">
           <img class="img-coin-icon w-4 h-4 object-contain" src="" alt="金幣" />
@@ -383,7 +383,7 @@
 
           <div class="flex items-center gap-1">
             <!-- Countdown + Coin Pill -->
-            <div class="game-btn rounded-xl px-2 py-1 flex items-center gap-1.5 text-xs font-black">
+            <div class="game-btn rounded-xl px-2.5 py-1 flex items-center gap-2 text-xs font-black">
               <span class="flex items-center gap-0.5" id="hud-timer-wrap">
                 <img class="img-clock-icon w-4 h-4 object-contain" src="" alt="計時" />
                 <span id="hud-timer" class="tabular-nums">00:55</span>
@@ -395,9 +395,8 @@
               </span>
             </div>
 
-            <button id="btn-album" type="button" class="game-btn game-btn-pink relative rounded-xl px-1.5 py-1 text-[11px] font-black flex items-center gap-1" title="30 兔兔可愛卡圖鑑">
-              <img class="img-album-icon w-4 h-4 object-contain" src="" alt="圖鑑" />
-              <span class="album-count-display tabular-nums">0/100</span>
+            <button id="btn-album" type="button" class="game-btn game-btn-pink relative rounded-xl w-8 h-8 flex items-center justify-center" title="100 隻兔兔可愛卡圖鑑">
+              <img class="img-album-icon w-5 h-5 object-contain" src="" alt="圖鑑" />
               <span id="album-new-dot" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#FF4D6D] border-2 border-white"></span>
             </button>
 
@@ -437,9 +436,9 @@
               <img id="img-hint-icon" src="" alt="提示" class="w-6 h-6 object-contain" />
               <span id="hint-btn-text">雷達 (1)</span>
             </button>
-            <button id="btn-watch-ad-direct" type="button" class="game-btn game-btn-coral rounded-2xl pl-2 pr-2.5 py-1.5 flex items-center gap-1 text-[11px] font-black text-[#9F1239]" title="睇廣告免費攞提示">
-              <img class="img-tv-icon w-6 h-6 object-contain" src="" alt="廣告" />
-              <span>+1提示</span>
+            <button id="btn-watch-ad-direct" type="button" class="game-btn game-btn-coral rounded-2xl pl-2 pr-2.5 py-1.5 flex items-center gap-1 text-[11px] font-black text-[#9F1239]" title="用 30 金幣換 1 個提示">
+              <img class="img-coin-icon w-6 h-6 object-contain" src="" alt="金幣" />
+              <span>30 換提示</span>
             </button>
           </div>
 
@@ -678,15 +677,15 @@
       </div>
     </div>
 
-    <!-- ================= MODAL: ACCOUNT LOGIN / BINDING (帳號登入綁定) ================= -->
+    <!-- ================= MODAL: PLAYER NICKNAME (玩家暱稱) ================= -->
     <div id="modal-login" class="hidden absolute inset-0 z-50 bg-black/60 backdrop-blur-[2px] flex items-center justify-center p-4">
       <div class="game-panel animate-pop w-full max-w-[340px] rounded-3xl px-5 pb-5 pt-6 text-center relative">
         <button id="btn-close-login" type="button" class="game-btn absolute top-2.5 right-2.5 rounded-xl w-9 h-9 flex items-center justify-center font-black z-30 text-sm">✕</button>
         <div class="banner-header">
           <img class="img-banner-ribbon" src="" alt="橫幅" />
-          <span class="banner-header-title">玩家帳號綁定</span>
+          <span class="banner-header-title">玩家暱稱</span>
         </div>
-        <p id="login-status-desc" class="text-xs font-bold text-[#7C5A46] mb-3">綁定帳號即可同步 30 隻兔兔圖鑑同夢幻後花園！</p>
+        <p id="login-status-desc" class="text-xs font-bold text-[#7C5A46] mb-3">改個名，紀念相同花園都會用呢個暱稱！</p>
 
         <div class="bg-white/90 rounded-2xl border-2 border-[#5A3A28]/15 p-3 mb-3 text-left">
           <label for="input-nickname" class="block text-[11px] font-black text-[#5A3A28] mb-1">玩家暱稱</label>
@@ -695,19 +694,11 @@
         </div>
 
         <div class="space-y-2 mb-3">
-          <button id="btn-bind-google" type="button" class="game-btn w-full py-2.5 rounded-2xl text-xs font-black text-[#5A3A28] flex items-center justify-center gap-2">
-            <span class="w-5 h-5 rounded-full bg-[#EA4335] text-white font-black text-[11px] flex items-center justify-center">G</span>
-            <span>使用 Google 帳號綁定同步</span>
-          </button>
-          <button id="btn-bind-apple" type="button" class="game-btn w-full py-2.5 rounded-2xl text-xs font-black text-[#5A3A28] flex items-center justify-center gap-2">
-            <span class="w-5 h-5 rounded-full bg-[#1F2937] text-white font-black text-[11px] flex items-center justify-center">A</span>
-            <span>使用 Apple ID 綁定同步</span>
-          </button>
           <button id="btn-save-guest" type="button" class="game-btn game-btn-gold w-full py-2 rounded-2xl text-xs font-black text-[#6B3E08]">
-            先用遊客暱稱繼續玩
+            儲存暱稱
           </button>
         </div>
-        <p class="text-[10px] font-bold text-[#9A7B69]">（原型以本機模擬雲端綁定，正式上架可直接接駁 Firebase Auth / Game Center）</p>
+        <p class="text-[10px] font-bold text-[#9A7B69]">遊戲進度只會儲存喺呢部裝置。清除瀏覽器資料或者換機，進度會消失。</p>
       </div>
     </div>
 
@@ -827,36 +818,6 @@
       </div>
     </div>
 
-    <!-- ================= MODAL: REWARDED AD SIMULATOR ================= -->
-    <div id="modal-ad" class="hidden absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div class="game-panel animate-pop w-full max-w-[350px] rounded-3xl overflow-hidden bg-[#1E1B2E] text-white border-[#FFB830]">
-        <div class="flex items-center justify-between px-4 py-2.5 bg-black/45 border-b border-white/10">
-          <div class="flex items-center gap-1.5">
-            <img class="img-tv-icon w-5 h-5 object-contain" src="" alt="廣告" />
-            <span class="text-[11px] font-black text-[#FDE68A]">模擬激勵廣告</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span id="ad-countdown-text" class="text-xs font-black text-[#FDE68A] tabular-nums">5 秒後獲得獎勵</span>
-            <button id="btn-ad-abort" type="button" class="text-xs font-bold px-2 py-0.5 rounded-lg bg-white/15 hover:bg-white/25 text-white/80">跳過</button>
-          </div>
-        </div>
-
-        <div class="p-5 flex flex-col items-center text-center bg-gradient-to-b from-[#31255A] to-[#1E1B2E]">
-          <div class="w-28 h-28 rounded-full bg-white/15 border-2 border-[#FFB830]/60 flex items-center justify-center mb-3">
-            <img id="ad-mascot-img" src="" alt="廣告吉祥物" class="h-24 w-auto object-contain animate-bunny-hop" />
-          </div>
-          <h3 id="ad-title" class="text-lg font-black text-[#FDE68A] mb-1">兔兔能量飲！</h3>
-          <p id="ad-desc" class="text-xs text-white/80 leading-relaxed mb-4"></p>
-          <div class="w-full h-2.5 bg-white/15 rounded-full overflow-hidden mb-4">
-            <div id="ad-progress-bar" class="h-full bg-gradient-to-r from-[#FF924C] to-[#FDE68A] transition-all duration-100" style="width: 0%"></div>
-          </div>
-          <button id="btn-ad-claim" type="button" disabled class="w-full py-3 rounded-2xl font-black text-sm transition-all bg-white/15 text-white/50 cursor-not-allowed">
-            請觀看完整廣告...
-          </button>
-        </div>
-      </div>
-    </div>
-
     <!-- ================= MODAL: TIME'S UP ================= -->
     <div id="modal-timeout" class="hidden absolute inset-0 z-40 bg-black/65 backdrop-blur-[2px] flex items-center justify-center p-4">
       <div class="game-panel animate-pop w-full max-w-[340px] rounded-3xl px-5 pb-5 pt-6 text-center relative">
@@ -870,8 +831,8 @@
         <p id="timeout-subtitle" class="text-xs font-bold text-[#7C5A46] mb-4">仲差 1 隻兔兔就可以過關解鎖可愛卡！</p>
         <div class="flex flex-col gap-2.5">
           <button id="btn-revive-ad" type="button" class="game-btn game-btn-orange w-full py-3 rounded-2xl font-black text-sm flex items-center justify-center gap-2">
-            <img class="img-tv-icon w-6 h-6 object-contain" src="" alt="廣告" />
-            <span>睇廣告續命 +20 秒 + 1 提示</span>
+            <img class="img-coin-icon w-6 h-6 object-contain" src="" alt="金幣" />
+            <span>用 60 金幣續命 +20 秒 + 1 提示</span>
           </button>
           <button id="btn-timeout-retry" type="button" class="game-btn game-btn-gold w-full py-2.5 rounded-2xl text-[#6B3E08] font-black text-xs">
             重新挑戰本關
@@ -1066,7 +1027,6 @@
       dec_flower_bed: "assets/dec_flower_bed.webp",
       ui_album: "assets/ui_album.webp",
       ui_radar: "assets/ui_radar.webp",
-      ui_tv: "assets/ui_tv.webp",
       ui_map: "assets/ui_map.webp",
       ui_clock: "assets/ui_clock.webp",
       ui_star: "assets/ui_star.webp",
@@ -1301,11 +1261,6 @@
       }
     ];
 
-    const FAKE_ADS = [
-      { sprite: 'sp_bolobao', title: '兔兔冰室特脆菠蘿油', desc: '新鮮出爐！睇完 5 秒即刻送你獎勵，幫你輕鬆過關！' },
-      { sprite: 'sp_scout',   title: '兔兔探險隊超準雷達', desc: '再識匿嘅兔仔都逃唔過指南針！睇完即領獎勵！' },
-      { sprite: 'sp_macaron', title: '夢幻馬卡龍能量禮盒', desc: '食完即刻眼力加倍、時間延長！睇完 5 秒即送！' }
-    ];
 
     // =========================================================================
     // 4. WEB AUDIO SFX & WARM ACOUSTIC BGM + CUSTOM MP3 LOADER
@@ -1525,7 +1480,6 @@
       timeLeft: 60, lastTickSec: 11,
       running: false, paused: false,
       targetsCollapsed: false, albumFilter: 'all', hasNewAlbumDot: false,
-      adMode: 'hint',
       revealCardId: null,
       detailCardId: null,
       pendingLevelClear: false,
@@ -1579,7 +1533,7 @@
       document.getElementById('home-album-sub').textContent = `已收集 ${saveData.unlockedCards.length}/${BUNNY_CATALOG.length}`;
       const gCount = saveData.gardenBunnies.length;
       document.getElementById('home-garden-sub').textContent = gCount > 0 ? `${gCount} 隻兔兔圍圈玩緊` : '砌格子＆摸兔兔';
-      document.getElementById('home-account-label').textContent = saveData.account.bound ? `☁ ${saveData.account.nickname}` : '登入綁定';
+      document.getElementById('home-account-label').textContent = saveData.account.nickname || '設定暱稱';
       document.getElementById('img-account-avatar').src = SPRITE_SRCS[saveData.account.avatar || 'sp_strawberry'];
       updateHomeNotificationDots();
     }
@@ -1603,7 +1557,6 @@
         'img-home-icon': SPRITE_SRCS.ui_home,
         'img-clock-icon': SPRITE_SRCS.ui_clock,
         'img-star-icon': SPRITE_SRCS.ui_star,
-        'img-tv-icon': SPRITE_SRCS.ui_tv,
         'img-target-icon': SPRITE_SRCS.ui_target,
         'img-shop-icon': SPRITE_SRCS.ui_shop,
         'img-banner-ribbon': SPRITE_SRCS.ui_banner,
@@ -2990,7 +2943,7 @@
     // =========================================================================
     function useHint() {
       if (!state.running) return;
-      if (state.hintsLeft <= 0) { openRewardedAdModal('hint'); return; }
+      if (state.hintsLeft <= 0) { buyBonus('hint'); return; }
       const unfound = state.bunnies.find(b => b.isTarget && !b.found);
       if (!unfound) return;
       state.hintsLeft -= 1; state.hintsUsed += 1; SFX.radar();
@@ -3008,66 +2961,23 @@
       renderHUD();
     }
 
-    let adTimerInterval = null;
-    let adDoneCallback = null;
-    function openRewardedAdModal(mode, onDone = null) {
-      if (adTimerInterval) clearInterval(adTimerInterval);
-      state.adMode = mode; adDoneCallback = onDone; state.paused = true;
-      const ad = FAKE_ADS[Math.floor(Math.random() * FAKE_ADS.length)];
-      document.getElementById('ad-mascot-img').src = SPRITE_SRCS[ad.sprite];
-      document.getElementById('ad-title').textContent = ad.title;
-      document.getElementById('ad-desc').innerHTML = `${ad.desc}<br/><span class="text-[10px] text-white/50">（模擬激勵廣告，正式上線可串接 AdMob / Unity Ads）</span>`;
-
-      const claimBtn = document.getElementById('btn-ad-claim');
-      claimBtn.disabled = true;
-      claimBtn.className = 'w-full py-3 rounded-2xl font-black text-sm transition-all bg-white/15 text-white/50 cursor-not-allowed';
-      claimBtn.textContent = '請觀看完整廣告...';
-      document.getElementById('ad-progress-bar').style.width = '0%';
-      document.getElementById('modal-timeout').classList.add('hidden');
-      document.getElementById('modal-ad').classList.remove('hidden');
-
-      const totalMs = 5000, start = performance.now();
-      adTimerInterval = setInterval(() => {
-        const elapsed = performance.now() - start;
-        const pct = Math.min(100, (elapsed / totalMs) * 100);
-        const rem = Math.max(0, Math.ceil((totalMs - elapsed) / 1000));
-        document.getElementById('ad-progress-bar').style.width = `${pct}%`;
-        if (elapsed >= totalMs) {
-          clearInterval(adTimerInterval); adTimerInterval = null;
-          document.getElementById('ad-countdown-text').textContent = '已達標！';
-          claimBtn.disabled = false;
-          claimBtn.className = 'game-btn game-btn-gold w-full py-3 rounded-2xl font-black text-sm text-[#5A3A28] cursor-pointer animate-bounce';
-          claimBtn.textContent = mode === 'interstitial' ? '繼續進入下一關 ➡️' : (mode === 'revive' ? '領取 +20 秒續命 + 1 提示！' : '領取 +1 雷達提示！');
-          SFX.found();
-        } else {
-          document.getElementById('ad-countdown-text').textContent = `${rem} 秒後獲得獎勵`;
-        }
-      }, 60);
-    }
-
-    function closeAdModal(grantReward) {
-      if (adTimerInterval) { clearInterval(adTimerInterval); adTimerInterval = null; }
-      document.getElementById('modal-ad').classList.add('hidden');
-      if (state.adMode === 'interstitial') {
-        const cb = adDoneCallback; adDoneCallback = null;
-        if (cb) cb();
-        return;
-      }
-      if (grantReward) {
-        if (state.adMode === 'revive') {
-          state.timeLeft = 20; state.hintsLeft += 1; state.running = true; state.paused = false;
-          renderHUD(); showToast('續命成功！+20 秒 + 1 提示！');
-        } else {
-          state.hintsLeft += 1; state.paused = false; renderHUD(); showToast('獲得 +1 雷達提示！');
-        }
+    const BONUS_COST = { hint: 30, revive: 60 };
+    function buyBonus(mode) {
+      const cost = BONUS_COST[mode];
+      if (saveData.coins < cost) { showToast(`金幣不足，需要 ${cost} 金幣。`); return; }
+      saveData.coins -= cost; persistSave();
+      if (mode === 'revive') {
+        document.getElementById('modal-timeout').classList.add('hidden');
+        state.timeLeft = 20; state.hintsLeft += 1; state.running = true; state.paused = false;
+        renderHUD(); showToast(`用 ${cost} 金幣續命：+20 秒 + 1 提示！`);
       } else {
-        if (state.adMode === 'revive') document.getElementById('modal-timeout').classList.remove('hidden');
-        else state.paused = false;
+        state.hintsLeft += 1; renderHUD(); showToast(`用 ${cost} 金幣換到 1 個雷達提示！`);
       }
+      SFX.found();
     }
 
     // =========================================================================
-    // 12. HUD, LEVEL CLEAR, THEME MENU & 30-CARD ALBUM
+    // 12. HUD, LEVEL CLEAR, THEME MENU & 100-CARD ALBUM
     // =========================================================================
     function renderHUD() {
       const theme = getCurrentTheme(), lvl = getCurrentLevel();
@@ -3088,7 +2998,7 @@
         hintIcon.src = SPRITE_SRCS.ui_radar; hintText.textContent = `雷達 (${state.hintsLeft})`;
       } else {
         hintBtn.className = 'game-btn game-btn-orange rounded-2xl pl-2 pr-3 py-1.5 flex items-center gap-1.5 text-xs font-black';
-        hintIcon.src = SPRITE_SRCS.ui_tv; hintText.textContent = '睇廣告攞提示';
+        hintIcon.src = SPRITE_SRCS.ui_coin; hintText.textContent = '30 金幣換提示';
       }
     }
 
@@ -3286,10 +3196,6 @@
         capState.timerId = null;
         capState.active = false;
       }
-      if (typeof adTimerInterval !== 'undefined' && adTimerInterval) {
-        clearInterval(adTimerInterval);
-        adTimerInterval = null;
-      }
       if (state.activeView === 'play') state.paused = false;
     }
 
@@ -3358,22 +3264,17 @@
       // Account Login / Binding Modal
       function openLoginModal() {
         document.getElementById('input-nickname').value = saveData.account.nickname || '';
-        document.getElementById('login-status-desc').textContent = saveData.account.bound
-          ? `已綁定 ${saveData.account.provider} 帳號（${saveData.account.nickname}），進度已同步！`
-          : '綁定帳號即可同步 30 隻兔兔圖鑑同夢幻後花園！';
         document.getElementById('modal-login').classList.remove('hidden');
       }
       function saveAccountBinding(provider, bound) {
         const nick = (document.getElementById('input-nickname').value || '').trim() || '兔兔小隊長';
         saveData.account = { bound, provider, nickname: nick, avatar: saveData.unlockedCards[0] || 'sp_strawberry' };
         persistSave(); syncGlobalCounters(); closeAllModals(); SFX.found();
-        showToast(bound ? `已綁定 ${provider} 帳號「${nick}」並同步進度！` : `歡迎「${nick}」！`);
+        showToast(`歡迎「${nick}」！`);
       }
       document.getElementById('btn-home-account').addEventListener('click', openLoginModal);
       document.getElementById('btn-close-login').addEventListener('click', closeAllModals);
-      document.getElementById('btn-bind-google').addEventListener('click', () => saveAccountBinding('Google', true));
-      document.getElementById('btn-bind-apple').addEventListener('click', () => saveAccountBinding('Apple', true));
-      document.getElementById('btn-save-guest').addEventListener('click', () => saveAccountBinding('遊客', false));
+      document.getElementById('btn-save-guest').addEventListener('click', () => saveAccountBinding('本機', false));
 
       // Card Reveal Flip Interaction
       document.getElementById('reveal-flip-trigger').addEventListener('click', () => {
@@ -3410,11 +3311,9 @@
         e.currentTarget.textContent = state.targetsCollapsed ? '▼' : '▲';
       });
       document.getElementById('btn-hint').addEventListener('click', useHint);
-      document.getElementById('btn-watch-ad-direct').addEventListener('click', () => { if (state.running) openRewardedAdModal('hint'); });
-      document.getElementById('btn-revive-ad').addEventListener('click', () => openRewardedAdModal('revive'));
+      document.getElementById('btn-watch-ad-direct').addEventListener('click', () => { if (state.running) buyBonus('hint'); });
+      document.getElementById('btn-revive-ad').addEventListener('click', () => buyBonus('revive'));
       document.getElementById('btn-timeout-retry').addEventListener('click', () => startLevel(state.themeIdx, state.levelIdx));
-      document.getElementById('btn-ad-abort').addEventListener('click', () => closeAdModal(false));
-      document.getElementById('btn-ad-claim').addEventListener('click', () => closeAdModal(true));
 
       document.getElementById('btn-zoom-in').addEventListener('click', () => { state.zoom = Math.min(state.maxZoom, state.zoom * 1.22); clampCamera(); });
       document.getElementById('btn-zoom-out').addEventListener('click', () => { state.zoom = Math.max(state.minZoom, state.zoom * 0.82); clampCamera(); });
@@ -3430,15 +3329,7 @@
         else if (state.themeIdx + 1 < THEMES.length) startLevel(state.themeIdx + 1, 0);
         else startLevel(0, 0);
       }
-      document.getElementById('btn-next-level').addEventListener('click', () => {
-        // Every 3 cleared levels -> trigger Interstitial Ad placement!
-        if (saveData.levelsClearedTotal > 0 && saveData.levelsClearedTotal % 3 === 0) {
-          document.getElementById('modal-clear').classList.add('hidden');
-          openRewardedAdModal('interstitial', goNextLevelNow);
-        } else {
-          goNextLevelNow();
-        }
-      });
+      document.getElementById('btn-next-level').addEventListener('click', goNextLevelNow);
       document.getElementById('btn-clear-garden').addEventListener('click', () => switchView('garden'));
       document.getElementById('btn-clear-album').addEventListener('click', () => {
         document.getElementById('modal-clear').classList.add('hidden');
