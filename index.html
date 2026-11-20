@@ -427,6 +427,36 @@
     .max-w-\[310px\] { max-width: 310px; }
     .bg-\[\#D6C3B0\] { background-color: #D6C3B0; }
     .bg-\[\#F97316\] { background-color: #F97316; }
+    .target-tray {
+      background: rgba(255, 250, 240, 0.78);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 2px solid rgba(92, 61, 43, 0.30);
+      box-shadow: 0 4px 12px rgba(72, 46, 28, 0.16);
+    }
+    .target-chip-lg {
+      width: 56px;
+      height: 56px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 2.5px solid #8C6248;
+      border-radius: 16px;
+      box-shadow: 0 2px 0 rgba(90, 58, 40, 0.25);
+      transition: transform 0.18s ease, opacity 0.2s ease;
+    }
+    .target-chip-lg:active { transform: scale(0.93); }
+    .target-chip-lg.found {
+      background: rgba(220, 252, 231, 0.88) !important;
+      border-color: #16A34A !important;
+      opacity: 0.65;
+      transform: scale(0.9);
+    }
+    .target-chip-lg img {
+      max-width: 48px;
+      max-height: 48px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
   </style>
 </head>
 <body>
@@ -591,15 +621,6 @@
           </div>
         </div>
 
-        <!-- Target Mission Strip (auto-wraps cleanly into 2 rows, zero horizontal scrolling or name clipping!) -->
-        <div class="flex items-start gap-1.5">
-          <div class="shrink-0 flex flex-col items-center leading-none pr-0.5 pt-1">
-            <span id="hud-progress" class="text-[11px] font-black px-1.5 py-0.5 rounded-lg bg-[#FFEDD5] border border-[#C2410C]/30 text-[#C2410C]">0/3</span>
-            <span id="hud-combo" class="hidden text-[9px] font-black text-[#D97706] mt-0.5">FEVER</span>
-          </div>
-          <div id="target-list" class="flex-1 flex flex-wrap items-center gap-1 py-0.5"></div>
-          <button id="btn-toggle-targets" type="button" class="shrink-0 mt-0.5 text-[10px] font-black px-1.5 py-1 rounded-lg bg-[#EAD7C0] text-[#5A3A28]" title="展開/收起目標欄">▲</button>
-        </div>
       </header>
 
       <main id="canvas-viewport">
@@ -607,7 +628,17 @@
         <div id="fever-vignette"></div>
         <div id="danger-vignette"></div>
 
-        <div id="golden-alert" class="hidden pointer-events-none absolute top-2.5 left-1/2 -translate-x-1/2 z-20 w-[92%] max-w-[360px]">
+        <!-- Semi-Transparent Floating Target Tray (Large Icon-First Cards) -->
+        <div id="target-tray" class="target-tray absolute top-2 left-2 right-2 z-20 rounded-2xl px-2 py-1.5 flex items-center gap-1.5">
+          <div class="shrink-0 flex flex-col items-center leading-none pr-0.5">
+            <span id="hud-progress" class="text-[11px] font-black px-1.5 py-0.5 rounded-lg bg-[#FFEDD5] border border-[#C2410C]/30 text-[#C2410C]">0/3</span>
+            <span id="hud-combo" class="hidden text-[9px] font-black text-[#D97706] mt-0.5">FEVER</span>
+          </div>
+          <div id="target-list" class="flex-1 flex flex-wrap items-center justify-center gap-1.5"></div>
+          <button id="btn-toggle-targets" type="button" class="shrink-0 text-[10px] font-black px-1.5 py-1 rounded-lg bg-[#EAD7C0] text-[#5A3A28]" title="展開/收起目標欄">▲</button>
+        </div>
+
+        <div id="golden-alert" class="hidden pointer-events-none absolute left-1/2 -translate-x-1/2 z-20 w-[92%] max-w-[360px]" style="top:82px;">
           <div class="game-btn game-btn-gold rounded-full px-3 py-1.5 flex items-center justify-center gap-1.5 text-xs font-black text-[#713F12] shadow-lg animate-bounce">
             <img class="img-star-icon w-4 h-4 object-contain" src="" alt="閃光" />
             <span id="golden-alert-text">閃光逃走兔出現！捉住可得金幣與新卡！</span>
@@ -1150,8 +1181,8 @@
           <span class="banner-header-title">玩法小指南</span>
         </div>
         <div class="bg-white/90 rounded-2xl border-2 border-[#5A3A28]/15 p-4 mb-3 flex flex-col items-center">
-          <div class="h-24 flex items-center justify-center mb-2">
-            <img id="tut-img" src="" alt="教學圖示" class="max-h-24 w-auto object-contain animate-bunny-hop drop-shadow-sm" />
+          <div class="w-full flex items-center justify-center mb-3 overflow-hidden shrink-0" style="height:108px;">
+            <img id="tut-img" src="" alt="教學圖示" class="object-contain animate-bunny-hop drop-shadow-sm" style="max-height:92px;max-width:148px;width:auto;height:auto;" />
           </div>
           <div id="tut-step-badge" class="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-[#FEF3C7] text-[#B45309] mb-1.5">步驟 1 / 3</div>
           <h3 id="tut-title" class="text-base font-black text-[#5A3A28] mb-1">拖曳與雙指縮放找兔兔</h3>
@@ -3582,19 +3613,22 @@
     function renderTargetBar() {
       const container = document.getElementById('target-list');
       container.innerHTML = '';
+      const borderMap = { SSR: '#D97706', SR: '#9333EA', R: '#5484A8', N: '#8C6248' };
       state.targetIds.forEach((tid) => {
         const meta = BUNNY_BY_ID[tid], isFound = state.foundIds.has(tid);
         const chip = document.createElement('button');
         chip.type = 'button';
-        chip.className = `target-chip shrink-0 flex items-center gap-1 rounded-xl px-1.5 py-0.5 ${isFound ? 'found' : ''}`;
+        chip.title = `${meta.name}（${meta.rarity}）`;
+        chip.className = `target-chip-lg shrink-0 relative flex items-center justify-center overflow-hidden ${isFound ? 'found' : ''}`;
+        if (!isFound && borderMap[meta.rarity]) chip.style.borderColor = borderMap[meta.rarity];
         chip.innerHTML = `
-          <div class="w-6 h-6 rounded-lg bg-[#FFF7ED] flex items-center justify-center overflow-hidden relative shrink-0">
-            <img src="${SPRITE_SRCS[tid]}" alt="${meta.name}" class="h-5 w-auto object-contain" />
-            ${isFound ? '<span class="absolute inset-0 bg-[#22C55E]/75 text-white text-[10px] font-black flex items-center justify-center">✓</span>' : ''}
-          </div>
-          <span class="text-[11px] font-black leading-none whitespace-nowrap ${isFound ? 'line-through text-[#15803D]' : 'text-[#5A3A28]'}">${meta.name}</span>
+          <img src="${SPRITE_SRCS[tid]}" alt="${meta.name}" />
+          ${isFound ? '<span class="absolute inset-0 bg-[#22C55E]/70 text-white text-xl font-black flex items-center justify-center">✓</span>' : ''}
         `;
-        chip.addEventListener('click', () => showToast(isFound ? `已找到「${meta.name}」` : `尋找目標：${meta.name}（${meta.rarity}）`));
+        chip.addEventListener('click', () => {
+          SFX.tap();
+          showToast(isFound ? `已找到「${meta.name}」✓` : `尋找目標：${meta.name}（${meta.rarity}）`);
+        });
         container.appendChild(chip);
       });
     }
