@@ -504,7 +504,11 @@
           <img id="img-account-avatar" src="" alt="頭像" class="w-4 h-4 object-contain shrink-0" />
           <span id="home-account-label" class="truncate">設定暱稱</span>
         </button>
-        <div class="game-btn game-btn-gold rounded-2xl px-2 py-1 flex items-center gap-1 text-xs font-black text-[#6B3E08]">
+        <button id="btn-home-stamina" type="button" class="game-btn game-btn-mint rounded-2xl px-2 py-1 flex items-center gap-1 text-xs font-black text-[#14532D] shrink-0" title="體力補充站">
+          <img src="assets/ui_carrot_single.png" alt="體力" class="w-4 h-4 object-contain" />
+          <span class="stamina-display tabular-nums">5/5</span>
+        </button>
+        <div class="game-btn game-btn-gold rounded-2xl px-2 py-1 flex items-center gap-1 text-xs font-black text-[#6B3E08] shrink-0">
           <img class="img-coin-icon w-4 h-4 object-contain" src="" alt="金幣" />
           <span class="coin-display tabular-nums">150</span>
         </div>
@@ -554,25 +558,29 @@
             </button>
           </div>
 
-          <div class="grid grid-cols-4 gap-1.5">
-            <button id="btn-home-levels" type="button" class="game-btn game-btn-gold py-2 px-1 rounded-2xl flex flex-col items-center justify-center gap-0.5 text-[10px] font-black text-[#6B3E08]">
+          <div class="grid grid-cols-5 gap-1">
+            <button id="btn-home-levels" type="button" class="game-btn game-btn-gold py-2 px-0.5 rounded-2xl flex flex-col items-center justify-center gap-0.5 text-[10px] font-black text-[#6B3E08]">
               <img class="img-map-icon w-6 h-6 object-contain" src="" alt="關卡地圖" />
               <span>關卡地圖</span>
             </button>
-            <button id="btn-home-daily-challenge" type="button" class="game-btn game-btn-mint relative py-2 px-1 rounded-2xl flex flex-col items-center justify-center gap-0.5 text-[10px] font-black text-[#5A3A28]">
+            <button id="btn-home-daily-challenge" type="button" class="game-btn game-btn-mint relative py-2 px-0.5 rounded-2xl flex flex-col items-center justify-center gap-0.5 text-[10px] font-black text-[#5A3A28]">
               <img class="img-target-icon w-6 h-6 object-contain" src="" alt="每日挑戰" />
               <span>每日挑戰</span>
               <span id="dot-daily-challenge" class="hidden absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-[#DC2626] border-2 border-white"></span>
             </button>
-            <button id="btn-home-quests" type="button" class="game-btn game-btn-coral relative py-2 px-1 rounded-2xl flex flex-col items-center justify-center gap-0.5 text-[10px] font-black text-[#5A3A28]">
+            <button id="btn-home-quests" type="button" class="game-btn game-btn-coral relative py-2 px-0.5 rounded-2xl flex flex-col items-center justify-center gap-0.5 text-[10px] font-black text-[#5A3A28]">
               <img class="img-star-icon w-6 h-6 object-contain" src="" alt="每日任務" />
               <span>每日任務</span>
               <span id="dot-quests" class="hidden absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-[#DC2626] border-2 border-white"></span>
             </button>
-            <button id="btn-home-checkin" type="button" class="game-btn game-btn-gold relative py-2 px-1 rounded-2xl flex flex-col items-center justify-center gap-0.5 text-[10px] font-black text-[#6B3E08]">
+            <button id="btn-home-checkin" type="button" class="game-btn game-btn-gold relative py-2 px-0.5 rounded-2xl flex flex-col items-center justify-center gap-0.5 text-[10px] font-black text-[#6B3E08]">
               <img class="img-coin-icon w-6 h-6 object-contain" src="" alt="首7日簽到" />
               <span>首7日SSR</span>
               <span id="dot-checkin" class="hidden absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-[#DC2626] border-2 border-white"></span>
+            </button>
+            <button id="btn-home-tutorial" type="button" class="game-btn py-2 px-0.5 rounded-2xl flex flex-col items-center justify-center gap-0.5 text-[10px] font-black text-[#5A3A28]">
+              <img class="img-radar-icon w-6 h-6 object-contain" src="" alt="玩法教學" />
+              <span>玩法教學</span>
             </button>
           </div>
         </div>
@@ -628,13 +636,14 @@
         <div id="fever-vignette"></div>
         <div id="danger-vignette"></div>
 
-        <!-- Semi-Transparent Floating Target Tray (Large Icon-First Cards) -->
+        <!-- Semi-Transparent Floating Target Tray (Single-Row Swipeable Large Icons) -->
         <div id="target-tray" class="target-tray absolute top-2 left-2 right-2 z-20 rounded-2xl px-2 py-1.5 flex items-center gap-1.5">
-          <div class="shrink-0 flex flex-col items-center leading-none pr-0.5">
+          <div class="shrink-0 flex flex-col items-center leading-none pr-1">
+            <span class="text-[9px] font-black text-[#6B4F40] whitespace-nowrap mb-1">目標兔兔</span>
             <span id="hud-progress" class="text-[11px] font-black px-1.5 py-0.5 rounded-lg bg-[#FFEDD5] border border-[#C2410C]/30 text-[#C2410C]">0/3</span>
             <span id="hud-combo" class="hidden text-[9px] font-black text-[#D97706] mt-0.5">FEVER</span>
           </div>
-          <div id="target-list" class="flex-1 flex flex-wrap items-center justify-center gap-1.5"></div>
+          <div id="target-list" class="flex-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" style="flex-wrap:nowrap;justify-content:flex-start;"></div>
           <button id="btn-toggle-targets" type="button" class="shrink-0 text-[10px] font-black px-1.5 py-1 rounded-lg bg-[#EAD7C0] text-[#5A3A28]" title="展開/收起目標欄">▲</button>
         </div>
 
@@ -1192,10 +1201,40 @@
           <span class="tut-dot w-2.5 h-2.5 rounded-full bg-[#F97316]"></span>
           <span class="tut-dot w-2.5 h-2.5 rounded-full bg-[#D6C3B0]"></span>
           <span class="tut-dot w-2.5 h-2.5 rounded-full bg-[#D6C3B0]"></span>
+          <span class="tut-dot w-2.5 h-2.5 rounded-full bg-[#D6C3B0]"></span>
         </div>
         <button id="btn-tut-next" type="button" class="game-btn game-btn-orange w-full py-2.5 rounded-2xl text-sm font-black">
           下一步
         </button>
+      </div>
+    </div>
+
+    <!-- ================= MODAL: STAMINA / ENERGY REFILL (體力補充站) ================= -->
+    <div id="modal-stamina" class="hidden absolute inset-0 z-50 bg-[#2A1F1A]/70 backdrop-blur-[2px] flex items-center justify-center p-4">
+      <div class="game-panel animate-pop w-full max-w-[335px] rounded-3xl px-5 pb-5 pt-6 text-center relative">
+        <button id="btn-close-stamina" type="button" class="game-btn absolute top-2.5 right-2.5 rounded-xl w-9 h-9 flex items-center justify-center font-black z-30 text-sm">✕</button>
+        <div class="banner-header">
+          <img class="img-banner-ribbon" src="" alt="橫幅" />
+          <span class="banner-header-title">紅蘿蔔體力站</span>
+        </div>
+        <div class="bg-white/90 rounded-2xl border-2 border-[#5A3A28]/15 p-3.5 mb-3">
+          <div class="flex items-center justify-center gap-2 mb-1.5">
+            <img src="assets/ui_carrot_single.png" alt="體力" class="w-8 h-8 object-contain" />
+            <span id="stamina-modal-count" class="text-2xl font-black text-[#15803D] tabular-nums">5 / 5</span>
+          </div>
+          <p id="stamina-modal-msg" class="text-xs font-bold text-[#6B4F40] mb-1">每次出發挑戰關卡消耗 1 點體力，每 15 分鐘自動回復 1 點。</p>
+          <p id="stamina-regen-hint" class="text-[11px] font-black text-[#D97706] tabular-nums">目前體力已滿！</p>
+        </div>
+        <div class="flex flex-col gap-2">
+          <button id="btn-stamina-ad" type="button" class="game-btn game-btn-orange w-full py-2.5 rounded-2xl text-xs font-black flex items-center justify-center gap-1.5">
+            <img class="img-star-icon w-4 h-4 object-contain" src="" alt="廣告" />
+            <span id="btn-stamina-ad-label">觀看贊助短片（3秒）免費領 +2 體力</span>
+          </button>
+          <button id="btn-stamina-coin" type="button" class="game-btn game-btn-gold w-full py-2.5 rounded-2xl text-xs font-black text-[#6B3E08] flex items-center justify-center gap-1.5">
+            <img class="img-coin-icon w-4 h-4 object-contain" src="" alt="金幣" />
+            <span>使用 40 金幣立即補滿體力</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -1725,12 +1764,17 @@
       audio: { bgm: true, sfx: true },
       tutorialDone: false,
       dailyChallengeDate: '',
+      stamina: 5,
+      staminaUpdatedAt: Date.now(),
       account: { bound: false, provider: '', nickname: '兔兔玩家', avatar: 'sp_strawberry' },
       levelsClearedTotal: 0,
       cardProgress: {},
       daily: { date: '', found: 0, captured: 0, petted: 0, claimed: [] },
       checkin: { streak: 0, lastDate: '' }
     };
+
+    const MAX_STAMINA = 5;
+    const STAMINA_REGEN_MS = 15 * 60 * 1000;
 
     function applyParsedSave(parsed) {
       if (Array.isArray(parsed.unlockedCards)) saveData.unlockedCards = parsed.unlockedCards;
@@ -1748,6 +1792,8 @@
       if (parsed.audio && typeof parsed.audio === 'object') saveData.audio = { bgm: parsed.audio.bgm !== false, sfx: parsed.audio.sfx !== false };
       if (typeof parsed.tutorialDone === 'boolean') saveData.tutorialDone = parsed.tutorialDone;
       if (typeof parsed.dailyChallengeDate === 'string') saveData.dailyChallengeDate = parsed.dailyChallengeDate;
+      if (typeof parsed.stamina === 'number') saveData.stamina = Math.max(0, Math.min(MAX_STAMINA, Math.floor(parsed.stamina)));
+      if (typeof parsed.staminaUpdatedAt === 'number') saveData.staminaUpdatedAt = parsed.staminaUpdatedAt;
       if (parsed.account && typeof parsed.account === 'object') saveData.account = { ...saveData.account, ...parsed.account };
       if (typeof parsed.levelsClearedTotal === 'number') saveData.levelsClearedTotal = parsed.levelsClearedTotal;
       if (parsed.cardProgress && typeof parsed.cardProgress === 'object') saveData.cardProgress = parsed.cardProgress;
@@ -2926,6 +2972,18 @@
     }
 
     function startLevel(themeIdx, levelIdx, keepDaily = false) {
+      syncStamina();
+      if (saveData.stamina <= 0) {
+        if (keepDaily) { state.isDailyChallenge = false; state.dailyLevelConfig = null; }
+        SFX.wrong();
+        openStaminaModal('體力不足！觀看短片免費領體力，或等待自動回復後再出發吧！');
+        return;
+      }
+      const wasFull = saveData.stamina >= MAX_STAMINA;
+      saveData.stamina = Math.max(0, saveData.stamina - 1);
+      if (wasFull) saveData.staminaUpdatedAt = Date.now();
+      persistSave();
+      syncStamina();
       if (!keepDaily) { state.isDailyChallenge = false; state.dailyLevelConfig = null; }
       state.themeIdx = themeIdx;
       state.levelIdx = levelIdx;
@@ -3882,8 +3940,90 @@
       }
     }
 
+    function syncStamina() {
+      const now = Date.now();
+      if (typeof saveData.stamina !== 'number') saveData.stamina = MAX_STAMINA;
+      if (typeof saveData.staminaUpdatedAt !== 'number') saveData.staminaUpdatedAt = now;
+      if (saveData.stamina < MAX_STAMINA) {
+        const elapsed = Math.max(0, now - saveData.staminaUpdatedAt);
+        const gained = Math.floor(elapsed / STAMINA_REGEN_MS);
+        if (gained > 0) {
+          saveData.stamina = Math.min(MAX_STAMINA, saveData.stamina + gained);
+          saveData.staminaUpdatedAt = saveData.stamina >= MAX_STAMINA ? now : saveData.staminaUpdatedAt + gained * STAMINA_REGEN_MS;
+          persistSave();
+        }
+      }
+      document.querySelectorAll('.stamina-display').forEach(el => {
+        el.textContent = `${saveData.stamina}/${MAX_STAMINA}`;
+      });
+    }
+
+    function renderStaminaModal(customMsg) {
+      syncStamina();
+      const cnt = document.getElementById('stamina-modal-count');
+      if (cnt) cnt.textContent = `${saveData.stamina} / ${MAX_STAMINA}`;
+      const msgEl = document.getElementById('stamina-modal-msg');
+      if (msgEl && customMsg) msgEl.textContent = customMsg;
+      const hintEl = document.getElementById('stamina-regen-hint');
+      if (hintEl) {
+        if (saveData.stamina >= MAX_STAMINA) {
+          hintEl.textContent = '目前體力已滿，隨時可以出發找兔兔！';
+        } else {
+          const remMs = Math.max(0, STAMINA_REGEN_MS - (Date.now() - saveData.staminaUpdatedAt));
+          const mm = String(Math.floor(remMs / 60000)).padStart(2, '0');
+          const ss = String(Math.floor((remMs % 60000) / 1000)).padStart(2, '0');
+          hintEl.textContent = `距離下次自動回復 +1 體力：${mm}:${ss}`;
+        }
+      }
+    }
+
+    function openStaminaModal(customMsg) {
+      renderStaminaModal(customMsg || '每次出發挑戰關卡消耗 1 點體力，每 15 分鐘自動回復 1 點。');
+      document.getElementById('modal-stamina').classList.remove('hidden');
+    }
+
+    let staminaAdBusy = false;
+    function watchStaminaAd() {
+      syncStamina();
+      if (staminaAdBusy) return;
+      if (saveData.stamina >= MAX_STAMINA) { SFX.tap(); showToast('體力已經是滿的囉！'); return; }
+      staminaAdBusy = true;
+      const btn = document.getElementById('btn-stamina-ad');
+      const lbl = document.getElementById('btn-stamina-ad-label');
+      let sec = 3;
+      if (btn) btn.disabled = true;
+      if (lbl) lbl.textContent = `贊助短片播放中… (${sec}秒)`;
+      const iv = setInterval(() => {
+        sec -= 1;
+        if (sec > 0) {
+          if (lbl) lbl.textContent = `贊助短片播放中… (${sec}秒)`;
+        } else {
+          clearInterval(iv);
+          staminaAdBusy = false;
+          if (btn) btn.disabled = false;
+          if (lbl) lbl.textContent = '觀看贊助短片（3秒）免費領 +2 體力';
+          saveData.stamina = Math.min(MAX_STAMINA, saveData.stamina + 2);
+          if (saveData.stamina >= MAX_STAMINA) saveData.staminaUpdatedAt = Date.now();
+          persistSave(); renderStaminaModal(); SFX.win();
+          showToast('感謝觀看！已免費回復 +2 體力！');
+        }
+      }, 1000);
+    }
+
+    function buyFullStamina() {
+      syncStamina();
+      if (saveData.stamina >= MAX_STAMINA) { SFX.tap(); showToast('體力已經是滿的囉！'); return; }
+      if (saveData.coins < 40) { SFX.wrong(); showToast('金幣不足 40 枚！可觀看短片免費補充體力。'); return; }
+      saveData.coins -= 40;
+      saveData.stamina = MAX_STAMINA;
+      saveData.staminaUpdatedAt = Date.now();
+      persistSave(); syncGlobalCounters(); renderStaminaModal(); SFX.coin();
+      showToast('已使用 40 金幣將體力補滿！');
+    }
+
     const TUTORIAL_STEPS = [
-      { img: 'ui_radar', title: '拖曳與雙指縮放找兔兔', desc: '滑動地圖並以雙指縮放畫面，尋找上方列出的目標兔兔；輕觸晃動的草叢說不定也藏著兔兔！' },
+      { img: 'ui_radar', title: '拖曳與縮放尋找目標兔兔', desc: '滑動地圖並以雙指縮放畫面，對照上方「目標兔兔」大圖示點擊找出所有兔兔；目標較多時可左右滑動檢視！' },
+      { img: 'prop_tent', title: '點擊震動中的場景道具', desc: '部分兔兔會躲在草叢、帳篷、籃子或攤檔裡面！看到場景道具正在晃動或閃出小星星時，必須先點擊撥開它，躲藏的兔兔才會跳出來喔！' },
       { img: 'prop_bush', title: '連點草叢收服百隻兔兔', desc: '發現尚未收集的兔兔時，在限時內連點草叢即可收服進圖鑑，還能一鍵生成專屬分享卡！' },
       { img: 'ui_garden', title: '打造專屬夢幻後花園', desc: '過關賺取紅蘿蔔金幣，在商店添購擺設並邀請兔兔入住，互動還能獲得額外金幣喔！' }
     ];
@@ -3926,6 +4066,11 @@
       document.getElementById('btn-home-quests').addEventListener('click', openQuestsModal);
       document.getElementById('btn-close-quests').addEventListener('click', closeAllModals);
       document.getElementById('btn-home-checkin').addEventListener('click', openCheckinModal);
+      document.getElementById('btn-home-tutorial').addEventListener('click', openTutorial);
+      document.getElementById('btn-home-stamina').addEventListener('click', () => openStaminaModal());
+      document.getElementById('btn-close-stamina').addEventListener('click', () => document.getElementById('modal-stamina').classList.add('hidden'));
+      document.getElementById('btn-stamina-ad').addEventListener('click', watchStaminaAd);
+      document.getElementById('btn-stamina-coin').addEventListener('click', buyFullStamina);
       document.getElementById('btn-close-checkin').addEventListener('click', closeAllModals);
       document.getElementById('btn-claim-checkin').addEventListener('click', claimTodayCheckin);
       document.getElementById('btn-garden-photo').addEventListener('click', snapGardenPhoto);
@@ -4111,11 +4256,11 @@
 
 
       // Backdrop click closes any info/menu modal reliably!
-      ['modal-levels', 'modal-album', 'modal-card-detail', 'modal-shop', 'modal-bag', 'modal-garden-bunnies', 'modal-login', 'modal-quests', 'modal-checkin', 'modal-photo', 'modal-home-mascot', 'modal-audio', 'modal-tutorial'].forEach(mid => {
+      ['modal-levels', 'modal-album', 'modal-card-detail', 'modal-shop', 'modal-bag', 'modal-garden-bunnies', 'modal-login', 'modal-quests', 'modal-checkin', 'modal-photo', 'modal-home-mascot', 'modal-audio', 'modal-tutorial', 'modal-stamina'].forEach(mid => {
         const el = document.getElementById(mid);
         if (el) el.addEventListener('click', (ev) => {
           if (ev.target === el) {
-            if (mid === 'modal-card-detail' || mid === 'modal-photo' || mid === 'modal-audio') el.classList.add('hidden');
+            if (mid === 'modal-card-detail' || mid === 'modal-photo' || mid === 'modal-audio' || mid === 'modal-stamina') el.classList.add('hidden');
             else if (mid === 'modal-tutorial') finishTutorial();
             else closeAllModals();
           }
@@ -4157,7 +4302,13 @@
 
     window.onload = () => {
       loadSave();
+      syncStamina();
       syncAudioUI();
+      setInterval(() => {
+        syncStamina();
+        const sm = document.getElementById('modal-stamina');
+        if (sm && !sm.classList.contains('hidden')) renderStaminaModal();
+      }, 1000);
       hydrateStaticUIImages();
       bindEvents();
       if ('serviceWorker' in navigator) {
