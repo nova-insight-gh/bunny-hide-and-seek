@@ -310,7 +310,16 @@
     @keyframes logoText  { from { opacity: 0; transform: translateY(2%) scale(0.96); } 45% { opacity: 1; } to { opacity: 1; transform: none; } }
     @keyframes logoHop   { from { opacity: 1; transform: none; } to { opacity: 1; transform: translateY(-0.5%); } }
     @keyframes logoPulse { from { opacity: 1; transform: none; } to { opacity: 1; transform: scale(1.06); } }
-    @media (prefers-reduced-motion: reduce) { #logo-splash .logo-rig img { animation: none; opacity: 1; } }
+    /* Reduce Motion on: same order and timing, fade only (no scale, spin or hop). */
+    @keyframes logoFade { from { opacity: 0; } to { opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) {
+      .logo-ring  { animation: logoFade 0.55s ease 0.15s forwards; }
+      .logo-moon  { animation: logoFade 0.48s ease 0.70s forwards; }
+      .logo-bunny { animation: logoFade 0.50s ease 0.98s forwards; }
+      .logo-star  { animation: logoFade 0.36s ease 1.30s forwards; }
+      .logo-seal  { animation: logoFade 0.28s ease 1.54s forwards; }
+      .logo-text  { animation: logoFade 0.45s ease 1.82s forwards; }
+    }
   </style>
 </head>
 <body>
