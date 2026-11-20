@@ -743,6 +743,9 @@
               <span class="shrink-0 text-[10px] font-black px-1.5 py-0.5 rounded-lg" style="background:#EDF6FC;color:#4B82B0;border:1px solid #B7D5EE;">值班小幫手</span>
               <div id="farm-helper-slots" class="flex-1 min-w-0 flex items-center gap-1 overflow-x-auto no-scrollbar"></div>
             </button>
+            <button id="btn-farm-expand" type="button" class="shrink-0 rounded-xl px-2 py-1 text-[10px] font-black active:scale-95" style="background:#FFF8EB;color:#9A5410;border:1.5px solid #E5B974;">
+              +開墾
+            </button>
             <button id="btn-farm-harvest-all" type="button" class="hidden shrink-0 rounded-xl px-2.5 py-1 text-[11px] font-black text-white shadow-sm active:scale-95" style="background:#52A88B;border:1.5px solid #3C8A70;">
               一鍵收成
             </button>
@@ -1151,7 +1154,8 @@
 
     <!-- ================= MODAL: LEVEL CLEAR SUMMARY ================= -->
     <div id="modal-clear" class="hidden absolute inset-0 z-40 bg-black/60 backdrop-blur-[2px] flex items-center justify-center p-4">
-      <div class="game-panel animate-pop w-full max-w-[350px] rounded-3xl px-5 pb-5 pt-6 text-center relative">
+      <div class="game-panel animate-pop w-full max-w-[350px] max-h-[92%] overflow-y-auto no-scrollbar rounded-3xl px-5 pb-5 pt-6 text-center relative">
+        <button id="btn-close-clear" type="button" class="game-btn absolute top-2.5 right-2.5 rounded-xl w-9 h-9 flex items-center justify-center font-black z-30 text-sm" title="返回主頁">✕</button>
         <div class="banner-header">
           <img class="img-banner-ribbon" src="" alt="橫幅" />
           <span id="clear-title" class="banner-header-title">完美三星通關！</span>
@@ -1198,14 +1202,18 @@
             <img class="img-star-icon w-4 h-4 object-contain" src="" alt="分享" />
             <span>生成通關分享卡</span>
           </button>
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-3 gap-1.5">
+            <button id="btn-clear-home" type="button" class="game-btn py-2 rounded-2xl text-[#5A3A28] font-black text-xs flex items-center justify-center gap-1">
+              <img class="img-home-icon w-4 h-4 object-contain" src="" alt="主頁" />
+              <span>回主頁</span>
+            </button>
             <button id="btn-clear-garden" type="button" class="game-btn game-btn-mint py-2 rounded-2xl text-[#5A3A28] font-black text-xs flex items-center justify-center gap-1">
-              <img class="img-garden-icon w-4 h-4 object-contain" src="" alt="後花園" />
-              <span>逛花園商店</span>
+              <img class="img-garden-icon w-4 h-4 object-contain" src="" alt="農場" />
+              <span>兔兔農場</span>
             </button>
             <button id="btn-clear-album" type="button" class="game-btn game-btn-pink py-2 rounded-2xl text-[#5A3A28] font-black text-xs flex items-center justify-center gap-1">
               <img class="img-album-icon w-4 h-4 object-contain" src="" alt="圖鑑" />
-              <span>查看圖鑑</span>
+              <span>看圖鑑</span>
             </button>
           </div>
         </div>
@@ -2096,6 +2104,15 @@
         bdg.textContent = barnTotal;
         bdg.classList.toggle('hidden', barnTotal <= 0);
       }
+      const expBtn = document.getElementById('btn-farm-expand');
+      if (expBtn) {
+        const req = getNextPlotRequirement(pCount);
+        const canFree = saveData.unlockedCards.length >= req.reqBunnies;
+        expBtn.textContent = canFree ? '+免費開墾' : `+開墾(${req.coinCost}幣)`;
+        expBtn.style.cssText = canFree
+          ? 'background:#E8F8F2;color:#2D6A54;border:1.5px solid #52A88B;'
+          : 'background:#FFF8EB;color:#9A5410;border:1.5px solid #E5B974;';
+      }
       const hAllBtn = document.getElementById('btn-farm-harvest-all');
       if (hAllBtn) {
         hAllBtn.classList.toggle('hidden', readyPlots <= 0);
@@ -2166,49 +2183,49 @@
     const GARDEN_PAD_Y = 64;
     const GARDEN_COIN_COOLDOWN_MS = 20 * 60 * 1000; // 20 minutes per bunny
 
-    function getFarmLayout(m) {
-      ensureFarmState();
-      const totalSlots = saveData.farm.plotCount + 1; // +1 for next expandable locked plot
-      const cols = 3;
-      const rows = Math.ceil(totalSlots / cols);
-      const plotSize = 104;
-      const gap = 16;
-      const pad = 22;
-      const zoneW = cols * plotSize + (cols - 1) * gap + pad * 2;
-      const zoneH = rows * plotSize + (rows - 1) * gap + pad * 2;
-      const startX = m.originX + (m.gridW - zoneW) / 2;
-      const startY = m.originY + 86;
-      const slots = [];
-      for (let i = 0; i < totalSlots; i++) {
-        const c = i % cols;
-        const r = Math.floor(i / cols);
-        slots.push({
-          idx: i,
-          locked: i >= saveData.farm.plotCount,
-          x: startX + pad + c * (plotSize + gap),
-          y: startY + pad + r * (plotSize + gap),
-          w: plotSize,
-          h: plotSize
-        });
+    function isCellOccupiedByDecor(col, row) {
+      return saveData.gardenGrid.some(t => t.col === col && t.row === row);
+    }
+
+    function isCellOccupiedByFarm(col, row) {
+      if (!saveData.farm || !Array.isArray(saveData.farm.plots)) return false;
+      return saveData.farm.plots.some(p => p && p.col === col && p.row === row);
+    }
+
+    function findNextFreeFarmCell() {
+      // Spiral/prefer neat central rows in the 10x12 grid, never overlapping garden decor or existing farm plots!
+      const prefOrder = [];
+      for (let r = 2; r < 24; r++) {
+        for (let c = 2; c <= 7; c++) prefOrder.push([c, r]);
       }
-      return { cols, rows, plotSize, gap, pad, zoneX: startX, zoneY: startY, zoneW, zoneH, slots };
+      for (let r = 1; r < 24; r++) {
+        for (let c = 0; c < GRID_COLS; c++) prefOrder.push([c, r]);
+      }
+      for (const [c, r] of prefOrder) {
+        if (!isCellOccupiedByDecor(c, r) && !isCellOccupiedByFarm(c, r)) {
+          return { col: c, row: r };
+        }
+      }
+      return { col: 2, row: 2 };
     }
 
     function getGridMetrics() {
       const vw = gardenCanvas.clientWidth || 390;
       const vh = gardenCanvas.clientHeight || 600;
       const cell = GARDEN_CELL;
-      const pCount = (saveData.farm && saveData.farm.plotCount) ? saveData.farm.plotCount : 4;
-      const farmRows = Math.ceil((pCount + 1) / 3);
-      const extraRows = Math.max(0, farmRows - 3) * 2;
-      const dynRows = GRID_ROWS + extraRows;
+      let maxRow = GRID_ROWS;
+      if (saveData.farm && Array.isArray(saveData.farm.plots)) {
+        for (const p of saveData.farm.plots) {
+          if (p && typeof p.row === 'number' && p.row + 3 > maxRow) maxRow = p.row + 3;
+        }
+      }
       const gridW = cell * GRID_COLS;
-      const gridH = cell * dynRows;
+      const gridH = cell * maxRow;
       const originX = GARDEN_PAD_X;
       const originY = GARDEN_PAD_Y;
       const worldW = gridW + GARDEN_PAD_X * 2;
       const worldH = gridH + GARDEN_PAD_Y * 2;
-      return { vw, vh, cell, originX, originY, gridW, gridH, worldW, worldH, dynRows };
+      return { vw, vh, cell, originX, originY, gridW, gridH, worldW, worldH, dynRows: maxRow };
     }
 
     function clampGardenCamera() {
@@ -2223,10 +2240,21 @@
 
     function centerGardenCamera() {
       const m = getGridMetrics();
-      const fl = getFarmLayout(m);
-      gardenState.zoom = Math.max(0.76, Math.min(0.98, m.vw / 445));
-      gardenState.camX = fl.zoneX + fl.zoneW / 2;
-      gardenState.camY = fl.zoneY + Math.min(fl.zoneH / 2, 185);
+      ensureFarmState();
+      gardenState.zoom = Math.max(0.84, Math.min(1.06, m.vw / 415));
+      const validPlots = saveData.farm.plots.filter(p => p && typeof p.col === 'number');
+      if (validPlots.length > 0) {
+        let sx = 0, sy = 0;
+        for (const p of validPlots) {
+          const c = cellCenter(p.col, p.row, m);
+          sx += c.x; sy += c.y;
+        }
+        gardenState.camX = sx / validPlots.length;
+        gardenState.camY = sy / validPlots.length + 25;
+      } else {
+        gardenState.camX = m.worldW / 2;
+        gardenState.camY = m.worldH / 2;
+      }
       clampGardenCamera();
     }
 
@@ -2403,12 +2431,14 @@
       // Cozy Grid Overlay when decorating
       if (gardenState.editMode) {
         gCtx.save();
-        for (let r = 0; r < GRID_ROWS; r++) {
+        const totalRows = m.dynRows || GRID_ROWS;
+        for (let r = 0; r < totalRows; r++) {
           for (let c = 0; c < GRID_COLS; c++) {
             const gx = originX + c * cell;
             const gy = originY + r * cell;
+            const isFarm = isCellOccupiedByFarm(c, r);
             const occ = saveData.gardenGrid.some(t => t.col === c && t.row === r);
-            gCtx.fillStyle = occ ? 'rgba(254, 240, 138, 0.22)' : 'rgba(255, 252, 240, 0.24)';
+            gCtx.fillStyle = isFarm ? 'rgba(107, 196, 166, 0.28)' : occ ? 'rgba(254, 240, 138, 0.22)' : 'rgba(255, 252, 240, 0.24)';
             gCtx.strokeStyle = 'rgba(90, 58, 40, 0.30)';
             gCtx.lineWidth = 1.5;
             gCtx.setLineDash([4, 4]);
@@ -2550,7 +2580,13 @@
       if (gardenState.editMode) {
         const col = Math.floor((x - m.originX) / m.cell);
         const row = Math.floor((y - m.originY) / m.cell);
-        if (col >= 0 && col < GRID_COLS && row >= 0 && row < GRID_ROWS) {
+        const totalRows = m.dynRows || GRID_ROWS;
+        if (col >= 0 && col < GRID_COLS && row >= 0 && row < totalRows) {
+          if (isCellOccupiedByFarm(col, row)) {
+            SFX.wrong();
+            showToast('這格是農地喔！請把擺設放在周圍的草地格仔上。');
+            return;
+          }
           const existingIdx = saveData.gardenGrid.findIndex(t => t.col === col && t.row === row);
           if (existingIdx >= 0) {
             const removed = saveData.gardenGrid.splice(existingIdx, 1)[0];
@@ -4574,13 +4610,39 @@
 
     function ensureFarmState() {
       if (!saveData.farm || typeof saveData.farm !== 'object') {
-        saveData.farm = { plotCount: 4, plots: [null, null, null, null], helpers: [], barn: {} };
+        saveData.farm = { plotCount: 4, plots: [], helpers: [], barn: {} };
       }
       if (typeof saveData.farm.plotCount !== 'number' || saveData.farm.plotCount < 4) saveData.farm.plotCount = 4;
       if (!Array.isArray(saveData.farm.plots)) saveData.farm.plots = [];
-      while (saveData.farm.plots.length < saveData.farm.plotCount) saveData.farm.plots.push(null);
       if (!Array.isArray(saveData.farm.helpers)) saveData.farm.helpers = [];
       if (!saveData.farm.barn || typeof saveData.farm.barn !== 'object') saveData.farm.barn = {};
+
+      // Migrate legacy null/unpositioned plots onto clean unoccupied 10x12 grid cells (zero overlap!)
+      const normalized = [];
+      for (let i = 0; i < saveData.farm.plotCount; i++) {
+        const raw = saveData.farm.plots[i];
+        if (raw && typeof raw === 'object' && typeof raw.col === 'number' && typeof raw.row === 'number') {
+          normalized.push({
+            col: raw.col,
+            row: raw.row,
+            cropId: raw.cropId || null,
+            plantedAt: raw.plantedAt || 0,
+            readyAt: raw.readyAt || 0
+          });
+        } else {
+          // Temporarily assign normalized so findNextFreeFarmCell avoids already-assigned cells
+          saveData.farm.plots = normalized;
+          const spot = findNextFreeFarmCell();
+          normalized.push({
+            col: spot.col,
+            row: spot.row,
+            cropId: (raw && raw.cropId) ? raw.cropId : null,
+            plantedAt: (raw && raw.plantedAt) ? raw.plantedAt : 0,
+            readyAt: (raw && raw.readyAt) ? raw.readyAt : 0
+          });
+        }
+      }
+      saveData.farm.plots = normalized;
     }
 
     function getFarmBonuses() {
@@ -4598,11 +4660,10 @@
     function getFarmReadyCount() {
       ensureFarmState();
       const now = Date.now();
-      return saveData.farm.plots.filter(p => p && now >= p.readyAt).length;
+      return saveData.farm.plots.filter(p => p && p.cropId && now >= p.readyAt).length;
     }
 
     function getNextPlotRequirement(plotIdx) {
-      // Dynamic unlimited expansion: free unlock via album milestones OR instant coin unlock!
       const extra = Math.max(0, plotIdx - 3);
       const reqBunnies = 4 + extra * 3;
       const coinCost = 70 + extra * 35;
@@ -4618,17 +4679,41 @@
       return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     }
 
+    function expandFarmPlot() {
+      ensureFarmState();
+      const nextIdx = saveData.farm.plotCount;
+      const req = getNextPlotRequirement(nextIdx);
+      const canFree = saveData.unlockedCards.length >= req.reqBunnies;
+      if (canFree) {
+        const spot = findNextFreeFarmCell();
+        saveData.farm.plotCount += 1;
+        saveData.farm.plots.push({ col: spot.col, row: spot.row, cropId: null, plantedAt: 0, readyAt: 0 });
+        persistSave(); syncGlobalCounters(); SFX.win();
+        showToast(`免費開墾成功！已在草地新增第 ${saveData.farm.plotCount} 塊農田！`);
+      } else if (saveData.coins >= req.coinCost) {
+        saveData.coins -= req.coinCost;
+        const spot = findNextFreeFarmCell();
+        saveData.farm.plotCount += 1;
+        saveData.farm.plots.push({ col: spot.col, row: spot.row, cropId: null, plantedAt: 0, readyAt: 0 });
+        persistSave(); syncGlobalCounters(); SFX.coin();
+        showToast(`已用 ${req.coinCost} 金幣開墾第 ${saveData.farm.plotCount} 塊農田！`);
+      } else {
+        SFX.wrong();
+        showToast(`收滿 ${req.reqBunnies} 隻兔兔可免費開墾，或儲夠 ${req.coinCost} 金幣立即加開新農田！`);
+      }
+    }
+
     function processFarmAutoHarvest(showNotice = false) {
       ensureFarmState();
       const bonus = getFarmBonuses();
       if (!bonus.autoHarvest) return 0;
       const now = Date.now();
       let count = 0;
-      for (let i = 0; i < saveData.farm.plotCount; i++) {
+      for (let i = 0; i < saveData.farm.plots.length; i++) {
         const p = saveData.farm.plots[i];
-        if (p && now >= p.readyAt) {
+        if (p && p.cropId && now >= p.readyAt) {
           saveData.farm.barn[p.cropId] = (saveData.farm.barn[p.cropId] || 0) + 1;
-          saveData.farm.plots[i] = null;
+          p.cropId = null; p.plantedAt = 0; p.readyAt = 0;
           count += 1;
         }
       }
@@ -4643,10 +4728,10 @@
     function harvestPlot(idx, silent = false) {
       ensureFarmState();
       const p = saveData.farm.plots[idx];
-      if (!p || Date.now() < p.readyAt) return false;
+      if (!p || !p.cropId || Date.now() < p.readyAt) return false;
       const crop = FARM_CROP_BY_ID[p.cropId];
       saveData.farm.barn[p.cropId] = (saveData.farm.barn[p.cropId] || 0) + 1;
-      saveData.farm.plots[idx] = null;
+      p.cropId = null; p.plantedAt = 0; p.readyAt = 0;
       persistSave();
       syncGlobalCounters();
       if (!silent) {
@@ -4660,11 +4745,11 @@
       ensureFarmState();
       const now = Date.now();
       let count = 0;
-      for (let i = 0; i < saveData.farm.plotCount; i++) {
+      for (let i = 0; i < saveData.farm.plots.length; i++) {
         const p = saveData.farm.plots[i];
-        if (p && now >= p.readyAt) {
+        if (p && p.cropId && now >= p.readyAt) {
           saveData.farm.barn[p.cropId] = (saveData.farm.barn[p.cropId] || 0) + 1;
-          saveData.farm.plots[i] = null;
+          p.cropId = null; p.plantedAt = 0; p.readyAt = 0;
           count += 1;
         }
       }
@@ -4679,108 +4764,71 @@
 
     function drawFarmZoneOnCanvas(c, m, now) {
       ensureFarmState();
-      const fl = getFarmLayout(m);
       const nowMs = Date.now();
       const tSec = now / 1000;
 
-      // Soft airy pasture border (lets the round wooden planter beds sit naturally on the grass!)
+      // Render each farm plot directly inside its own grid cell (no separate box, zero overlap with garden decor!)
       c.save();
-      c.fillStyle = 'rgba(255, 250, 236, 0.24)';
-      c.strokeStyle = 'rgba(156, 114, 78, 0.55)';
-      c.lineWidth = 3.5;
-      c.setLineDash([10, 7]);
-      roundRect(c, fl.zoneX, fl.zoneY, fl.zoneW, fl.zoneH, 28);
-      c.fill(); c.stroke();
-      c.setLineDash([]);
+      for (let idx = 0; idx < saveData.farm.plots.length; idx++) {
+        const p = saveData.farm.plots[idx];
+        if (!p) continue;
+        const center = cellCenter(p.col, p.row, m);
+        const sz = m.cell * 1.06;
+        const left = center.x - sz / 2;
+        const top = center.y - sz / 2;
+        const isReady = Boolean(p.cropId) && nowMs >= p.readyAt;
 
-      for (const s of fl.slots) {
-        const cx = s.x + s.w / 2, cy = s.y + s.h / 2;
-        if (s.locked) {
-          const req = getNextPlotRequirement(s.idx);
-          const canFree = saveData.unlockedCards.length >= req.reqBunnies;
-          const emptyBed = IMAGES.farm_bed_empty;
-          if (emptyBed && emptyBed.complete && emptyBed.naturalWidth > 0) {
-            c.save();
-            c.globalAlpha = canFree ? 0.65 : 0.45;
-            c.drawImage(emptyBed, s.x - 2, s.y - 2, s.w + 4, s.h + 4);
-            c.restore();
-          }
-          // Cozy pastel unlock badge
-          c.fillStyle = canFree ? 'rgba(232, 248, 242, 0.94)' : 'rgba(255, 249, 240, 0.92)';
-          c.strokeStyle = canFree ? '#52A88B' : '#9C7A5C';
-          c.lineWidth = 2.2;
-          roundRect(c, s.x + 6, cy - 28, s.w - 12, 56, 14);
-          c.fill(); c.stroke();
-
-          c.fillStyle = canFree ? '#2D6A54' : '#5A3A28';
-          c.font = '900 12px "Noto Sans TC", sans-serif';
-          c.textAlign = 'center'; c.textBaseline = 'middle';
-          c.fillText(canFree ? '可免費開墾！' : '開墾新農地', cx, cy - 12);
-          c.font = '700 10px "Noto Sans TC", sans-serif';
-          c.fillStyle = canFree ? '#52A88B' : '#8C6D5D';
-          c.fillText(canFree ? '點擊立即解鎖' : `收滿${req.reqBunnies}隻免費`, cx, cy + 4);
-          if (!canFree) {
-            c.fillStyle = '#B45309';
-            c.fillText(`或 ${req.coinCost} 幣開墾`, cx, cy + 18);
-          }
-          continue;
-        }
-
-        const p = saveData.farm.plots[s.idx];
-        const isReady = p && nowMs >= p.readyAt;
-
-        // Soft grass shadow under round wooden bed
-        c.fillStyle = 'rgba(60, 40, 25, 0.20)';
+        // Soft ground shadow
+        c.fillStyle = 'rgba(60, 40, 25, 0.18)';
         c.beginPath();
-        c.ellipse(cx, s.y + s.h - 2, s.w * 0.46, 10, 0, 0, Math.PI * 2);
+        c.ellipse(center.x, top + sz - 3, sz * 0.44, 6.5, 0, 0, Math.PI * 2);
         c.fill();
 
-        if (!p) {
+        if (!p.cropId) {
           const emptyBed = IMAGES.farm_bed_empty;
           if (emptyBed && emptyBed.complete && emptyBed.naturalWidth > 0) {
-            c.drawImage(emptyBed, s.x - 3, s.y - 3, s.w + 6, s.h + 6);
+            c.drawImage(emptyBed, left, top, sz, sz);
           }
           c.fillStyle = 'rgba(255, 250, 240, 0.90)';
           c.strokeStyle = 'rgba(90, 58, 40, 0.35)';
-          c.lineWidth = 1.5;
-          roundRect(c, s.x + 14, cy - 13, s.w - 28, 26, 13);
+          c.lineWidth = 1.2;
+          roundRect(c, center.x - 24, center.y - 9, 48, 18, 9);
           c.fill(); c.stroke();
           c.fillStyle = '#5A3A28';
-          c.font = '900 11px "Noto Sans TC", sans-serif';
+          c.font = '900 9.5px "Noto Sans TC", sans-serif';
           c.textAlign = 'center'; c.textBaseline = 'middle';
-          c.fillText('+ 點擊播種', cx, cy);
+          c.fillText('+ 播種', center.x, center.y);
         } else if (isReady) {
           const crop = FARM_CROP_BY_ID[p.cropId];
           const bedImg = crop ? IMAGES[crop.bedImg] : IMAGES.dec_carrot_patch;
-          const bob = Math.sin(tSec * 4.5 + s.idx) * 2.5;
+          const bob = Math.sin(tSec * 4.5 + idx) * 2.2;
           if (bedImg && bedImg.complete && bedImg.naturalWidth > 0) {
-            c.drawImage(bedImg, s.x - 4, s.y - 4 + bob * 0.4, s.w + 8, s.h + 8);
+            c.drawImage(bedImg, left - 2, top - 2 + bob * 0.4, sz + 4, sz + 4);
           }
-          // Pastel mint "可收成" floating pill
           c.fillStyle = '#E8F8F2';
           c.strokeStyle = '#52A88B';
-          c.lineWidth = 2;
-          roundRect(c, s.x + 16, s.y - 10 + bob, s.w - 32, 22, 11);
+          c.lineWidth = 1.6;
+          roundRect(c, center.x - 22, top - 8 + bob, 44, 17, 8.5);
           c.fill(); c.stroke();
           c.fillStyle = '#2D6A54';
-          c.font = '900 11px "Noto Sans TC", sans-serif';
+          c.font = '900 9.5px "Noto Sans TC", sans-serif';
           c.textAlign = 'center'; c.textBaseline = 'middle';
-          c.fillText('可收成', cx, s.y + 1 + bob);
+          c.fillText('可收成', center.x, top + 0.5 + bob);
         } else {
           const sproutBed = IMAGES.farm_bed_sprout;
           if (sproutBed && sproutBed.complete && sproutBed.naturalWidth > 0) {
-            c.drawImage(sproutBed, s.x - 3, s.y - 3, s.w + 6, s.h + 6);
+            c.drawImage(sproutBed, left, top, sz, sz);
           }
           const rem = Math.max(0, p.readyAt - nowMs);
           c.fillStyle = '#EDF6FC';
           c.strokeStyle = '#6CA6D9';
-          c.lineWidth = 2;
-          roundRect(c, s.x + 12, s.y + s.h - 24, s.w - 24, 22, 11);
+          c.lineWidth = 1.6;
+          roundRect(c, center.x - 25, top + sz - 17, 50, 17, 8.5);
           c.fill(); c.stroke();
           c.fillStyle = '#3B6E9C';
-          c.font = '900 11px "Noto Sans TC", sans-serif';
+          c.font = '900 9px "Noto Sans TC", sans-serif';
           c.textAlign = 'center'; c.textBaseline = 'middle';
-          c.fillText(formatFarmCountdown(rem), cx, s.y + s.h - 13);
+          c.fillText(formatFarmCountdown(rem), center.x, top + sz - 8.5);
         }
       }
       c.restore();
@@ -4790,50 +4838,29 @@
 
     function handleFarmCanvasTap(worldX, worldY, m) {
       ensureFarmState();
-      const fl = getFarmLayout(m);
-      for (const s of fl.slots) {
-        if (worldX >= s.x && worldX <= s.x + s.w && worldY >= s.y && worldY <= s.y + s.h) {
-          if (s.locked) {
-            const req = getNextPlotRequirement(s.idx);
-            const canFree = saveData.unlockedCards.length >= req.reqBunnies;
-            if (canFree) {
-              saveData.farm.plotCount += 1;
-              saveData.farm.plots.push(null);
-              persistSave(); syncGlobalCounters(); SFX.win();
-              showToast(`免費開墾成功！現在擁有 ${saveData.farm.plotCount} 塊農地！`);
-            } else if (saveData.coins >= req.coinCost) {
-              saveData.coins -= req.coinCost;
-              saveData.farm.plotCount += 1;
-              saveData.farm.plots.push(null);
-              persistSave(); syncGlobalCounters(); SFX.coin();
-              showToast(`已花費 ${req.coinCost} 金幣開墾新農地！目前共 ${saveData.farm.plotCount} 塊！`);
-            } else {
-              SFX.wrong();
-              showToast(`收集滿 ${req.reqBunnies} 隻兔兔可免費開墾，或儲夠 ${req.coinCost} 金幣立即擴建！`);
-            }
-            return true;
-          }
-          const p = saveData.farm.plots[s.idx];
-          if (!p) {
-            openFarmSeedModal(s.idx);
-          } else if (Date.now() >= p.readyAt) {
-            const crop = FARM_CROP_BY_ID[p.cropId];
-            harvestPlot(s.idx);
-            gardenState.floatingTexts.push({ x: s.x + s.w / 2, y: s.y + 10, text: `+1 ${crop ? crop.name : '作物'}！`, color: '#E8F8F2', life: 1.1, maxLife: 1.1 });
-            for (let i = 0; i < 12; i++) {
-              const ang = (Math.PI * 2 * i) / 12;
-              gardenState.particles.push({ x: s.x + s.w / 2, y: s.y + s.h / 2, vx: Math.cos(ang) * 60, vy: Math.sin(ang) * 60 - 40, size: 4, color: i % 2 === 0 ? '#6BC4A6' : '#F3C2D0', life: 0.6, maxLife: 0.6 });
-            }
-          } else {
-            const crop = FARM_CROP_BY_ID[p.cropId];
-            const rem = formatFarmCountdown(p.readyAt - Date.now());
-            SFX.tap();
-            showToast(`「${crop ? crop.name : '作物'}」成長中，距離成熟還有 ${rem}！`);
-          }
-          return true;
+      const col = Math.floor((worldX - m.originX) / m.cell);
+      const row = Math.floor((worldY - m.originY) / m.cell);
+      const idx = saveData.farm.plots.findIndex(p => p && p.col === col && p.row === row);
+      if (idx < 0) return false;
+      const p = saveData.farm.plots[idx];
+      const center = cellCenter(p.col, p.row, m);
+      if (!p.cropId) {
+        openFarmSeedModal(idx);
+      } else if (Date.now() >= p.readyAt) {
+        const crop = FARM_CROP_BY_ID[p.cropId];
+        harvestPlot(idx);
+        gardenState.floatingTexts.push({ x: center.x, y: center.y - 24, text: `+1 ${crop ? crop.name : '作物'}！`, color: '#E8F8F2', life: 1.1, maxLife: 1.1 });
+        for (let i = 0; i < 12; i++) {
+          const ang = (Math.PI * 2 * i) / 12;
+          gardenState.particles.push({ x: center.x, y: center.y, vx: Math.cos(ang) * 52, vy: Math.sin(ang) * 52 - 36, size: 3.5, color: i % 2 === 0 ? '#6BC4A6' : '#F3C2D0', life: 0.6, maxLife: 0.6 });
         }
+      } else {
+        const crop = FARM_CROP_BY_ID[p.cropId];
+        const rem = formatFarmCountdown(p.readyAt - Date.now());
+        SFX.tap();
+        showToast(`「${crop ? crop.name : '作物'}」成長中，距離成熟還有 ${rem}！`);
       }
-      return false;
+      return true;
     }
 
     function openFarmSeedModal(plotIdx) {
@@ -4886,7 +4913,12 @@
           const b = getFarmBonuses();
           const growMs = Math.max(5, Math.round(c.growMin * (1 - b.speedPct / 100))) * 60 * 1000;
           saveData.coins -= c.seedCost;
-          saveData.farm.plots[activeSeedPlotIdx] = { cropId: c.id, plantedAt: Date.now(), readyAt: Date.now() + growMs };
+          const curPlot = saveData.farm.plots[activeSeedPlotIdx];
+          if (curPlot) {
+            curPlot.cropId = c.id;
+            curPlot.plantedAt = Date.now();
+            curPlot.readyAt = Date.now() + growMs;
+          }
           persistSave(); syncGlobalCounters(); SFX.found();
           document.getElementById('modal-farm-seed').classList.add('hidden');
           showToast(`已播種「${c.name}」！`);
@@ -5069,7 +5101,10 @@
       document.getElementById('btn-stamina-coin').addEventListener('click', buyFullStamina);
       document.getElementById('btn-farm-helpers').addEventListener('click', openFarmHelpersModal);
       document.getElementById('btn-close-farm-helpers').addEventListener('click', () => document.getElementById('modal-farm-helpers').classList.add('hidden'));
+      document.getElementById('btn-farm-expand').addEventListener('click', expandFarmPlot);
       document.getElementById('btn-farm-harvest-all').addEventListener('click', harvestAllReadyPlots);
+      document.getElementById('btn-close-clear').addEventListener('click', () => switchView('home'));
+      document.getElementById('btn-clear-home').addEventListener('click', () => switchView('home'));
       document.getElementById('btn-farm-market').addEventListener('click', openFarmMarketModal);
       document.getElementById('btn-close-farm-market').addEventListener('click', () => document.getElementById('modal-farm-market').classList.add('hidden'));
       document.getElementById('btn-farm-sell-all').addEventListener('click', sellAllFarmBarn);
