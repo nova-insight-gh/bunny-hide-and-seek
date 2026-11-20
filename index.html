@@ -425,7 +425,10 @@
     }
     .card-fx-star { position: absolute; width: 22px; height: 22px; pointer-events: none; animation: floatSparkPop 0.65s ease-out forwards; }
     .opacity-60 { opacity: 0.6; }
+    .max-h-\[84\%\] { max-height: 84%; }
     .max-h-\[90\%\] { max-height: 90%; }
+    .overflow-y-auto { touch-action: pan-y; -webkit-overflow-scrolling: touch; }
+    .overflow-x-auto { touch-action: pan-x; -webkit-overflow-scrolling: touch; }
     .max-w-\[335px\] { max-width: 335px; }
     .max-w-\[310px\] { max-width: 310px; }
     .bg-\[\#D6C3B0\] { background-color: #D6C3B0; }
@@ -541,6 +544,19 @@
           <img id="home-b4" data-slot="3" src="" alt="兔兔4" title="點擊更換首頁兔兔" class="home-mascot-slot cursor-pointer h-24 w-auto object-contain animate-bunny-hop drop-shadow-md -ml-2 active:scale-95" style="animation-delay:0.75s" />
         </div>
 
+        <!-- Adventure Item Bag & Shop Strip (Visible on Home before playing!) -->
+        <button id="btn-home-item-shop" type="button" class="game-btn game-btn-gold w-full max-w-[340px] mb-2.5 px-3 py-1.5 rounded-2xl flex items-center justify-between gap-2 text-xs font-black text-[#6B3E08]">
+          <div class="flex items-center gap-2.5">
+            <span class="inline-flex items-center gap-0.5" title="魔法加時鐘"><img src="assets/item_time_plus.png" alt="加時鐘" class="w-5 h-5 object-contain" /><span class="item-cnt-time_plus tabular-nums">1</span></span>
+            <span class="inline-flex items-center gap-0.5" title="黃金紅蘿蔔"><img src="assets/item_golden_carrot.png" alt="金蘿蔔" class="w-5 h-5 object-contain" /><span class="item-cnt-golden_carrot tabular-nums">1</span></span>
+            <span class="inline-flex items-center gap-0.5" title="SSR 幸運誘兔鈴"><img src="assets/item_ssr_lure.png" alt="誘兔鈴" class="w-5 h-5 object-contain" /><span class="item-cnt-ssr_lure tabular-nums">1</span></span>
+          </div>
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-xl bg-white/80 text-[11px] text-[#9A3412]">
+            <img class="img-shop-icon w-4 h-4 object-contain" src="" alt="道具商店" />
+            <span>道具商店</span>
+          </span>
+        </button>
+
         <!-- Primary Navigation Buttons -->
         <div class="w-full max-w-[340px] space-y-2.5">
           <button id="btn-home-play" type="button" class="game-btn game-btn-orange w-full py-3.5 rounded-3xl flex items-center justify-center gap-2.5 text-lg font-black">
@@ -640,19 +656,19 @@
         <div id="danger-vignette"></div>
 
         <!-- Semi-Transparent Floating Target Tray (Unfound Only + Collapsible Found Drawer) -->
-        <div id="target-tray" class="target-tray absolute top-2 left-2 right-2 z-20 rounded-2xl px-2 py-1.5 flex flex-col gap-1">
-          <div class="flex items-center gap-1.5">
+        <div id="target-tray" class="target-tray absolute top-2 left-2 right-2 z-20 rounded-2xl px-2 py-1.5 flex flex-col gap-1 overflow-hidden">
+          <div class="flex items-center gap-1.5 min-w-0 w-full">
             <div class="shrink-0 flex flex-col items-center leading-none pr-1">
               <span class="text-[9px] font-black text-[#6B4F40] whitespace-nowrap mb-1">目標兔兔</span>
               <span id="hud-progress" class="text-[11px] font-black px-1.5 py-0.5 rounded-lg bg-[#FFEDD5] border border-[#C2410C]/30 text-[#C2410C]">0/3</span>
               <span id="hud-combo" class="hidden text-[9px] font-black text-[#D97706] mt-0.5">FEVER</span>
             </div>
-            <div id="target-list" class="flex-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" style="flex-wrap:nowrap;justify-content:flex-start;"></div>
+            <div id="target-list" class="flex-1 min-w-0 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 pr-2" style="min-width:0;flex-wrap:nowrap;justify-content:flex-start;touch-action:pan-x;-webkit-overflow-scrolling:touch;"></div>
             <button id="btn-toggle-targets" type="button" class="shrink-0 text-[10px] font-black px-1.5 py-1 rounded-lg bg-[#EAD7C0] text-[#5A3A28] whitespace-nowrap" title="查看已找到的兔兔">已找 0 ▼</button>
           </div>
-          <div id="found-target-row" class="hidden pt-1 border-t border-[#5A3A28]/15 flex items-center gap-1.5">
+          <div id="found-target-row" class="hidden pt-1 border-t border-[#5A3A28]/15 flex items-center gap-1.5 min-w-0 w-full">
             <span class="shrink-0 text-[9px] font-black text-[#15803D] whitespace-nowrap pr-1">已找到</span>
-            <div id="found-target-list" class="flex-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" style="flex-wrap:nowrap;justify-content:flex-start;"></div>
+            <div id="found-target-list" class="flex-1 min-w-0 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 pr-2" style="min-width:0;flex-wrap:nowrap;justify-content:flex-start;touch-action:pan-x;-webkit-overflow-scrolling:touch;"></div>
           </div>
         </div>
 
@@ -664,18 +680,22 @@
         </div>
 
         <div class="pointer-events-none absolute inset-x-0 bottom-5 px-3 z-20 flex items-end justify-between" style="padding-bottom: env(safe-area-inset-bottom, 0px);">
-          <div class="pointer-events-auto flex items-center gap-1.5 flex-wrap">
-            <button id="btn-hint" type="button" class="game-btn game-btn-gold rounded-2xl pl-1.5 pr-2.5 py-1.5 flex items-center gap-1 text-xs font-black text-[#6B3E08]">
+          <div class="pointer-events-auto flex items-center gap-1.5 flex-wrap max-w-[82%]">
+            <button id="btn-hint" type="button" class="game-btn game-btn-gold rounded-2xl pl-1.5 pr-2 py-1.5 flex items-center gap-1 text-[11px] font-black text-[#6B3E08]">
               <img id="img-hint-icon" src="" alt="提示" class="w-5 h-5 object-contain" />
               <span id="hint-btn-text">雷達 (1)</span>
             </button>
-            <button id="btn-watch-ad-direct" type="button" class="game-btn game-btn-coral rounded-2xl pl-1.5 pr-2 py-1.5 flex items-center gap-1 text-[11px] font-black text-[#9F1239]" title="用 30 金幣換 1 個提示">
-              <img class="img-coin-icon w-5 h-5 object-contain" src="" alt="金幣" />
-              <span>30 換提示</span>
+            <button id="btn-use-time-plus" type="button" class="game-btn game-btn-mint rounded-2xl pl-1.5 pr-2 py-1.5 flex items-center gap-1 text-[11px] font-black text-[#14532D]" title="使用魔法加時鐘延長 30 秒">
+              <img src="assets/item_time_plus.png" alt="加時鐘" class="w-5 h-5 object-contain" />
+              <span id="time-plus-btn-text">+30秒 (1)</span>
             </button>
             <button id="btn-use-ssr-lure" type="button" class="game-btn game-btn-pink rounded-2xl pl-1.5 pr-2 py-1.5 flex items-center gap-1 text-[11px] font-black text-[#5A3A28]" title="使用 SSR 幸運誘兔鈴吸引稀有兔兔現身">
               <img src="assets/item_ssr_lure.png" alt="誘兔鈴" class="w-5 h-5 object-contain" />
               <span id="ssr-lure-btn-text">誘兔鈴 (1)</span>
+            </button>
+            <button id="btn-watch-ad-direct" type="button" class="game-btn game-btn-coral rounded-2xl pl-1.5 pr-2 py-1.5 flex items-center gap-1 text-[11px] font-black text-[#9F1239]" title="用 30 金幣換 1 個提示">
+              <img class="img-coin-icon w-5 h-5 object-contain" src="" alt="金幣" />
+              <span>30 換提示</span>
             </button>
           </div>
 
@@ -1128,9 +1148,14 @@
           <span id="clear-coins-earned">獲得 +150 紅蘿蔔金幣！</span>
         </div>
 
-        <div id="clear-new-cards-box" class="hidden bg-[#FFF1F2] border-2 border-[#FDA4AF] rounded-2xl p-2 mb-3">
+        <div id="clear-new-cards-box" class="hidden bg-[#FFF1F2] border-2 border-[#FDA4AF] rounded-2xl p-2 mb-2.5">
           <div class="text-[11px] font-black text-[#BE123C] mb-1">本關解鎖新兔兔：</div>
           <div id="clear-new-cards-list" class="flex items-center justify-center gap-1.5 flex-wrap"></div>
+        </div>
+
+        <div id="clear-bonus-item-box" class="hidden bg-[#FFFBEB] border-2 border-[#F59E0B]/50 rounded-2xl p-2 mb-2.5">
+          <div class="text-[11px] font-black text-[#B45309] mb-1">過關加贈冒險道具：</div>
+          <div id="clear-bonus-item-list" class="flex items-center justify-center gap-1.5 flex-wrap"></div>
         </div>
 
         <div class="bg-white/90 rounded-2xl border-2 border-[#5A3A28]/15 p-2.5 mb-3.5 space-y-1 text-xs font-bold">
@@ -1254,6 +1279,26 @@
             <span>使用 40 金幣立即補滿體力</span>
           </button>
         </div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL: ADVENTURE ITEM SHOP (首頁冒險道具商店) ================= -->
+    <div id="modal-item-shop" class="hidden absolute inset-0 z-50 bg-black/55 backdrop-blur-[2px] flex items-end sm:items-center justify-center p-3">
+      <div class="game-panel animate-pop w-full max-h-[84%] rounded-3xl px-4 pb-4 pt-6 flex flex-col relative">
+        <button id="btn-close-item-shop" type="button" class="game-btn absolute top-2.5 right-2.5 rounded-xl w-9 h-9 flex items-center justify-center font-black z-30 text-sm">✕</button>
+        <div class="banner-header">
+          <img class="img-banner-ribbon" src="" alt="橫幅" />
+          <span class="banner-header-title">冒險道具商店</span>
+        </div>
+        <div class="shrink-0 flex items-center justify-center gap-1.5 mb-2">
+          <span class="text-xs font-bold text-[#7C5A46]">擁有金幣：</span>
+          <span class="game-btn game-btn-gold rounded-full px-2.5 py-0.5 inline-flex items-center gap-1 text-xs font-black text-[#6B3E08]">
+            <img class="img-coin-icon w-4 h-4 object-contain" src="" alt="金幣" />
+            <span class="coin-display tabular-nums">150</span>
+          </span>
+        </div>
+        <p class="shrink-0 text-[10px] font-bold text-[#8C6D5D] text-center mb-2.5">出發找兔兔前先準備好道具！過關第 3、5、6、9、10 關或每日挑戰亦會免費贈送道具喔。</p>
+        <div id="item-shop-list" class="flex-1 min-h-0 space-y-2.5 overflow-y-auto no-scrollbar pt-0.5 pb-2"></div>
       </div>
     </div>
   </div>
@@ -1401,6 +1446,7 @@
       ui_banner: "assets/ui_banner.webp",
       item_golden_carrot: "assets/item_golden_carrot.png",
       item_ssr_lure: "assets/item_ssr_lure.png",
+      item_time_plus: "assets/item_time_plus.png",
       bg_meadow: "assets/bg_meadow.webp",
       bg_sakura: "assets/bg_sakura.webp",
       bg_hk: "assets/bg_hk.webp",
@@ -1789,7 +1835,7 @@
       dailyChallengeDate: '',
       stamina: 5,
       staminaUpdatedAt: Date.now(),
-      items: { golden_carrot: 1, ssr_lure: 1 },
+      items: { golden_carrot: 1, ssr_lure: 1, time_plus: 1 },
       account: { bound: false, provider: '', nickname: '兔兔玩家', avatar: 'sp_strawberry' },
       levelsClearedTotal: 0,
       cardProgress: {},
@@ -1819,7 +1865,7 @@
       if (typeof parsed.stamina === 'number') saveData.stamina = Math.max(0, Math.min(MAX_STAMINA, Math.floor(parsed.stamina)));
       if (typeof parsed.staminaUpdatedAt === 'number') saveData.staminaUpdatedAt = parsed.staminaUpdatedAt;
       if (parsed.items && typeof parsed.items === 'object') {
-        saveData.items = { golden_carrot: 0, ssr_lure: 0, ...parsed.items };
+        saveData.items = { golden_carrot: 0, ssr_lure: 0, time_plus: 1, ...parsed.items };
       }
       if (parsed.account && typeof parsed.account === 'object') saveData.account = { ...saveData.account, ...parsed.account };
       if (typeof parsed.levelsClearedTotal === 'number') saveData.levelsClearedTotal = parsed.levelsClearedTotal;
@@ -1924,6 +1970,10 @@
 
     function syncGlobalCounters() {
       document.querySelectorAll('.coin-display').forEach(el => { el.textContent = saveData.coins.toLocaleString(); });
+      if (!saveData.items) saveData.items = { golden_carrot: 0, ssr_lure: 0, time_plus: 0 };
+      ['time_plus', 'golden_carrot', 'ssr_lure'].forEach(k => {
+        document.querySelectorAll(`.item-cnt-${k}`).forEach(el => { el.textContent = saveData.items[k] || 0; });
+      });
       document.querySelectorAll('.album-count-display').forEach(el => { el.textContent = `${saveData.unlockedCards.length}/${BUNNY_CATALOG.length}`; });
       document.getElementById('home-album-sub').textContent = `已收集 ${saveData.unlockedCards.length}/${BUNNY_CATALOG.length}`;
       const gCount = saveData.gardenBunnies.length;
@@ -2441,59 +2491,59 @@
     }, { passive: false });
 
     const ADVENTURE_ITEMS = [
-      { id: 'golden_carrot', name: '黃金紅蘿蔔', price: 60, img: 'item_golden_carrot', tag: '捕捉 +35%', desc: '草叢收服兔兔時使用，大幅提升成功率（SSR 升至 55%）！' },
-      { id: 'ssr_lure',      name: 'SSR 幸運誘兔鈴', price: 90, img: 'item_ssr_lure', tag: '召喚 SSR', desc: '關卡內搖響鈴鐺，立刻吸引稀有 SSR 兔兔悄悄現身！' }
+      { id: 'time_plus',     name: '魔法加時鐘',     price: 50, img: 'item_time_plus',     tag: '延長 +30秒', desc: '關卡內點擊使用，立即延長剩餘倒數時間 30 秒，輕鬆找齊兔兔！' },
+      { id: 'golden_carrot', name: '黃金紅蘿蔔',     price: 60, img: 'item_golden_carrot', tag: '捕捉 +35%',  desc: '草叢收服兔兔時使用，大幅提升成功率（SSR 升至 55%）並延長連點時間！' },
+      { id: 'ssr_lure',      name: 'SSR 幸運誘兔鈴', price: 90, img: 'item_ssr_lure',      tag: '召喚 SSR',   desc: '關卡內搖響鈴鐺，立刻吸引一隻稀有兔兔悄悄現身（80% 為傳說 SSR）！' }
     ];
+    const ADV_ITEM_BY_ID = Object.fromEntries(ADVENTURE_ITEMS.map(x => [x.id, x]));
 
-    function openShopModal() {
-      const grid = document.getElementById('shop-grid');
-      grid.innerHTML = '';
-      if (!saveData.items) saveData.items = { golden_carrot: 0, ssr_lure: 0 };
-
-      const advHeader = document.createElement('div');
-      advHeader.className = 'col-span-2 text-left text-[11px] font-black text-[#B45309] px-1';
-      advHeader.textContent = '冒險道具（尋兔與捕捉專用）';
-      grid.appendChild(advHeader);
-
+    function openItemShopModal() {
+      const list = document.getElementById('item-shop-list');
+      list.innerHTML = '';
+      if (!saveData.items) saveData.items = { golden_carrot: 0, ssr_lure: 0, time_plus: 0 };
       ADVENTURE_ITEMS.forEach((it) => {
         const owned = saveData.items[it.id] || 0;
         const canAfford = saveData.coins >= it.price;
-        const card = document.createElement('div');
-        card.className = 'bg-white/95 rounded-2xl border-2 border-[#D97706]/35 p-2.5 flex flex-col items-center text-center';
-        card.innerHTML = `
-          <div class="h-16 w-full flex items-center justify-center mb-1 relative">
-            <img src="${SPRITE_SRCS[it.img]}" alt="${it.name}" class="max-h-16 w-auto object-contain drop-shadow-xs" />
-            <span class="absolute top-0 right-0 text-[9px] font-black px-1.5 py-0.5 rounded-full bg-[#FEF3C7] text-[#B45309]">${it.tag}</span>
+        const row = document.createElement('div');
+        row.className = 'bg-white/95 rounded-2xl border-2 border-[#D97706]/30 p-3 flex items-center gap-2.5';
+        row.innerHTML = `
+          <div class="w-14 h-14 shrink-0 rounded-2xl bg-[#FFFBEB] border border-[#F59E0B]/30 flex items-center justify-center">
+            <img src="${SPRITE_SRCS[it.img]}" alt="${it.name}" class="w-12 h-12 object-contain" />
           </div>
-          <div class="text-xs font-black text-[#5A3A28]">${it.name}</div>
-          <div class="text-[10px] font-bold text-[#8C6D5D] mb-2">持有：${owned} 個</div>
+          <div class="flex-1 min-w-0 text-left">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-xs font-black text-[#5A3A28]">${it.name}</span>
+              <span class="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-[#FEF3C7] text-[#B45309]">${it.tag}</span>
+            </div>
+            <div class="text-[10px] font-bold text-[#7C5A46] leading-snug mt-0.5">${it.desc}</div>
+            <div class="text-[10px] font-black text-[#15803D] mt-1">目前已持有：${owned} 個</div>
+          </div>
           <button type="button" data-buy-adv="${it.id}"
-            class="buy-adv-btn w-full py-1.5 rounded-xl text-xs font-black flex items-center justify-center gap-1 ${canAfford ? 'game-btn game-btn-gold text-[#6B3E08]' : 'bg-[#E7DDD3] text-[#9A887A] border-2 border-[#C9B8A8]'}">
-            <img src="${SPRITE_SRCS.ui_coin}" alt="幣" class="w-4 h-4 object-contain" />
-            <span>${it.price} 購買</span>
+            class="buy-adv-btn shrink-0 px-2.5 py-2 rounded-xl text-xs font-black flex flex-col items-center justify-center gap-0.5 ${canAfford ? 'game-btn game-btn-gold text-[#6B3E08]' : 'bg-[#E7DDD3] text-[#9A887A] border-2 border-[#C9B8A8]'}">
+            <span class="inline-flex items-center gap-0.5"><img src="${SPRITE_SRCS.ui_coin}" alt="幣" class="w-3.5 h-3.5 object-contain" />${it.price}</span>
+            <span class="text-[10px]">購買</span>
           </button>
         `;
-        grid.appendChild(card);
+        list.appendChild(row);
       });
-
-      grid.querySelectorAll('.buy-adv-btn').forEach(btn => {
+      list.querySelectorAll('.buy-adv-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          const it = ADVENTURE_ITEMS.find(x => x.id === btn.dataset.buyAdv);
+          const it = ADV_ITEM_BY_ID[btn.dataset.buyAdv];
           if (!it) return;
           if (saveData.coins < it.price) { SFX.wrong(); showToast('金幣不足！去關卡找更多兔兔賺金幣吧！'); return; }
           saveData.coins -= it.price;
           saveData.items[it.id] = (saveData.items[it.id] || 0) + 1;
           persistSave(); syncGlobalCounters(); SFX.coin();
-          openShopModal();
+          openItemShopModal();
           showToast(`已購買「${it.name}」×1！`);
         });
       });
+      document.getElementById('modal-item-shop').classList.remove('hidden');
+    }
 
-      const decHeader = document.createElement('div');
-      decHeader.className = 'col-span-2 text-left text-[11px] font-black text-[#5A3A28] px-1 pt-1';
-      decHeader.textContent = '花園佈置擺設';
-      grid.appendChild(decHeader);
-
+    function openShopModal() {
+      const grid = document.getElementById('shop-grid');
+      grid.innerHTML = '';
       GARDEN_DECOR_CATALOG.forEach((d) => {
         const owned = saveData.ownedDecor[d.id] || 0;
         const canAfford = saveData.coins >= d.price;
@@ -3243,17 +3293,32 @@
     function useSsrLureInGame() {
       if (!state.running) return;
       if (state.goldenBunny) { SFX.tap(); showToast('驚喜兔兔已經在地圖上囉，快仔細找找牠！'); return; }
-      if (!saveData.items) saveData.items = { golden_carrot: 0, ssr_lure: 0 };
+      if (!saveData.items) saveData.items = { golden_carrot: 0, ssr_lure: 0, time_plus: 0 };
       if ((saveData.items.ssr_lure || 0) > 0) {
         saveData.items.ssr_lure -= 1;
       } else if (saveData.coins >= 90) {
         saveData.coins -= 90;
       } else {
-        SFX.wrong(); showToast('SSR 幸運誘兔鈴不足！需要 90 金幣或到商店購買。'); return;
+        SFX.wrong(); showToast('SSR 幸運誘兔鈴不足！需要 90 金幣或回首頁道具商店購買。'); return;
       }
       state.goldenSpawnedThisRun = true;
       persistSave(); renderHUD(); SFX.flip();
       spawnGoldenEscapeBunny(true);
+    }
+
+    function useTimePlusInGame() {
+      if (!state.running) return;
+      if (!saveData.items) saveData.items = { golden_carrot: 0, ssr_lure: 0, time_plus: 0 };
+      if ((saveData.items.time_plus || 0) > 0) {
+        saveData.items.time_plus -= 1;
+      } else if (saveData.coins >= 50) {
+        saveData.coins -= 50;
+      } else {
+        SFX.wrong(); showToast('魔法加時鐘不足！需要 50 金幣或回首頁道具商店購買。'); return;
+      }
+      state.timeLeft += 30;
+      persistSave(); renderHUD(); SFX.flip();
+      showToast('已使用魔法加時鐘！剩餘時間 +30 秒！');
     }
 
     let lastFrameTime = performance.now();
@@ -3762,6 +3827,11 @@
         hintBtn.className = 'game-btn game-btn-orange rounded-2xl pl-1.5 pr-2.5 py-1.5 flex items-center gap-1 text-xs font-black';
         hintIcon.src = SPRITE_SRCS.ui_coin; hintText.textContent = '30 換提示';
       }
+      const timeLbl = document.getElementById('time-plus-btn-text');
+      if (timeLbl) {
+        const tCnt = (saveData.items && saveData.items.time_plus) || 0;
+        timeLbl.textContent = tCnt > 0 ? `+30秒 (${tCnt})` : '50 +30秒';
+      }
       const lureLbl = document.getElementById('ssr-lure-btn-text');
       if (lureLbl) {
         const cnt = (saveData.items && saveData.items.ssr_lure) || 0;
@@ -3899,11 +3969,30 @@
       const coinReward = firstDailyClear ? baseCoin * 2 : baseCoin;
       saveData.coins += coinReward;
       saveData.levelsClearedTotal = (saveData.levelsClearedTotal || 0) + 1;
+      if (!saveData.items) saveData.items = { golden_carrot: 0, ssr_lure: 0, time_plus: 0 };
+      const giftedItems = [];
       if (isDaily) {
-        if (firstDailyClear) saveData.dailyChallengeDate = todayStr();
+        if (firstDailyClear) {
+          saveData.dailyChallengeDate = todayStr();
+          const pool = ['time_plus', 'golden_carrot', 'ssr_lure'];
+          const pick = pool[Math.floor(Math.random() * pool.length)];
+          saveData.items[pick] = (saveData.items[pick] || 0) + 1;
+          giftedItems.push(pick);
+        }
       } else {
         const recKey = `${theme.id}-${lvl.levelNum}`;
         const prev = saveData.levelRecords[recKey] || { stars: 0, bestScore: 0 };
+        const isFirstClear = prev.stars === 0;
+        if (isFirstClear) {
+          if (lvl.levelNum === 3) { saveData.items.time_plus = (saveData.items.time_plus || 0) + 1; giftedItems.push('time_plus'); }
+          else if (lvl.levelNum === 5 || lvl.levelNum === 6) { saveData.items.golden_carrot = (saveData.items.golden_carrot || 0) + 1; giftedItems.push('golden_carrot'); }
+          else if (lvl.levelNum === 9) { saveData.items.ssr_lure = (saveData.items.ssr_lure || 0) + 1; giftedItems.push('ssr_lure'); }
+          else if (lvl.levelNum === 10) {
+            saveData.items.ssr_lure = (saveData.items.ssr_lure || 0) + 1;
+            saveData.items.time_plus = (saveData.items.time_plus || 0) + 1;
+            giftedItems.push('ssr_lure', 'time_plus');
+          }
+        }
         saveData.levelRecords[recKey] = { stars: Math.max(prev.stars, stars), bestScore: Math.max(prev.bestScore, finalScore) };
       }
       persistSave(); syncGlobalCounters();
@@ -3930,6 +4019,20 @@
           newList.appendChild(pill);
         });
       } else newBox.classList.add('hidden');
+
+      const bonusBox = document.getElementById('clear-bonus-item-box'), bonusList = document.getElementById('clear-bonus-item-list');
+      if (bonusBox && bonusList) {
+        if (giftedItems.length > 0) {
+          bonusBox.classList.remove('hidden'); bonusList.innerHTML = '';
+          giftedItems.forEach((iid) => {
+            const it = ADV_ITEM_BY_ID[iid]; if (!it) return;
+            const pill = document.createElement('div');
+            pill.className = 'flex items-center gap-1 bg-white rounded-xl px-2 py-1 border border-[#F59E0B]/40 text-[11px] font-black text-[#6B3E08]';
+            pill.innerHTML = `<img src="${SPRITE_SRCS[it.img]}" alt="${it.name}" class="h-5 w-auto" /><span>${it.name} ×1</span>`;
+            bonusList.appendChild(pill);
+          });
+        } else bonusBox.classList.add('hidden');
+      }
 
       const hasNext = state.levelIdx + 1 < theme.levels.length || state.themeIdx + 1 < THEMES.length;
       document.getElementById('btn-next-level').textContent = isDaily ? '返回首頁' : (hasNext ? '挑戰下一關' : '重返第 1 關再創高分');
@@ -4419,6 +4522,9 @@
         if (!state.running) return;
         buyBonus('hint', state.hintsLeft <= 0);
       });
+      document.getElementById('btn-home-item-shop').addEventListener('click', openItemShopModal);
+      document.getElementById('btn-close-item-shop').addEventListener('click', closeAllModals);
+      document.getElementById('btn-use-time-plus').addEventListener('click', useTimePlusInGame);
       document.getElementById('btn-use-ssr-lure').addEventListener('click', useSsrLureInGame);
       document.getElementById('btn-cap-use-gcarrot').addEventListener('click', useGoldenCarrotInCapture);
       document.getElementById('btn-revive-ad').addEventListener('click', () => buyBonus('revive'));
@@ -4452,7 +4558,7 @@
 
 
       // Backdrop click closes any info/menu modal reliably!
-      ['modal-levels', 'modal-album', 'modal-card-detail', 'modal-shop', 'modal-bag', 'modal-garden-bunnies', 'modal-login', 'modal-quests', 'modal-checkin', 'modal-photo', 'modal-home-mascot', 'modal-audio', 'modal-tutorial', 'modal-stamina'].forEach(mid => {
+      ['modal-levels', 'modal-album', 'modal-card-detail', 'modal-shop', 'modal-item-shop', 'modal-bag', 'modal-garden-bunnies', 'modal-login', 'modal-quests', 'modal-checkin', 'modal-photo', 'modal-home-mascot', 'modal-audio', 'modal-tutorial', 'modal-stamina'].forEach(mid => {
         const el = document.getElementById(mid);
         if (el) el.addEventListener('click', (ev) => {
           if (ev.target === el) {
