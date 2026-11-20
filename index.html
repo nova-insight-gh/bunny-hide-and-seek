@@ -1052,11 +1052,11 @@
       b_unicorn: "assets/b_unicorn.webp",
       b_ballet: "assets/b_ballet.webp",
       prop_tree: "assets/prop_tree.webp",
-      prop_tent: "assets/prop_tent.webp",
+      prop_tent: "assets/prop_tent_clean.png",
       prop_bush: "assets/prop_bush.webp",
-      prop_basket: "assets/prop_basket.webp",
+      prop_basket: "assets/prop_basket_clean.png",
       prop_sakura_umbrella: "assets/prop_sakura_umbrella.webp",
-      prop_sakura_lantern: "assets/prop_sakura_lantern.webp",
+      prop_sakura_lantern: "assets/prop_sakura_lantern_clean.png",
       prop_hk_stall: "assets/prop_hk_stall.webp",
       prop_hk_steamer: "assets/prop_hk_steamer.webp",
       prop_camp_tent: "assets/prop_camp_tent.webp",
@@ -1465,6 +1465,7 @@
         { col: 3, row: 6, id: 'dec_clover_grass' }
       ],
       gardenBunnies: [],
+      gardenCoinReadyAt: {},
       account: { bound: false, provider: '', nickname: '兔兔玩家', avatar: 'sp_strawberry' },
       levelsClearedTotal: 0,
       cardProgress: {},
@@ -1487,6 +1488,7 @@
           if (Array.isArray(parsed.gardenGrid) && parsed.gardenGrid.length > 0) saveData.gardenGrid = parsed.gardenGrid;
           if (Array.isArray(parsed.gardenBunnies) && parsed.gardenBunnies.length > 0) saveData.gardenBunnies = parsed.gardenBunnies;
           else saveData.gardenBunnies = saveData.unlockedCards.slice(0, 10);
+          if (parsed.gardenCoinReadyAt && typeof parsed.gardenCoinReadyAt === 'object') saveData.gardenCoinReadyAt = parsed.gardenCoinReadyAt;
           if (parsed.account && typeof parsed.account === 'object') saveData.account = { ...saveData.account, ...parsed.account };
           if (typeof parsed.levelsClearedTotal === 'number') saveData.levelsClearedTotal = parsed.levelsClearedTotal;
           if (parsed.cardProgress && typeof parsed.cardProgress === 'object') saveData.cardProgress = parsed.cardProgress;
@@ -1560,6 +1562,7 @@
         document.getElementById(`view-${v}`).classList.toggle('hidden', v !== viewName);
       });
       closeAllModals();
+      if (viewName !== 'garden') setGardenEditMode(false);
 
       if (viewName === 'home') {
         state.paused = true;
@@ -1646,6 +1649,7 @@
     const GARDEN_CELL = 66;
     const GARDEN_PAD_X = 60;
     const GARDEN_PAD_Y = 64;
+    const GARDEN_COIN_COOLDOWN_MS = 20 * 60 * 1000; // 20 minutes per bunny
 
     function getGridMetrics() {
       const vw = gardenCanvas.clientWidth || 390;
@@ -1725,14 +1729,14 @@
           magnetIndex: idx,
           hopPhase: Math.random() * Math.PI * 2,
           reactTime: 0,
-          heartReady: Math.random() < 0.7,
-          heartCooldown: 5 + Math.random() * 6
+          heartReady: Date.now() >= (saveData.gardenCoinReadyAt[id] || 0)
         };
       });
     }
 
     function updateGarden(dt) {
       const m = getGridMetrics();
+      const nowMs = Date.now();
       const magnets = saveData.gardenGrid.filter(t => DECOR_BY_ID[t.id] && DECOR_BY_ID[t.id].attract);
 
       // Count how many bunnies are currently visiting each magnet tile (cap at 2 per tile so they NEVER clump!)
@@ -1746,9 +1750,8 @@
       for (let i = 0; i < gardenState.bunnies.length; i++) {
         const b = gardenState.bunnies[i];
         if (b.reactTime > 0) b.reactTime = Math.max(0, b.reactTime - dt);
-        if (!b.heartReady) {
-          b.heartCooldown -= dt;
-          if (b.heartCooldown <= 0) b.heartReady = true;
+        if (!b.heartReady && nowMs >= (saveData.gardenCoinReadyAt[b.id] || 0)) {
+          b.heartReady = true;
         }
         if (!b.mode) {
           b.mode = 'roam';
@@ -1968,6 +1971,8 @@
       toggleBtn.querySelector('span').textContent = on ? '完成' : '佈置';
       toggleBtn.classList.toggle('game-btn-orange', on);
       document.getElementById('garden-build-bar').classList.toggle('hidden', !on);
+      const toastWrap = document.getElementById('toast-container');
+      if (toastWrap) toastWrap.style.bottom = on ? '192px' : '';
       if (on) renderGardenPalette();
     }
 
@@ -2036,7 +2041,8 @@
             gardenState.particles.push({ x: b.x, y: b.y - 28, vx: Math.cos(ang) * 52, vy: Math.sin(ang) * 52 - 36, size: 3.5, color: i % 2 === 0 ? '#FF7B89' : '#FDE047', life: 0.55, maxLife: 0.55 });
           }
           if (b.heartReady) {
-            b.heartReady = false; b.heartCooldown = 8 + Math.random() * 5;
+            b.heartReady = false;
+            saveData.gardenCoinReadyAt[b.id] = Date.now() + GARDEN_COIN_COOLDOWN_MS;
             ensureDailyFresh(); saveData.daily.petted += 1; saveData.coins += 5; persistSave(); syncGlobalCounters(); SFX.coin();
             gardenState.floatingTexts.push({ x: b.x, y: b.y - 56, text: '+5 金幣！', color: '#FEF08A', life: 1.0, maxLife: 1.0 });
           } else {
@@ -3165,13 +3171,15 @@
         const meta = BUNNY_BY_ID[tid], isFound = state.foundIds.has(tid);
         const chip = document.createElement('button');
         chip.type = 'button';
-        chip.className = `target-chip shrink-0 flex items-center gap-1.5 rounded-xl px-2 py-1 ${isFound ? 'found' : ''}`;
+        chip.className = `target-chip shrink-0 flex flex-col items-center justify-center rounded-xl px-1.5 py-1 ${isFound ? 'found' : ''}`;
+        chip.style.minWidth = '62px';
+        chip.style.maxWidth = '76px';
         chip.innerHTML = `
-          <div class="w-7 h-7 rounded-lg bg-[#FFF7ED] flex items-center justify-center overflow-hidden relative">
-            <img src="${SPRITE_SRCS[tid]}" alt="${meta.name}" class="h-6 w-auto object-contain" />
+          <div class="w-9 h-8 rounded-lg bg-[#FFF7ED] flex items-center justify-center overflow-hidden relative">
+            <img src="${SPRITE_SRCS[tid]}" alt="${meta.name}" class="h-7 w-auto object-contain" />
             ${isFound ? '<span class="absolute inset-0 bg-[#22C55E]/75 text-white text-xs font-black flex items-center justify-center">✓</span>' : ''}
           </div>
-          <span class="text-[11px] font-black whitespace-nowrap ${isFound ? 'line-through text-[#15803D]' : 'text-[#5A3A28]'}">${meta.name}</span>
+          <span class="text-[9.5px] font-black leading-tight mt-0.5 truncate w-full text-center ${isFound ? 'line-through text-[#15803D]' : 'text-[#5A3A28]'}">${meta.name}</span>
         `;
         chip.addEventListener('click', () => showToast(isFound ? `已找到「${meta.name}」` : `尋找目標：${meta.name}（${meta.rarity}）`));
         container.appendChild(chip);
