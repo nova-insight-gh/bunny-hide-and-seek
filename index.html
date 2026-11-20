@@ -290,9 +290,40 @@
 
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    /* Nova Insight Studio logo splash. Timing follows Gemini's Unity NovaLogoSplashAnimator. */
+    #logo-splash { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center;
+      background: #FEF7E5 url('assets/logo/bg.png') center / cover; transition: opacity 0.4s ease; }
+    #logo-splash.is-leaving { opacity: 0; pointer-events: none; }
+    #logo-splash .logo-rig { position: relative; width: min(86vw, 58vh); aspect-ratio: 1; }
+    #logo-splash .logo-rig img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+    .logo-ring  { animation: logoRing 0.55s cubic-bezier(0.33,1,0.68,1) 0.15s forwards; }
+    .logo-moon  { animation: logoMoon 0.48s cubic-bezier(0.33,1,0.68,1) 0.70s forwards; }
+    .logo-bunny { animation: logoBunny 0.50s cubic-bezier(0.34,1.56,0.64,1) 0.98s forwards, logoHop 0.75s ease-in-out 2.4s infinite alternate; }
+    .logo-star  { animation: logoStar 0.36s cubic-bezier(0.34,1.56,0.64,1) 1.30s forwards, logoPulse 0.57s ease-in-out 2.4s infinite alternate; }
+    .logo-seal  { animation: logoSeal 0.28s cubic-bezier(0.34,1.56,0.64,1) 1.54s forwards; }
+    .logo-text  { animation: logoText 0.45s cubic-bezier(0.33,1,0.68,1) 1.82s forwards; }
+    @keyframes logoRing  { from { opacity: 0; transform: scale(0.86) rotate(-14deg); } 45% { opacity: 1; } to { opacity: 1; transform: none; } }
+    @keyframes logoMoon  { from { opacity: 0; transform: translateY(2%) scale(0.9) rotate(-8deg); } 45% { opacity: 1; } to { opacity: 1; transform: none; } }
+    @keyframes logoBunny { from { opacity: 0; transform: translateY(4%) scale(0.72); } 45% { opacity: 1; } to { opacity: 1; transform: none; } }
+    @keyframes logoStar  { from { opacity: 0; transform: scale(0.2) rotate(-45deg); } 45% { opacity: 1; } to { opacity: 1; transform: none; } }
+    @keyframes logoSeal  { from { opacity: 0; transform: scale(2.35) rotate(-18deg); } 45% { opacity: 1; } to { opacity: 1; transform: none; } }
+    @keyframes logoText  { from { opacity: 0; transform: translateY(2%) scale(0.96); } 45% { opacity: 1; } to { opacity: 1; transform: none; } }
+    @keyframes logoHop   { from { opacity: 1; transform: none; } to { opacity: 1; transform: translateY(-0.5%); } }
+    @keyframes logoPulse { from { opacity: 1; transform: none; } to { opacity: 1; transform: scale(1.06); } }
+    @media (prefers-reduced-motion: reduce) { #logo-splash .logo-rig img { animation: none; opacity: 1; } }
   </style>
 </head>
 <body>
+  <div id="logo-splash" aria-label="Nova Insight Studio">
+    <div class="logo-rig">
+      <img class="logo-ring" src="assets/logo/ring.png" alt="" />
+      <img class="logo-moon" src="assets/logo/moon.png" alt="" />
+      <img class="logo-bunny" src="assets/logo/bunny.png" alt="" />
+      <img class="logo-star" src="assets/logo/star.png" alt="" />
+      <img class="logo-seal" src="assets/logo/seal.png" alt="" />
+      <img class="logo-text" src="assets/logo/text.png" alt="Nova Insight Studio" />
+    </div>
+  </div>
   <div id="app-shell">
 
     <!-- ===================================================================== -->
@@ -959,13 +990,13 @@
       ssr_cake_train: "assets/ssr_cake_train.webp",
       ssr_paper_plane: "assets/ssr_paper_plane.webp",
       b_sandwich: "assets/b_sandwich.webp",
-      b_watermelon: "assets/b_watermelon.webp",
+      b_watermelon: "assets/b_watermelon.png",
       b_butterfly: "assets/b_butterfly.webp",
       b_sunflower: "assets/b_sunflower.webp",
       b_applebasket: "assets/b_applebasket.webp",
       b_bubbles: "assets/b_bubbles.webp",
-      b_koi: "assets/b_koi.webp",
-      b_foxmask: "assets/b_foxmask.webp",
+      b_koi: "assets/b_koi.png",
+      b_foxmask: "assets/b_foxmask.png",
       b_matchacone: "assets/b_matchacone.webp",
       b_windchime: "assets/b_windchime.webp",
       b_taiyaki: "assets/b_taiyaki.webp",
@@ -3353,7 +3384,15 @@
       loadSave();
       hydrateStaticUIImages();
       bindEvents();
+      // Splash stays up until both the logo animation (3.3s) and image preload are done; a tap skips the wait.
+      const splash = document.getElementById('logo-splash');
+      let splashMinDone = false, gameReady = false;
+      const hideSplash = () => { splash.classList.add('is-leaving'); setTimeout(() => splash.remove(), 450); };
+      const maybeHideSplash = () => { if (splashMinDone && gameReady) hideSplash(); };
+      setTimeout(() => { splashMinDone = true; maybeHideSplash(); }, 3300);
+      splash.addEventListener('pointerdown', () => { splashMinDone = true; maybeHideSplash(); });
       preloadImages(() => {
+        gameReady = true; maybeHideSplash();
         syncGlobalCounters();
         switchView('home');
         lastFrameTime = performance.now();
