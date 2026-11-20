@@ -664,14 +664,18 @@
         </div>
 
         <div class="pointer-events-none absolute inset-x-0 bottom-5 px-3 z-20 flex items-end justify-between" style="padding-bottom: env(safe-area-inset-bottom, 0px);">
-          <div class="pointer-events-auto flex items-center gap-2">
-            <button id="btn-hint" type="button" class="game-btn game-btn-gold rounded-2xl pl-2 pr-3 py-1.5 flex items-center gap-1.5 text-xs font-black text-[#6B3E08]">
-              <img id="img-hint-icon" src="" alt="提示" class="w-6 h-6 object-contain" />
+          <div class="pointer-events-auto flex items-center gap-1.5 flex-wrap">
+            <button id="btn-hint" type="button" class="game-btn game-btn-gold rounded-2xl pl-1.5 pr-2.5 py-1.5 flex items-center gap-1 text-xs font-black text-[#6B3E08]">
+              <img id="img-hint-icon" src="" alt="提示" class="w-5 h-5 object-contain" />
               <span id="hint-btn-text">雷達 (1)</span>
             </button>
-            <button id="btn-watch-ad-direct" type="button" class="game-btn game-btn-coral rounded-2xl pl-2 pr-2.5 py-1.5 flex items-center gap-1 text-[11px] font-black text-[#9F1239]" title="用 30 金幣換 1 個提示">
-              <img class="img-coin-icon w-6 h-6 object-contain" src="" alt="金幣" />
+            <button id="btn-watch-ad-direct" type="button" class="game-btn game-btn-coral rounded-2xl pl-1.5 pr-2 py-1.5 flex items-center gap-1 text-[11px] font-black text-[#9F1239]" title="用 30 金幣換 1 個提示">
+              <img class="img-coin-icon w-5 h-5 object-contain" src="" alt="金幣" />
               <span>30 換提示</span>
+            </button>
+            <button id="btn-use-ssr-lure" type="button" class="game-btn game-btn-pink rounded-2xl pl-1.5 pr-2 py-1.5 flex items-center gap-1 text-[11px] font-black text-[#5A3A28]" title="使用 SSR 幸運誘兔鈴吸引稀有兔兔現身">
+              <img src="assets/item_ssr_lure.png" alt="誘兔鈴" class="w-5 h-5 object-contain" />
+              <span id="ssr-lure-btn-text">誘兔鈴 (1)</span>
             </button>
           </div>
 
@@ -819,6 +823,12 @@
         <div class="w-full h-2.5 bg-[#E4D4BE] rounded-full overflow-hidden border border-[#5A3A28]/40 mb-2">
           <div id="cap-time-bar" class="h-full bg-[#E28F54] transition-all duration-75" style="width:100%"></div>
         </div>
+
+        <!-- Golden Carrot Catch Boost Button -->
+        <button id="btn-cap-use-gcarrot" type="button" class="game-btn game-btn-gold w-full py-1.5 px-3 rounded-2xl mb-2 flex items-center justify-center gap-1.5 text-[11px] font-black text-[#6B3E08]">
+          <img src="assets/item_golden_carrot.png" alt="黃金紅蘿蔔" class="w-5 h-5 object-contain" />
+          <span id="cap-gcarrot-label">使用黃金紅蘿蔔 (+35% 機率 · 持有 1 個)</span>
+        </button>
 
         <!-- Bold Tap Prompt ABOVE the bush (never overlaps!) -->
         <div id="cap-tap-hint" class="inline-flex items-center gap-1.5 mb-2 px-3.5 py-1 rounded-full bg-[#FFFDF8] border-2 border-[#D97706] text-xs font-black text-[#9A3412] animate-bounce">
@@ -1305,7 +1315,7 @@
       ssr_paper_plane: "assets/ssr_paper_plane.webp",
       b_sandwich: "assets/b_sandwich.webp",
       b_watermelon: "assets/b_watermelon.png",
-      b_butterfly: "assets/b_butterfly.webp",
+      b_butterfly: "assets/b_butterfly_clean.png",
       b_sunflower: "assets/b_sunflower.webp",
       b_applebasket: "assets/b_applebasket.webp",
       b_bubbles: "assets/b_bubbles.webp",
@@ -1389,6 +1399,8 @@
       ui_shop: "assets/ui_shop.webp",
       ui_coin: "assets/ui_coin.webp",
       ui_banner: "assets/ui_banner.webp",
+      item_golden_carrot: "assets/item_golden_carrot.png",
+      item_ssr_lure: "assets/item_ssr_lure.png",
       bg_meadow: "assets/bg_meadow.webp",
       bg_sakura: "assets/bg_sakura.webp",
       bg_hk: "assets/bg_hk.webp",
@@ -1552,29 +1564,31 @@
       const srs = pool.filter(b => b.rarity === 'SR').map(b => b.id);
       const ssrs = pool.filter(b => b.rarity === 'SSR').map(b => b.id);
       const names = ['初遇草地', '悠閒散步', '捉迷藏時間', '熱鬧市集', '稀有現身', '雙倍挑戰', '派對高潮', '傳說降臨', '眼力大師', '終極慶典'];
-      // Every single one of the 20 theme bunnies appears across its 10 levels!
+      // 90s per level: L1-5 = 7-9 targets, L6-10 = 10-15 targets
       const targetSets = [
-        [ns[0], ns[1], ns[2]],
-        [ns[3], ns[4], rs[0]],
-        [ns[5], ns[6], rs[1]],
-        [ns[7], ns[8], ns[9], rs[2]],
-        [rs[0], rs[3], srs[0]],
-        [ns[2], rs[4], srs[1], rs[1]],
-        [ns[4], rs[2], rs[3], srs[2]],
-        [rs[4], srs[0], srs[1], ssrs[0]],
-        [ns[6], rs[3], srs[2], ssrs[1]],
-        [rs[0], rs[4], srs[0], srs[2], ssrs[0], ssrs[1]]
+        [ns[0], ns[1], ns[2], ns[3], ns[4], rs[0], rs[1]],
+        [ns[5], ns[6], ns[7], ns[8], ns[9], rs[2], rs[3]],
+        [ns[0], ns[2], ns[4], ns[6], ns[8], rs[0], rs[4], srs[0]],
+        [ns[1], ns[3], ns[5], ns[7], rs[1], rs[2], rs[3], srs[1]],
+        [ns[2], ns[4], ns[6], ns[9], rs[0], rs[2], rs[4], srs[0], srs[2]],
+        [ns[0], ns[3], ns[6], ns[9], rs[1], rs[3], rs[4], srs[0], srs[1], ssrs[0]],
+        [ns[1], ns[4], ns[5], ns[7], ns[8], rs[0], rs[2], rs[4], srs[1], srs[2], ssrs[0]],
+        [ns[0], ns[2], ns[5], ns[7], ns[9], rs[0], rs[1], rs[3], rs[4], srs[0], srs[2], ssrs[1]],
+        [ns[0], ns[1], ns[3], ns[5], ns[7], ns[9], rs[0], rs[1], rs[2], rs[4], srs[0], srs[1], ssrs[0], ssrs[1]],
+        [ns[1], ns[2], ns[4], ns[6], ns[8], ns[9], rs[0], rs[1], rs[3], rs[4], srs[0], srs[1], srs[2], ssrs[0], ssrs[1]]
       ];
       return targetSets.map((tgs, idx) => {
         const num = idx + 1;
+        const cleanTargets = [...new Set(tgs.filter(Boolean))];
+        const tCount = cleanTargets.length;
         return {
           levelNum: num, label: names[idx],
-          timeLimit: 60 + Math.floor(num * 3.5),
-          worldW: 1240 + num * 55, worldH: 1300 + num * 55,
-          targets: tgs.filter(Boolean),
-          decoyCount: baseDecoys + num * 7,
-          propCount: 15 + Math.floor(num * 1.8),
-          starScores: [1100 + num * 220, 1750 + num * 280, 2350 + num * 330]
+          timeLimit: 90,
+          worldW: 1320 + num * 55, worldH: 1380 + num * 55,
+          targets: cleanTargets,
+          decoyCount: baseDecoys + num * 8,
+          propCount: 16 + Math.floor(num * 2),
+          starScores: [tCount * 460, tCount * 660, tCount * 860]
         };
       });
     }
@@ -1775,6 +1789,7 @@
       dailyChallengeDate: '',
       stamina: 5,
       staminaUpdatedAt: Date.now(),
+      items: { golden_carrot: 1, ssr_lure: 1 },
       account: { bound: false, provider: '', nickname: '兔兔玩家', avatar: 'sp_strawberry' },
       levelsClearedTotal: 0,
       cardProgress: {},
@@ -1803,6 +1818,9 @@
       if (typeof parsed.dailyChallengeDate === 'string') saveData.dailyChallengeDate = parsed.dailyChallengeDate;
       if (typeof parsed.stamina === 'number') saveData.stamina = Math.max(0, Math.min(MAX_STAMINA, Math.floor(parsed.stamina)));
       if (typeof parsed.staminaUpdatedAt === 'number') saveData.staminaUpdatedAt = parsed.staminaUpdatedAt;
+      if (parsed.items && typeof parsed.items === 'object') {
+        saveData.items = { golden_carrot: 0, ssr_lure: 0, ...parsed.items };
+      }
       if (parsed.account && typeof parsed.account === 'object') saveData.account = { ...saveData.account, ...parsed.account };
       if (typeof parsed.levelsClearedTotal === 'number') saveData.levelsClearedTotal = parsed.levelsClearedTotal;
       if (parsed.cardProgress && typeof parsed.cardProgress === 'object') saveData.cardProgress = parsed.cardProgress;
@@ -2422,9 +2440,60 @@
       clampGardenCamera();
     }, { passive: false });
 
+    const ADVENTURE_ITEMS = [
+      { id: 'golden_carrot', name: '黃金紅蘿蔔', price: 60, img: 'item_golden_carrot', tag: '捕捉 +35%', desc: '草叢收服兔兔時使用，大幅提升成功率（SSR 升至 55%）！' },
+      { id: 'ssr_lure',      name: 'SSR 幸運誘兔鈴', price: 90, img: 'item_ssr_lure', tag: '召喚 SSR', desc: '關卡內搖響鈴鐺，立刻吸引稀有 SSR 兔兔悄悄現身！' }
+    ];
+
     function openShopModal() {
       const grid = document.getElementById('shop-grid');
       grid.innerHTML = '';
+      if (!saveData.items) saveData.items = { golden_carrot: 0, ssr_lure: 0 };
+
+      const advHeader = document.createElement('div');
+      advHeader.className = 'col-span-2 text-left text-[11px] font-black text-[#B45309] px-1';
+      advHeader.textContent = '冒險道具（尋兔與捕捉專用）';
+      grid.appendChild(advHeader);
+
+      ADVENTURE_ITEMS.forEach((it) => {
+        const owned = saveData.items[it.id] || 0;
+        const canAfford = saveData.coins >= it.price;
+        const card = document.createElement('div');
+        card.className = 'bg-white/95 rounded-2xl border-2 border-[#D97706]/35 p-2.5 flex flex-col items-center text-center';
+        card.innerHTML = `
+          <div class="h-16 w-full flex items-center justify-center mb-1 relative">
+            <img src="${SPRITE_SRCS[it.img]}" alt="${it.name}" class="max-h-16 w-auto object-contain drop-shadow-xs" />
+            <span class="absolute top-0 right-0 text-[9px] font-black px-1.5 py-0.5 rounded-full bg-[#FEF3C7] text-[#B45309]">${it.tag}</span>
+          </div>
+          <div class="text-xs font-black text-[#5A3A28]">${it.name}</div>
+          <div class="text-[10px] font-bold text-[#8C6D5D] mb-2">持有：${owned} 個</div>
+          <button type="button" data-buy-adv="${it.id}"
+            class="buy-adv-btn w-full py-1.5 rounded-xl text-xs font-black flex items-center justify-center gap-1 ${canAfford ? 'game-btn game-btn-gold text-[#6B3E08]' : 'bg-[#E7DDD3] text-[#9A887A] border-2 border-[#C9B8A8]'}">
+            <img src="${SPRITE_SRCS.ui_coin}" alt="幣" class="w-4 h-4 object-contain" />
+            <span>${it.price} 購買</span>
+          </button>
+        `;
+        grid.appendChild(card);
+      });
+
+      grid.querySelectorAll('.buy-adv-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const it = ADVENTURE_ITEMS.find(x => x.id === btn.dataset.buyAdv);
+          if (!it) return;
+          if (saveData.coins < it.price) { SFX.wrong(); showToast('金幣不足！去關卡找更多兔兔賺金幣吧！'); return; }
+          saveData.coins -= it.price;
+          saveData.items[it.id] = (saveData.items[it.id] || 0) + 1;
+          persistSave(); syncGlobalCounters(); SFX.coin();
+          openShopModal();
+          showToast(`已購買「${it.name}」×1！`);
+        });
+      });
+
+      const decHeader = document.createElement('div');
+      decHeader.className = 'col-span-2 text-left text-[11px] font-black text-[#5A3A28] px-1 pt-1';
+      decHeader.textContent = '花園佈置擺設';
+      grid.appendChild(decHeader);
+
       GARDEN_DECOR_CATALOG.forEach((d) => {
         const owned = saveData.ownedDecor[d.id] || 0;
         const canAfford = saveData.coins >= d.price;
@@ -2685,13 +2754,46 @@
     }
 
     // ---- POKEMON-GO STYLE RAPID-TAP BUSH CAPTURE ----
-    const capState = { active: false, cardId: null, taps: 0, needed: 8, timeLeft: 5.0, maxTime: 5.0, timerId: null };
+    const capState = { active: false, cardId: null, taps: 0, needed: 8, timeLeft: 5.0, maxTime: 5.0, timerId: null, boosted: false };
+
+    function renderCaptureBoostBtn() {
+      const btn = document.getElementById('btn-cap-use-gcarrot');
+      const lbl = document.getElementById('cap-gcarrot-label');
+      if (!btn || !lbl) return;
+      const owned = (saveData.items && saveData.items.golden_carrot) || 0;
+      if (capState.boosted) {
+        btn.disabled = true;
+        btn.className = 'game-btn game-btn-mint w-full py-1.5 px-3 rounded-2xl mb-2 flex items-center justify-center gap-1.5 text-[11px] font-black text-[#14532D]';
+        lbl.textContent = '黃金紅蘿蔔生效中！捕捉成功率 +35%';
+      } else {
+        btn.disabled = false;
+        btn.className = 'game-btn game-btn-gold w-full py-1.5 px-3 rounded-2xl mb-2 flex items-center justify-center gap-1.5 text-[11px] font-black text-[#6B3E08]';
+        lbl.textContent = owned > 0 ? `使用黃金紅蘿蔔 (+35% 成功率 · 持有 ${owned} 個)` : '60 金幣立即餵黃金紅蘿蔔 (+35% 成功率)';
+      }
+    }
+
+    function useGoldenCarrotInCapture() {
+      if (!capState.active || capState.boosted) return;
+      if (!saveData.items) saveData.items = { golden_carrot: 0, ssr_lure: 0 };
+      if ((saveData.items.golden_carrot || 0) > 0) {
+        saveData.items.golden_carrot -= 1;
+      } else if (saveData.coins >= 60) {
+        saveData.coins -= 60;
+      } else {
+        SFX.wrong(); showToast('黃金紅蘿蔔不足，需要 60 金幣購買！'); return;
+      }
+      capState.boosted = true;
+      capState.timeLeft = Math.min(capState.maxTime, capState.timeLeft + 1.5);
+      persistSave(); syncGlobalCounters(); renderCaptureBoostBtn(); SFX.flip();
+      showToast('已使用黃金紅蘿蔔！本次收服機率大幅提升 +35%！');
+    }
 
     function openCaptureMiniGame(cardId) {
       const meta = BUNNY_BY_ID[cardId];
       if (!meta) return;
       state.paused = true;
       capState.active = true;
+      capState.boosted = false;
       capState.cardId = cardId;
       capState.taps = 0;
       capState.needed = meta.rarity === 'SSR' ? 16 : meta.rarity === 'SR' ? 12 : meta.rarity === 'R' ? 8 : 5;
@@ -2707,6 +2809,9 @@
       document.getElementById('cap-bush-img').classList.remove('hidden');
       document.getElementById('cap-bunny-img').src = SPRITE_SRCS[cardId];
       document.getElementById('cap-bunny-img').classList.add('hidden');
+      const gBtn = document.getElementById('btn-cap-use-gcarrot');
+      if (gBtn) gBtn.classList.remove('hidden');
+      renderCaptureBoostBtn();
       document.getElementById('cap-tap-hint').classList.remove('hidden');
       document.getElementById('cap-result-box').classList.add('hidden');
       document.getElementById('cap-fill-bar').style.width = '0%';
@@ -2738,9 +2843,10 @@
       document.getElementById('cap-progress-text').textContent = `${capState.taps} / ${capState.needed} 下`;
 
       if (capState.taps >= capState.needed) {
-        // Rarity catch chance: SSR=20%, SR=40%, R=65%, N=90%
+        // Rarity catch chance: SSR=20%, SR=40%, R=65%, N=90% (+35% with Golden Carrot)
         const meta = BUNNY_BY_ID[capState.cardId];
-        const chance = meta.rarity === 'SSR' ? 0.20 : meta.rarity === 'SR' ? 0.40 : meta.rarity === 'R' ? 0.65 : 0.90;
+        const base = meta.rarity === 'SSR' ? 0.20 : meta.rarity === 'SR' ? 0.40 : meta.rarity === 'R' ? 0.65 : 0.90;
+        const chance = Math.min(1, base + (capState.boosted ? 0.35 : 0));
         finishCaptureAttempt(Math.random() <= chance);
       }
     }
@@ -2749,6 +2855,8 @@
       capState.active = false;
       if (capState.timerId) { clearInterval(capState.timerId); capState.timerId = null; }
       const meta = BUNNY_BY_ID[capState.cardId];
+      const gBtn = document.getElementById('btn-cap-use-gcarrot');
+      if (gBtn) gBtn.classList.add('hidden');
       document.getElementById('cap-tap-hint').classList.add('hidden');
       document.getElementById('cap-result-box').classList.remove('hidden');
 
@@ -2958,13 +3066,13 @@
       const nrPool = BUNNY_CATALOG.filter(b => b.rarity === 'N' || b.rarity === 'R');
       const srPool = BUNNY_CATALOG.filter(b => b.rarity === 'SR');
       const ssrPool = BUNNY_CATALOG.filter(b => b.rarity === 'SSR');
-      const targets = [...pickFrom(nrPool, 2, used), ...pickFrom(srPool, 2, used), ...pickFrom(ssrPool, 1, used)];
+      const targets = [...pickFrom(nrPool, 3, used), ...pickFrom(srPool, 3, used), ...pickFrom(ssrPool, 2, used)];
       state.isDailyChallenge = true;
       state.dailyLevelConfig = {
         levelNum: 0, label: '每日隨機挑戰',
-        timeLimit: 75, worldW: 1460, worldH: 1520,
-        targets, decoyCount: 52, propCount: 18,
-        starScores: [1800, 2600, 3400]
+        timeLimit: 90, worldW: 1520, worldH: 1580,
+        targets, decoyCount: 62, propCount: 22,
+        starScores: [3600, 5200, 6800]
       };
       startLevel(themeIdx, 0, true);
     }
@@ -3067,15 +3175,18 @@
       }
 
       state.bunnies = [];
-      const hideableProps = state.props;
+      const availProps = [...state.props];
+      const hideCount = lvl.levelNum >= 7 ? 3 : lvl.levelNum >= 4 ? 2 : 1;
       lvl.targets.forEach((tid, idx) => {
-        if (idx === lvl.targets.length - 1 && hideableProps.length > 0) {
-          const host = hideableProps[Math.floor(Math.random() * hideableProps.length)];
+        const shouldHide = idx >= lvl.targets.length - hideCount && availProps.length > 0;
+        if (shouldHide) {
+          const pIdx = Math.floor(Math.random() * availProps.length);
+          const host = availProps.splice(pIdx, 1)[0];
           const b = createBunnyEntity(tid, true, host.x, host.y - 4);
           b.hiddenInProp = host.uid; host.hidingBunnyUid = b.uid;
           state.bunnies.push(b);
         } else {
-          const pos = findBunnySpot(130);
+          const pos = findBunnySpot(115);
           state.bunnies.push(createBunnyEntity(tid, true, pos.x, pos.y));
         }
       });
@@ -3085,13 +3196,13 @@
       const safeDecoys = DECOY_IDS.filter(id => !targetSet.has(id));
       for (let i = 0; i < lvl.decoyCount; i++) {
         const did = safeDecoys[i % safeDecoys.length];
-        const pos = findBunnySpot(54);
+        const pos = findBunnySpot(50);
         state.bunnies.push(createBunnyEntity(did, false, pos.x, pos.y));
       }
 
       switchView('play');
       renderTargetBar();
-      showToast(state.isDailyChallenge ? `每日隨機挑戰：${theme.name}（首通雙倍金幣）！` : `${theme.name} 關卡 ${lvl.levelNum}！找兔兔賺金幣佈置花園！`);
+      showToast(state.isDailyChallenge ? `每日隨機挑戰：${theme.name}（限時 90 秒・首通雙倍金幣）！` : `${theme.name} 關卡 ${lvl.levelNum}！90 秒內找出 ${lvl.targets.length} 隻兔兔！`);
     }
 
     function createBunnyEntity(spriteKey, isTarget, x, y) {
@@ -3105,20 +3216,44 @@
       };
     }
 
-    function spawnGoldenEscapeBunny() {
-      const uncollected = BUNNY_CATALOG.filter(b => !saveData.unlockedCards.includes(b.id) && !state.targetIds.includes(b.id) && !DECOY_IDS.includes(b.id));
-      const pool = uncollected.length > 0 ? uncollected : BUNNY_CATALOG;
-      const pick = pool[Math.floor(Math.random() * pool.length)];
+    function spawnGoldenEscapeBunny(fromLure = false) {
+      const notTarget = b => !state.targetIds.includes(b.id) && !DECOY_IDS.includes(b.id);
+      let pool = [];
+      if (fromLure && Math.random() < 0.80) {
+        const unownedSsr = BUNNY_CATALOG.filter(b => b.rarity === 'SSR' && !saveData.unlockedCards.includes(b.id) && notTarget(b));
+        pool = unownedSsr.length > 0 ? unownedSsr : BUNNY_CATALOG.filter(b => b.rarity === 'SSR' && notTarget(b));
+      }
+      if (pool.length === 0) {
+        const uncollected = BUNNY_CATALOG.filter(b => !saveData.unlockedCards.includes(b.id) && notTarget(b));
+        pool = uncollected.length > 0 ? uncollected : BUNNY_CATALOG.filter(notTarget);
+      }
+      const pick = pool[Math.floor(Math.random() * pool.length)] || BUNNY_CATALOG[0];
       const fromLeft = Math.random() < 0.5;
       state.goldenBunny = {
-        spriteKey: pick.id, name: pick.name,
-        x: fromLeft ? 70 : state.worldW - 70, y: 200 + Math.random() * (state.worldH - 400),
-        vx: fromLeft ? 80 : -80, vy: (Math.random() - 0.5) * 40,
-        facing: fromLeft ? 1 : -1, timeLeft: 14.0, phase: 0
+        spriteKey: pick.id, name: pick.name, rarity: pick.rarity,
+        x: fromLeft ? 70 : state.worldW - 70, y: 180 + Math.random() * (state.worldH - 360),
+        vx: fromLeft ? 78 : -78, vy: (Math.random() - 0.5) * 42,
+        facing: fromLeft ? 1 : -1, timeLeft: 20.0, phase: 0
       };
       SFX.radar();
-      document.getElementById('golden-alert-text').textContent = `閃光「${pick.name}」出現！捉住可得 +80 金幣與新卡！`;
+      document.getElementById('golden-alert-text').textContent = `驚喜「${pick.name}」（${pick.rarity}）悄悄出現！快找找牠！`;
       document.getElementById('golden-alert').classList.remove('hidden');
+    }
+
+    function useSsrLureInGame() {
+      if (!state.running) return;
+      if (state.goldenBunny) { SFX.tap(); showToast('驚喜兔兔已經在地圖上囉，快仔細找找牠！'); return; }
+      if (!saveData.items) saveData.items = { golden_carrot: 0, ssr_lure: 0 };
+      if ((saveData.items.ssr_lure || 0) > 0) {
+        saveData.items.ssr_lure -= 1;
+      } else if (saveData.coins >= 90) {
+        saveData.coins -= 90;
+      } else {
+        SFX.wrong(); showToast('SSR 幸運誘兔鈴不足！需要 90 金幣或到商店購買。'); return;
+      }
+      state.goldenSpawnedThisRun = true;
+      persistSave(); renderHUD(); SFX.flip();
+      spawnGoldenEscapeBunny(true);
     }
 
     let lastFrameTime = performance.now();
@@ -3170,9 +3305,6 @@
         g.timeLeft -= dt; g.phase += dt * 10; g.x += g.vx * dt; g.y += g.vy * dt;
         if (g.x < 65 || g.x > state.worldW - 65) { g.vx *= -1; g.facing = g.vx >= 0 ? 1 : -1; }
         if (g.y < 100 || g.y > state.worldH - 100) g.vy *= -1;
-        if (Math.random() < 0.4) {
-          state.particles.push({ x: g.x + (Math.random() - 0.5) * 24, y: g.y - 24, vx: (Math.random() - 0.5) * 25, vy: -18, size: 3.5, color: '#FDE047', life: 0.45, maxLife: 0.45 });
-        }
         if (g.timeLeft <= 0) {
           state.goldenBunny = null;
           document.getElementById('golden-alert').classList.add('hidden');
@@ -3283,11 +3415,10 @@
         } else if (item.kind === 'golden') {
           const g = item.obj, img = IMAGES[g.spriteKey];
           if (!img || !img.complete) continue;
-          const w = img.naturalWidth * 0.56, h = img.naturalHeight * 0.56, hopY = Math.abs(Math.sin(g.phase)) * 22;
+          const w = img.naturalWidth * 0.52, h = img.naturalHeight * 0.52, hopY = Math.abs(Math.sin(g.phase)) * 18;
+          ctx.fillStyle = 'rgba(60, 40, 25, 0.2)';
+          ctx.beginPath(); ctx.ellipse(g.x, g.y + 2, w * 0.34, 8, 0, 0, Math.PI * 2); ctx.fill();
           ctx.save();
-          ctx.fillStyle = 'rgba(250, 204, 21, 0.34)';
-          ctx.beginPath(); ctx.arc(g.x, g.y - h * 0.42 - hopY, Math.max(w, h) * 0.58, 0, Math.PI * 2); ctx.fill();
-          ctx.strokeStyle = '#FACC15'; ctx.lineWidth = 4; ctx.stroke();
           ctx.translate(g.x, g.y - hopY); ctx.scale(g.facing, 1);
           ctx.drawImage(img, -w / 2, -h + 6, w, h); ctx.restore();
         } else {
@@ -3625,11 +3756,16 @@
 
       const hintBtn = document.getElementById('btn-hint'), hintIcon = document.getElementById('img-hint-icon'), hintText = document.getElementById('hint-btn-text');
       if (state.hintsLeft > 0) {
-        hintBtn.className = 'game-btn game-btn-gold rounded-2xl pl-2 pr-3 py-1.5 flex items-center gap-1.5 text-xs font-black text-[#6B3E08]';
+        hintBtn.className = 'game-btn game-btn-gold rounded-2xl pl-1.5 pr-2.5 py-1.5 flex items-center gap-1 text-xs font-black text-[#6B3E08]';
         hintIcon.src = SPRITE_SRCS.ui_radar; hintText.textContent = `雷達 (${state.hintsLeft})`;
       } else {
-        hintBtn.className = 'game-btn game-btn-orange rounded-2xl pl-2 pr-3 py-1.5 flex items-center gap-1.5 text-xs font-black';
-        hintIcon.src = SPRITE_SRCS.ui_coin; hintText.textContent = '30 金幣換提示';
+        hintBtn.className = 'game-btn game-btn-orange rounded-2xl pl-1.5 pr-2.5 py-1.5 flex items-center gap-1 text-xs font-black';
+        hintIcon.src = SPRITE_SRCS.ui_coin; hintText.textContent = '30 換提示';
+      }
+      const lureLbl = document.getElementById('ssr-lure-btn-text');
+      if (lureLbl) {
+        const cnt = (saveData.items && saveData.items.ssr_lure) || 0;
+        lureLbl.textContent = cnt > 0 ? `誘兔鈴 (${cnt})` : '90 誘SSR';
       }
     }
 
@@ -4283,6 +4419,8 @@
         if (!state.running) return;
         buyBonus('hint', state.hintsLeft <= 0);
       });
+      document.getElementById('btn-use-ssr-lure').addEventListener('click', useSsrLureInGame);
+      document.getElementById('btn-cap-use-gcarrot').addEventListener('click', useGoldenCarrotInCapture);
       document.getElementById('btn-revive-ad').addEventListener('click', () => buyBonus('revive'));
       document.getElementById('btn-timeout-retry').addEventListener('click', () => {
         if (state.isDailyChallenge) startDailyChallenge();
