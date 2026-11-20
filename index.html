@@ -656,7 +656,7 @@
         <div id="danger-vignette"></div>
 
         <!-- Semi-Transparent Floating Target Tray (Unfound Only + Collapsible Found Drawer) -->
-        <div id="target-tray" class="target-tray absolute top-2 left-2 right-2 z-20 rounded-2xl px-2 py-1.5 flex flex-col gap-1 overflow-hidden">
+        <div id="target-tray" class="target-tray absolute z-20 rounded-2xl px-2 py-1.5 flex flex-col gap-1 overflow-hidden" style="top:8px;left:8px;right:8px;width:calc(100% - 16px);">
           <div class="flex items-center gap-1.5 min-w-0 w-full">
             <div class="shrink-0 flex flex-col items-center leading-none pr-1">
               <span class="text-[9px] font-black text-[#6B4F40] whitespace-nowrap mb-1">目標兔兔</span>
@@ -667,7 +667,7 @@
             <button id="btn-toggle-targets" type="button" class="shrink-0 text-[10px] font-black px-1.5 py-1 rounded-lg bg-[#EAD7C0] text-[#5A3A28] whitespace-nowrap" title="查看已找到的兔兔">已找 0 ▼</button>
           </div>
           <div id="found-target-row" class="hidden pt-1 border-t border-[#5A3A28]/15 flex items-center gap-1.5 min-w-0 w-full">
-            <span class="shrink-0 text-[9px] font-black text-[#15803D] whitespace-nowrap pr-1">已找到</span>
+            <span class="shrink-0 text-[9px] font-black whitespace-nowrap pr-1" style="color:#3A7D5C;">已找到</span>
             <div id="found-target-list" class="flex-1 min-w-0 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 pr-2" style="min-width:0;flex-wrap:nowrap;justify-content:flex-start;touch-action:pan-x;-webkit-overflow-scrolling:touch;"></div>
           </div>
         </div>
@@ -863,11 +863,10 @@
           <img id="cap-bush-img" src="" alt="草叢" class="h-32 w-auto object-contain transition-transform duration-75 drop-shadow-md z-10" />
         </div>
 
-        <!-- Capture Fill Gauge -->
+        <!-- Capture Fill Gauge (Bar Only, No Tap Count Revealed) -->
         <div class="mb-3">
           <div class="flex justify-between text-xs font-black text-[#4A2E1D] mb-1">
             <span>收服進度</span>
-            <span id="cap-progress-text" class="tabular-nums">0 / 10 下</span>
           </div>
           <div class="w-full h-5 bg-[#E4D4BE] rounded-full p-0.5 border-2 border-[#5A3A28] overflow-hidden">
             <div id="cap-fill-bar" class="h-full rounded-full bg-gradient-to-r from-[#5EC28E] to-[#E28F54] transition-all duration-75" style="width:0%"></div>
@@ -1148,20 +1147,20 @@
           <span id="clear-coins-earned">獲得 +150 紅蘿蔔金幣！</span>
         </div>
 
-        <div id="clear-new-cards-box" class="hidden bg-[#FFF1F2] border-2 border-[#FDA4AF] rounded-2xl p-2 mb-2.5">
-          <div class="text-[11px] font-black text-[#BE123C] mb-1">本關解鎖新兔兔：</div>
+        <div id="clear-new-cards-box" class="hidden border-2 rounded-2xl p-2 mb-2.5" style="background:#FFF6F8;border-color:#F3C2D0;">
+          <div class="text-[11px] font-black mb-1" style="color:#C25E7A;">本關解鎖新兔兔：</div>
           <div id="clear-new-cards-list" class="flex items-center justify-center gap-1.5 flex-wrap"></div>
         </div>
 
-        <div id="clear-bonus-item-box" class="hidden bg-[#FFFBEB] border-2 border-[#F59E0B]/50 rounded-2xl p-2 mb-2.5">
-          <div class="text-[11px] font-black text-[#B45309] mb-1">過關加贈冒險道具：</div>
+        <div id="clear-bonus-item-box" class="hidden border-2 rounded-2xl p-2 mb-2.5" style="background:#FFF9EC;border-color:#E8C48B;">
+          <div class="text-[11px] font-black mb-1" style="color:#A66321;">過關加贈冒險道具：</div>
           <div id="clear-bonus-item-list" class="flex items-center justify-center gap-1.5 flex-wrap"></div>
         </div>
 
         <div class="bg-white/90 rounded-2xl border-2 border-[#5A3A28]/15 p-2.5 mb-3.5 space-y-1 text-xs font-bold">
-          <div class="flex justify-between"><span class="text-[#7C5A46]">剩餘時間</span><span id="clear-time" class="font-black text-[#15803D] tabular-nums">+24 秒</span></div>
+          <div class="flex justify-between"><span class="text-[#7C5A46]">剩餘時間</span><span id="clear-time" class="font-black tabular-nums" style="color:#3A7D5C;">+24 秒</span></div>
           <div class="flex justify-between"><span class="text-[#7C5A46]">尋獲與連擊分</span><span id="clear-base-score" class="font-black text-[#5A3A28] tabular-nums">+1,500</span></div>
-          <div class="flex justify-between"><span class="text-[#7C5A46]">剩餘時間獎勵</span><span id="clear-time-bonus" class="font-black text-[#15803D] tabular-nums">+480</span></div>
+          <div class="flex justify-between"><span class="text-[#7C5A46]">剩餘時間獎勵</span><span id="clear-time-bonus" class="font-black tabular-nums" style="color:#3A7D5C;">+480</span></div>
           <div class="border-t-2 border-dashed border-[#E7DDD3] pt-1 flex justify-between text-base">
             <span class="font-black text-[#5A3A28]">總分</span>
             <span id="clear-total-score" class="font-black text-[#D97706] tabular-nums">2,230</span>
@@ -1264,7 +1263,7 @@
         <div class="bg-white/90 rounded-2xl border-2 border-[#5A3A28]/15 p-3.5 mb-3">
           <div class="flex items-center justify-center gap-2 mb-1.5">
             <img src="assets/ui_carrot_single.png" alt="體力" class="w-8 h-8 object-contain" />
-            <span id="stamina-modal-count" class="text-2xl font-black text-[#15803D] tabular-nums">5 / 5</span>
+            <span id="stamina-modal-count" class="text-2xl font-black tabular-nums" style="color:#3A7D5C;">5 / 5</span>
           </div>
           <p id="stamina-modal-msg" class="text-xs font-bold text-[#6B4F40] mb-1">每次出發挑戰關卡消耗 1 點體力，每 15 分鐘自動回復 1 點。</p>
           <p id="stamina-regen-hint" class="text-[11px] font-black text-[#D97706] tabular-nums">目前體力已滿！</p>
@@ -2516,7 +2515,7 @@
               <span class="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-[#FEF3C7] text-[#B45309]">${it.tag}</span>
             </div>
             <div class="text-[10px] font-bold text-[#7C5A46] leading-snug mt-0.5">${it.desc}</div>
-            <div class="text-[10px] font-black text-[#15803D] mt-1">目前已持有：${owned} 個</div>
+            <div class="text-[10px] font-black mt-1" style="color:#3A7D5C;">目前已持有：${owned} 個</div>
           </div>
           <button type="button" data-buy-adv="${it.id}"
             class="buy-adv-btn shrink-0 px-2.5 py-2 rounded-xl text-xs font-black flex flex-col items-center justify-center gap-0.5 ${canAfford ? 'game-btn game-btn-gold text-[#6B3E08]' : 'bg-[#E7DDD3] text-[#9A887A] border-2 border-[#C9B8A8]'}">
@@ -2866,7 +2865,6 @@
       document.getElementById('cap-result-box').classList.add('hidden');
       document.getElementById('cap-fill-bar').style.width = '0%';
       document.getElementById('cap-time-bar').style.width = '100%';
-      document.getElementById('cap-progress-text').textContent = `0 / ${capState.needed} 下`;
 
       document.getElementById('modal-capture').classList.remove('hidden');
 
@@ -2890,7 +2888,6 @@
 
       const pct = Math.min(100, (capState.taps / capState.needed) * 100);
       document.getElementById('cap-fill-bar').style.width = `${pct}%`;
-      document.getElementById('cap-progress-text').textContent = `${capState.taps} / ${capState.needed} 下`;
 
       if (capState.taps >= capState.needed) {
         // Rarity catch chance: SSR=20%, SR=40%, R=65%, N=90% (+35% with Golden Carrot)
@@ -3902,7 +3899,8 @@
 
       if (unfoundIds.length === 0) {
         const doneBadge = document.createElement('span');
-        doneBadge.className = 'text-xs font-black text-[#15803D] px-2.5 py-1 rounded-xl bg-[#ECFDF5] border border-[#16A34A]/40';
+        doneBadge.className = 'text-xs font-black px-3 py-1 rounded-xl';
+        doneBadge.style.cssText = 'background:#FFF6E5;border:1.5px solid #D9A566;color:#8C5220;';
         doneBadge.textContent = '目標兔兔已全部找齊 ✓';
         container.appendChild(doneBadge);
       } else {
