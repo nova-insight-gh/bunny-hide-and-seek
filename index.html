@@ -9,8 +9,8 @@
   <link rel="stylesheet" href="tw.css" />
   <meta name="description" content="收集 100 隻繪本兔兔，草叢收服兔兔，佈置夢幻後花園。" />
   <meta name="theme-color" content="#FFF4E0" />
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
-  <link rel="apple-touch-icon" href="icon-180.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=2" />
+  <link rel="apple-touch-icon" href="icon-180.png?v=2" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="兔兔躲貓貓" />
@@ -63,14 +63,16 @@
       flex-direction: column;
     }
 
-    @media (min-width: 640px) {
+    /* Strict mobile game portrait resolution (9:19.5) on tablets & desktops */
+    @media (min-width: 520px) {
       #app-shell {
-        max-width: 480px;
-        height: min(95dvh, 900px);
-        margin-top: max(0px, calc((100dvh - min(95dvh, 900px)) / 2));
-        border-radius: 34px;
+        width: min(412px, calc(94dvh * 9 / 19.5));
+        max-width: 412px;
+        height: min(94dvh, 892px);
+        margin-top: max(0px, calc((100dvh - min(94dvh, 892px)) / 2));
+        border-radius: 38px;
         border: 5px solid #5A3A28;
-        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
       }
     }
 
@@ -293,11 +295,11 @@
 
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    /* Nova Insight Studio logo splash. Timing follows Gemini's Unity NovaLogoSplashAnimator. */
-    #logo-splash { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center;
+    /* Nova Insight Studio logo splash (confined inside mobile #app-shell). */
+    #logo-splash { position: absolute; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center;
       background: #FEF7E5 url('assets/logo/bg.png') center / cover; transition: opacity 0.4s ease; }
     #logo-splash.is-leaving { opacity: 0; pointer-events: none; }
-    #logo-splash .logo-rig { position: relative; width: min(86vw, 58vh); aspect-ratio: 1; }
+    #logo-splash .logo-rig { position: relative; width: 82%; max-width: 320px; aspect-ratio: 1; }
     #logo-splash .logo-rig img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
     .logo-ring  { animation: logoRing 0.55s cubic-bezier(0.33,1,0.68,1) 0.15s forwards; }
     .logo-moon  { animation: logoMoon 0.48s cubic-bezier(0.33,1,0.68,1) 0.70s forwards; }
@@ -323,20 +325,103 @@
       .logo-seal  { animation: logoFade 0.28s ease 1.54s forwards; }
       .logo-text  { animation: logoFade 0.45s ease 1.82s forwards; }
     }
+
+    /* Looping Bunny-Carrot Loading Screen */
+    #bunny-loader {
+      position: absolute; inset: 0; z-index: 95;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: linear-gradient(180deg, #FFFBF2 0%, #FFF3DE 62%, #E5F4D8 100%);
+      transition: opacity 0.32s ease;
+    }
+    #bunny-loader.is-hidden { opacity: 0; pointer-events: none; }
+    .loader-stage {
+      position: relative; width: 270px; height: 112px; overflow: hidden;
+      border-bottom: 3px dashed rgba(90, 58, 40, 0.24);
+      margin-bottom: 16px;
+    }
+    .loader-ground-carrot {
+      position: absolute; left: 50%; bottom: 6px; width: 38px; height: 38px;
+      transform: translateX(-50%);
+      animation: loaderGroundCarrot 2.6s linear infinite;
+    }
+    .loader-sparkle {
+      position: absolute; left: 50%; bottom: 42px; width: 24px; height: 24px;
+      transform: translateX(-50%) scale(0);
+      animation: loaderSparkle 2.6s linear infinite;
+    }
+    .loader-runner {
+      position: absolute; left: 50%; bottom: 4px; width: 62px; height: 74px;
+      margin-left: -31px;
+      animation: loaderRunnerX 2.6s linear infinite;
+    }
+    .loader-bunny-wrap {
+      position: relative; width: 100%; height: 100%;
+      animation: loaderBunnyHop 2.6s ease-in-out infinite;
+    }
+    .loader-bunny-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 3px 3px rgba(90, 58, 40, 0.2)); }
+    .loader-carry-carrot {
+      position: absolute; right: -8px; bottom: 12px; width: 34px; height: 34px; object-fit: contain;
+      transform: rotate(16deg);
+      animation: loaderCarryCarrot 2.6s linear infinite;
+    }
+    @keyframes loaderRunnerX {
+      0%   { transform: translateX(-165px); }
+      40%  { transform: translateX(-10px); }
+      54%  { transform: translateX(-10px); }
+      96%  { transform: translateX(175px); }
+      100% { transform: translateX(175px); }
+    }
+    @keyframes loaderBunnyHop {
+      0%, 14%, 28%, 40%, 54%, 68%, 82%, 96%, 100% { transform: translateY(0) scaleY(0.95) scaleX(1.04); }
+      7%, 21%, 34%, 61%, 75%, 89% { transform: translateY(-24px) scaleY(1.06) scaleX(0.95); }
+      47% { transform: translateY(-10px) scaleY(0.92) scaleX(1.08); }
+    }
+    @keyframes loaderGroundCarrot {
+      0%, 44%  { opacity: 1; transform: translateX(-50%) scale(1); }
+      47%, 95% { opacity: 0; transform: translateX(-50%) scale(0.3); }
+      98%, 100%{ opacity: 1; transform: translateX(-50%) scale(1); }
+    }
+    @keyframes loaderCarryCarrot {
+      0%, 45%  { opacity: 0; transform: rotate(16deg) scale(0.4); }
+      48%, 96% { opacity: 1; transform: rotate(16deg) scale(1); }
+      100%     { opacity: 0; transform: rotate(16deg) scale(0.4); }
+    }
+    @keyframes loaderSparkle {
+      0%, 42%  { opacity: 0; transform: translateX(-50%) scale(0.2) rotate(0deg); }
+      50%      { opacity: 1; transform: translateX(-50%) scale(1.15) rotate(24deg); }
+      60%, 100%{ opacity: 0; transform: translateX(-50%) scale(0.2) rotate(45deg); }
+    }
   </style>
 </head>
 <body>
-  <div id="logo-splash" aria-label="Nova Insight Studio">
-    <div class="logo-rig">
-      <img class="logo-ring" src="assets/logo/ring.png" alt="" />
-      <img class="logo-moon" src="assets/logo/moon.png" alt="" />
-      <img class="logo-bunny" src="assets/logo/bunny.png" alt="" />
-      <img class="logo-star" src="assets/logo/star.png" alt="" />
-      <img class="logo-seal" src="assets/logo/seal.png" alt="" />
-      <img class="logo-text" src="assets/logo/text.png" alt="Nova Insight Studio" />
-    </div>
-  </div>
   <div id="app-shell">
+    <div id="logo-splash" aria-label="Nova Insight Studio">
+      <div class="logo-rig">
+        <img class="logo-ring" src="assets/logo/ring.png" alt="" />
+        <img class="logo-moon" src="assets/logo/moon.png" alt="" />
+        <img class="logo-bunny" src="assets/logo/bunny.png" alt="" />
+        <img class="logo-star" src="assets/logo/star.png" alt="" />
+        <img class="logo-seal" src="assets/logo/seal.png" alt="" />
+        <img class="logo-text" src="assets/logo/text.png" alt="Nova Insight Studio" />
+      </div>
+    </div>
+
+    <div id="bunny-loader" class="is-hidden" aria-label="載入中">
+      <div class="loader-stage">
+        <img class="loader-ground-carrot" src="assets/ui_carrot_single.png" alt="紅蘿蔔" />
+        <img class="loader-sparkle" src="assets/ui_star.webp" alt="" />
+        <div class="loader-runner">
+          <div class="loader-bunny-wrap">
+            <img class="loader-bunny-img" src="assets/decoy_white.webp" alt="兔兔" />
+            <img class="loader-carry-carrot" src="assets/ui_carrot_single.png" alt="" />
+          </div>
+        </div>
+      </div>
+      <div class="w-52 h-3 bg-[#EAD9C3] rounded-full p-0.5 border-2 border-[#5A3A28] overflow-hidden mb-2">
+        <div id="loader-progress-bar" class="h-full rounded-full bg-gradient-to-r from-[#FF924C] to-[#FFB830] transition-all duration-200" style="width: 15%"></div>
+      </div>
+      <div id="loader-label" class="text-xs font-black text-[#5A3A28] tracking-wide">正在準備兔兔樂園…</div>
+    </div>
 
     <!-- ===================================================================== -->
     <!-- VIEW 1: COZY STORYBOOK HOME SCREEN (手繪首頁)                          -->
@@ -645,8 +730,10 @@
         </div>
 
         <!-- Bold Tap Prompt ABOVE the bush (never overlaps!) -->
-        <div id="cap-tap-hint" class="inline-block mb-2 px-3.5 py-1 rounded-full bg-[#FFFDF8] border-2 border-[#D97706] text-xs font-black text-[#9A3412] animate-bounce">
-          👇 連點下方草叢吸引兔兔出來！ 👇
+        <div id="cap-tap-hint" class="inline-flex items-center gap-1.5 mb-2 px-3.5 py-1 rounded-full bg-[#FFFDF8] border-2 border-[#D97706] text-xs font-black text-[#9A3412] animate-bounce">
+          <img class="img-star-icon w-4 h-4 object-contain" src="" alt="" />
+          <span>連點下方草叢吸引兔兔出來！</span>
+          <img class="img-star-icon w-4 h-4 object-contain" src="" alt="" />
         </div>
 
         <!-- Interactive Shaking Bush Stage -->
@@ -1599,7 +1686,7 @@
       document.getElementById('img-account-avatar').src = SPRITE_SRCS[saveData.account.avatar || 'sp_strawberry'];
       updateHomeNotificationDots();
       document.getElementById('home-b1').src = SPRITE_SRCS.sp_strawberry;
-      document.getElementById('home-b2').src = SPRITE_SRCS.sp_farmer;
+      document.getElementById('home-b2').src = SPRITE_SRCS.ssr_cloud_ride;
       document.getElementById('home-b3').src = SPRITE_SRCS.sp_sakura;
       document.getElementById('home-b4').src = SPRITE_SRCS.sp_macaron;
 
@@ -3502,12 +3589,31 @@
       document.addEventListener('pointerdown', () => BGM.unlockAndStart(), { once: true });
     }
 
-    function preloadImages(cb) {
+    function showBunnyLoader(label, progressPct = 20) {
+      const el = document.getElementById('bunny-loader');
+      const bar = document.getElementById('loader-progress-bar');
+      const txt = document.getElementById('loader-label');
+      if (txt && label) txt.textContent = label;
+      if (bar) bar.style.width = `${Math.max(8, Math.min(100, progressPct))}%`;
+      if (el) el.classList.remove('is-hidden');
+    }
+
+    function hideBunnyLoader() {
+      const el = document.getElementById('bunny-loader');
+      if (el) el.classList.add('is-hidden');
+    }
+
+    function preloadImages(onProgress, cb) {
       const keys = Object.keys(SPRITE_SRCS);
       let loaded = 0;
       keys.forEach((key) => {
         const img = new Image();
-        img.onload = img.onerror = () => { loaded += 1; if (loaded === keys.length) cb(); };
+        img.onload = img.onerror = () => {
+          loaded += 1;
+          const pct = Math.round((loaded / keys.length) * 100);
+          if (onProgress) onProgress(pct);
+          if (loaded === keys.length) cb();
+        };
         img.src = SPRITE_SRCS[key];
         IMAGES[key] = img;
       });
@@ -3517,21 +3623,47 @@
       loadSave();
       hydrateStaticUIImages();
       bindEvents();
-      // Splash stays up until both the logo animation (3.3s) and image preload are done; a tap skips the wait.
       const splash = document.getElementById('logo-splash');
-      let splashMinDone = false, gameReady = false;
-      const hideSplash = () => { splash.classList.add('is-leaving'); setTimeout(() => splash.remove(), 450); };
-      const maybeHideSplash = () => { if (splashMinDone && gameReady) hideSplash(); };
-      setTimeout(() => { splashMinDone = true; maybeHideSplash(); }, 3300);
-      splash.addEventListener('pointerdown', () => { splashMinDone = true; maybeHideSplash(); });
-      preloadImages(() => {
-        gameReady = true; maybeHideSplash();
-        syncGlobalCounters();
-        switchView('home');
-        lastFrameTime = performance.now();
-        if (state.rafId) cancelAnimationFrame(state.rafId);
-        state.rafId = requestAnimationFrame(mainLoop);
-      });
+      let splashDone = false, gameReady = false, loaderShownAt = 0, bootFinished = false;
+
+      const finishBoot = () => {
+        if (bootFinished || !splashDone || !gameReady) return;
+        const elapsed = Date.now() - loaderShownAt;
+        const waitMore = Math.max(0, 2200 - elapsed);
+        bootFinished = true;
+        setTimeout(() => {
+          showBunnyLoader('準備完成！', 100);
+          setTimeout(() => hideBunnyLoader(), 220);
+        }, waitMore);
+      };
+
+      const leaveSplash = () => {
+        if (splashDone) return;
+        splashDone = true;
+        loaderShownAt = Date.now();
+        showBunnyLoader('正在準備兔兔樂園…', gameReady ? 100 : 25);
+        splash.classList.add('is-leaving');
+        setTimeout(() => splash.remove(), 420);
+        finishBoot();
+      };
+
+      setTimeout(leaveSplash, 3100);
+      splash.addEventListener('pointerdown', leaveSplash);
+
+      preloadImages(
+        (pct) => {
+          if (splashDone && !bootFinished) showBunnyLoader(`正在準備兔兔樂園… ${pct}%`, pct);
+        },
+        () => {
+          gameReady = true;
+          syncGlobalCounters();
+          switchView('home');
+          lastFrameTime = performance.now();
+          if (state.rafId) cancelAnimationFrame(state.rafId);
+          state.rafId = requestAnimationFrame(mainLoop);
+          finishBoot();
+        }
+      );
     };
   </script>
 </body>
