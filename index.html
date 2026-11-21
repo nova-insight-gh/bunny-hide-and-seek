@@ -4757,6 +4757,12 @@
       if (!Array.isArray(saveData.farm.helpers)) saveData.farm.helpers = [];
       if (!saveData.farm.barn || typeof saveData.farm.barn !== 'object') saveData.farm.barn = {};
 
+      // Fast-path: if plots are already normalized with valid col/row, keep object references intact!
+      if (saveData.farm.plots.length === saveData.farm.plotCount &&
+          saveData.farm.plots.every(p => p && typeof p === 'object' && typeof p.col === 'number' && typeof p.row === 'number')) {
+        return;
+      }
+
       // Migrate legacy null/unpositioned plots onto clean unoccupied 10x12 grid cells (zero overlap!)
       const normalized = [];
       for (let i = 0; i < saveData.farm.plotCount; i++) {
@@ -5150,7 +5156,7 @@
     }
 
     function plantCropInPlot(idx, cropId, silent = false) {
-      ensureFarmState();
+      const b = getFarmBonuses();
       const p = saveData.farm.plots[idx];
       const c = FARM_CROP_BY_ID[cropId];
       if (!p || p.cropId || !c) return false;
@@ -5163,7 +5169,6 @@
         if (!silent) { SFX.wrong(); showToast(`金幣不足，播種「${c.name}」需要 ${c.seedCost} 金幣！`); }
         return false;
       }
-      const b = getFarmBonuses();
       const growMs = Math.max(5, Math.round(c.growMin * (1 - b.speedPct / 100))) * 60 * 1000;
       saveData.coins -= c.seedCost;
       p.cropId = c.id;
