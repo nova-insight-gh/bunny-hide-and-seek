@@ -704,10 +704,6 @@
               <img src="assets/item_ssr_lure.png" alt="誘兔鈴" class="w-5 h-5 object-contain" />
               <span id="ssr-lure-btn-text">誘兔鈴 (1)</span>
             </button>
-            <button id="btn-watch-ad-direct" type="button" class="game-btn game-btn-coral rounded-2xl pl-1.5 pr-2 py-1.5 flex items-center gap-1 text-[11px] font-black text-[#9F1239]" title="用 30 金幣換 1 個提示">
-              <img class="img-coin-icon w-5 h-5 object-contain" src="" alt="金幣" />
-              <span>30 換提示</span>
-            </button>
           </div>
 
           <div class="pointer-events-auto flex flex-col gap-1.5">
@@ -2225,7 +2221,7 @@
       if (viewName !== 'garden') { setGardenEditMode(false); setFarmPlantMode(false); }
 
       const toastWrap = document.getElementById('toast-container');
-      if (toastWrap) toastWrap.style.bottom = viewName === 'play' ? '136px' : '';
+      if (toastWrap) toastWrap.style.bottom = viewName === 'play' ? '96px' : '';
 
       if (viewName === 'home') {
         state.paused = true;
@@ -4878,7 +4874,7 @@
         hintIcon.src = SPRITE_SRCS.ui_radar; hintText.textContent = `雷達 (${state.hintsLeft})`;
       } else {
         hintBtn.className = 'game-btn game-btn-orange rounded-2xl pl-1.5 pr-2.5 py-1.5 flex items-center gap-1 text-xs font-black';
-        hintIcon.src = SPRITE_SRCS.ui_coin; hintText.textContent = '30 換提示';
+        hintIcon.src = SPRITE_SRCS.ui_coin; hintText.textContent = '30 雷達';
       }
       const timeLbl = document.getElementById('time-plus-btn-text');
       if (timeLbl) {
@@ -6986,10 +6982,6 @@
         renderTargetBar();
       });
       document.getElementById('btn-hint').addEventListener('click', useHint);
-      document.getElementById('btn-watch-ad-direct').addEventListener('click', () => {
-        if (!state.running) return;
-        buyBonus('hint', state.hintsLeft <= 0);
-      });
       document.getElementById('btn-home-item-shop').addEventListener('click', openItemShopModal);
       document.getElementById('btn-close-item-shop').addEventListener('click', closeAllModals);
       document.getElementById('btn-use-time-plus').addEventListener('click', useTimePlusInGame);
