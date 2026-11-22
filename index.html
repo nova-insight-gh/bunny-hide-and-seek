@@ -467,7 +467,7 @@
 </head>
 <body>
   <div id="app-shell">
-    <div id="logo-splash" aria-label="Nova Insight Studio">
+    <div id="logo-splash" aria-label="Nova Insight Studio" style="flex-direction:column;gap:14px;">
       <div class="logo-rig">
         <img class="logo-ring" src="assets/logo/ring.png" alt="" />
         <img class="logo-moon" src="assets/logo/moon.png" alt="" />
@@ -476,24 +476,9 @@
         <img class="logo-seal" src="assets/logo/seal.png" alt="" />
         <img class="logo-text" src="assets/logo/text.png" alt="Nova Insight Studio" />
       </div>
-    </div>
-
-    <div id="bunny-loader" class="is-hidden" aria-label="載入中">
-      <div class="loader-stage">
-        <img class="loader-ground-carrot" src="assets/ui_carrot_single.png" alt="紅蘿蔔" />
-        <img class="loader-sparkle" src="assets/ui_star.webp" alt="" />
-        <div class="loader-runner">
-          <div class="loader-shadow"></div>
-          <div class="loader-bunny-wrap">
-            <img class="loader-bunny-img" src="assets/decoy_white.webp" alt="兔兔" />
-            <img class="loader-carry-carrot" src="assets/ui_carrot_single.png" alt="" />
-          </div>
-        </div>
+      <div id="splash-progress-wrap" style="width:140px;height:5px;border-radius:9999px;background:rgba(90,58,40,0.14);overflow:hidden;opacity:0;transition:opacity 0.25s ease;">
+        <div id="splash-progress-bar" style="width:12%;height:100%;border-radius:9999px;background:linear-gradient(90deg,#FF924C,#FFB830);transition:width 0.18s ease;"></div>
       </div>
-      <div class="w-52 h-3 bg-[#EAD9C3] rounded-full p-0.5 border-2 border-[#5A3A28] overflow-hidden mb-2">
-        <div id="loader-progress-bar" class="h-full rounded-full bg-gradient-to-r from-[#FF924C] to-[#FFB830] transition-all duration-200" style="width: 15%"></div>
-      </div>
-      <div id="loader-label" class="text-xs font-black text-[#5A3A28] tracking-wide">正在準備兔兔樂園…</div>
     </div>
 
     <!-- ===================================================================== -->
@@ -1648,6 +1633,7 @@
       farm_bloom: "assets/farm_bloom.png",
       farm_waterdrop: "assets/farm_waterdrop.png",
       farm_rainbow: "assets/farm_rainbow.png",
+      farm_cloud: "assets/farm_cloud.png",
       farm_sakura_petal: "assets/farm_sakura_petal.png",
       weather_sunny: "assets/weather_sunny.png",
       weather_rain: "assets/weather_rain.png",
@@ -2152,6 +2138,9 @@
       wildBunny: null,
       wildTimer: 6,
       weatherParticles: [],
+      weatherClouds: [],
+      weatherRipples: [],
+      weatherSparkles: [],
       swipeHarvesting: false,
       swipeCombo: 0,
       bunnies: [], // animated bunny instances visiting garden
@@ -2213,6 +2202,15 @@
       });
       document.querySelectorAll('.album-count-display').forEach(el => { el.textContent = `${saveData.unlockedCards.length}/${BUNNY_CATALOG.length}`; });
       document.getElementById('home-album-sub').textContent = `已收集 ${saveData.unlockedCards.length}/${BUNNY_CATALOG.length}`;
+      const playBtnSpan = document.querySelector('#btn-home-play span');
+      if (playBtnSpan && typeof findNextUnplayedLevel === 'function') {
+        const nxt = findNextUnplayedLevel();
+        const nxtTheme = THEMES[nxt.themeIdx];
+        const nxtLvl = nxtTheme && nxtTheme.levels[nxt.levelIdx];
+        if (nxtTheme && nxtLvl) {
+          playBtnSpan.textContent = `出發找兔兔！（${nxtTheme.shortName} ${nxtLvl.levelNum}/10）`;
+        }
+      }
       ensureFarmState();
       const readyPlots = getFarmReadyCount();
       const pCount = saveData.farm.plotCount;
@@ -2465,87 +2463,115 @@
         }
       }
 
+      const minX = m.originX + 34, maxX = m.originX + Math.max(140, m.gridW - 34);
+      const minY = m.originY + 38, maxY = m.originY + Math.max(140, m.gridH - 38);
+      const clampX = (v) => Math.max(minX, Math.min(maxX, v));
+      const clampY = (v) => Math.max(minY, Math.min(maxY, v));
+
       for (let i = 0; i < gardenState.bunnies.length; i++) {
         const b = gardenState.bunnies[i];
         if (b.reactTime > 0) b.reactTime = Math.max(0, b.reactTime - dt);
+        if (b.facingCooldown > 0) b.facingCooldown = Math.max(0, b.facingCooldown - dt);
         if (!b.heartReady && nowMs >= (saveData.gardenCoinReadyAt[b.id] || 0)) {
           b.heartReady = true;
         }
         if (!b.mode) {
           b.mode = 'roam';
-          b.modeTimer = 1.2 + Math.random() * 2.5;
-          b.destX = b.x; b.destY = b.y;
-          b.idlePause = 0;
+          b.modeTimer = 1.4 + Math.random() * 2.4;
+          b.destX = clampX(b.x); b.destY = clampY(b.y);
+          b.arrived = true;
+          b.idlePause = 0.4;
+          b.hopAmp = 0;
         }
 
         if (b.bubbleTimer > 0) b.bubbleTimer = Math.max(0, b.bubbleTimer - dt);
         b.modeTimer -= dt;
         if (b.modeTimer <= 0) {
-          // Duty Helper Bunnies actively patrol planted farm plots and cheer crops on!
+          // Duty Helper Bunnies actively patrol planted farm plots and pause smoothly beside them!
           if (b.isFarmHelper && saveData.farm && Array.isArray(saveData.farm.plots) && saveData.farm.plots.length > 0 && Math.random() < 0.78) {
             const pList = saveData.farm.plots.filter(p => p && p.cropId);
             const pickP = (pList.length > 0 ? pList : saveData.farm.plots)[Math.floor(Math.random() * (pList.length > 0 ? pList.length : saveData.farm.plots.length))];
             if (pickP) {
               const pc = cellCenter(pickP.col, pickP.row, m);
+              const side = Math.random() < 0.5 ? -1 : 1;
               b.mode = 'roam';
               b.visitKey = null;
-              b.destX = pc.x + (Math.random() < 0.5 ? -30 : 30);
-              b.destY = pc.y + 18;
-              b.idlePause = 0.2;
-              b.modeTimer = 3.6 + Math.random() * 2.5;
+              b.destX = clampX(pc.x + side * (30 + Math.random() * 14));
+              b.destY = clampY(pc.y + 14 + Math.random() * 14);
+              b.arrived = false;
+              b.idlePause = 0.15;
+              b.modeTimer = 4.2 + Math.random() * 2.8;
               const cheers = ['顧田中！', '快長大！', '幫手澆水！', '好香呀！', '豐收啦！'];
               b.bubbleText = cheers[Math.floor(Math.random() * cheers.length)];
               b.bubbleTimer = 2.6;
               continue;
             }
           }
-          // 72% chance to roam freely to a random cozy spot; 28% chance to visit an uncrowded carrot/grass tile!
-          if (magnets.length > 0 && Math.random() < 0.28) {
+          // 30% chance to pick a fixed cozy spot beside an uncrowded decor tile (no jittery orbiting!)
+          if (magnets.length > 0 && Math.random() < 0.30) {
             const avail = magnets.filter(mg => (magCounts.get(`${mg.col},${mg.row}`) || 0) < 2);
             if (avail.length > 0) {
               const pick = avail[Math.floor(Math.random() * avail.length)];
+              const c = cellCenter(pick.col, pick.row, m);
+              const ang = Math.random() * Math.PI * 2;
+              const rad = m.cell * 0.62 + Math.random() * 10;
               b.mode = 'visit';
               b.visitKey = `${pick.col},${pick.row}`;
-              b.visitTile = pick;
+              b.destX = clampX(c.x + Math.cos(ang) * rad);
+              b.destY = clampY(c.y + Math.sin(ang) * (rad * 0.78));
+              b.arrived = false;
+              b.idlePause = 0.2;
               magCounts.set(b.visitKey, (magCounts.get(b.visitKey) || 0) + 1);
-              b.modeTimer = 4.0 + Math.random() * 3.5;
+              b.modeTimer = 4.5 + Math.random() * 3.5;
             } else {
-              b.mode = 'roam'; b.visitKey = null; b.modeTimer = 2.5 + Math.random() * 3.0;
+              b.mode = 'roam'; b.visitKey = null;
+              b.destX = clampX(minX + Math.random() * (maxX - minX));
+              b.destY = clampY(minY + Math.random() * (maxY - minY));
+              b.arrived = false; b.idlePause = 0.3; b.modeTimer = 3.6 + Math.random() * 3.4;
             }
           } else {
             b.mode = 'roam';
             b.visitKey = null;
-            b.destX = m.originX + 30 + Math.random() * Math.max(120, m.gridW - 60);
-            b.destY = m.originY + 32 + Math.random() * Math.max(120, m.gridH - 64);
-            b.idlePause = 0.6 + Math.random() * 1.4;
-            b.modeTimer = 3.2 + Math.random() * 3.8;
+            b.destX = clampX(minX + Math.random() * (maxX - minX));
+            b.destY = clampY(minY + Math.random() * (maxY - minY));
+            b.arrived = false;
+            b.idlePause = 0.5 + Math.random() * 1.2;
+            b.modeTimer = 3.8 + Math.random() * 3.8;
           }
         }
 
-        let targetX = b.destX, targetY = b.destY;
-        if (b.mode === 'visit' && b.visitTile) {
-          const c = cellCenter(b.visitTile.col, b.visitTile.row, m);
-          b.orbitAngle += b.orbitSpeed * 0.75 * dt;
-          const rad = Math.min(m.cell * 0.68, 40);
-          targetX = c.x + Math.cos(b.orbitAngle) * rad;
-          targetY = c.y + Math.sin(b.orbitAngle) * (rad * 0.72);
-        } else if (b.idlePause > 0) {
-          b.idlePause -= dt;
+        if (b.idlePause > 0) {
+          b.idlePause = Math.max(0, b.idlePause - dt);
+          b.hopAmp = Math.max(0, (b.hopAmp || 0) - dt * 4);
           continue;
         }
 
-        const dx = targetX - b.x, dy = targetY - b.y;
+        if (b.arrived) {
+          b.hopAmp = Math.max(0, (b.hopAmp || 0) - dt * 5);
+          continue;
+        }
+
+        const dx = b.destX - b.x, dy = b.destY - b.y;
         const dist = Math.hypot(dx, dy);
-        if (dist > 2) {
-          const spd = b.mode === 'visit' ? 52 : 74;
+        if (dist > 4.5) {
+          const spd = 64;
           const step = Math.min(dist, spd * dt);
-          const vx = (dx / dist) * step, vy = (dy / dist) * step;
-          b.x += vx; b.y += vy;
-          if (Math.abs(vx) > 0.2) b.facing = vx >= 0 ? 1 : -1;
-          b.hopPhase += dt * 9.0;
+          b.x += (dx / dist) * step;
+          b.y += (dy / dist) * step;
+          if (Math.abs(dx) > 10 && (b.facingCooldown || 0) <= 0) {
+            const wantFacing = dx >= 0 ? 1 : -1;
+            if (wantFacing !== b.facing) {
+              b.facing = wantFacing;
+              b.facingCooldown = 0.45;
+            }
+          }
+          b.hopPhase += dt * 8.2;
+          b.hopAmp = Math.min(1, (b.hopAmp || 0) + dt * 5);
         } else {
-          // Rest cleanly on ground when arrived at random roam spot
-          b.hopPhase = 0;
+          b.x = b.destX;
+          b.y = b.destY;
+          b.arrived = true;
+          b.hopAmp = Math.max(0, (b.hopAmp || 0) - dt * 5);
         }
       }
 
@@ -2572,29 +2598,95 @@
         }
       }
 
-      // Dynamic Weather Ambient Particles (Rain streaks / Sakura petals)
+      // Dynamic Weather Animations (Drifting Sky Clouds + Rain Ripples + Rainbow Sparkles + Sakura Breeze)
       const wType = getFarmWeather().id;
+      const vwNow = m.vw || 400, vhNow = m.vh || 700;
+
+      // Drifting clouds high along the top edge (sunny / rain / rainbow) so they animate smoothly without blocking farm plots
+      const wantClouds = wType === 'rain' ? 4 : (wType === 'rainbow' || wType === 'sunny') ? 3 : 0;
+      if (wantClouds > 0) {
+        while (gardenState.weatherClouds.length < wantClouds) {
+          const ci = gardenState.weatherClouds.length;
+          gardenState.weatherClouds.push({
+            x: (ci / wantClouds) * (vwNow + 140) - 70,
+            y: 44 + (ci % 2) * 18 + Math.random() * 8,
+            w: 84 + Math.random() * 44,
+            speed: (wType === 'rain' ? 14 : 9) + Math.random() * 7,
+            alpha: wType === 'rain' ? (0.48 + Math.random() * 0.14) : (0.32 + Math.random() * 0.14),
+            phase: Math.random() * Math.PI * 2
+          });
+        }
+        if (gardenState.weatherClouds.length > wantClouds) gardenState.weatherClouds.length = wantClouds;
+        for (const cl of gardenState.weatherClouds) {
+          cl.x += cl.speed * dt;
+          cl.phase += dt * 1.1;
+          if (cl.x - cl.w > vwNow + 40) cl.x = -cl.w - 30;
+        }
+      } else if (gardenState.weatherClouds.length > 0) {
+        gardenState.weatherClouds = [];
+      }
+
+      // Rainbow shimmering starlight sparkles along the high sky arch
+      if (wType === 'rainbow') {
+        if (gardenState.weatherSparkles.length < 10) {
+          gardenState.weatherSparkles.push({
+            t: 0.12 + Math.random() * 0.76,
+            life: Math.random() * 2.2,
+            maxLife: 1.6 + Math.random() * 1.4,
+            size: 10 + Math.random() * 8,
+            offY: (Math.random() - 0.5) * 28
+          });
+        }
+        for (const sp of gardenState.weatherSparkles) {
+          sp.life += dt;
+          if (sp.life >= sp.maxLife) {
+            sp.life = 0;
+            sp.t = 0.12 + Math.random() * 0.76;
+            sp.offY = (Math.random() - 0.5) * 28;
+          }
+        }
+      } else if (gardenState.weatherSparkles.length > 0) {
+        gardenState.weatherSparkles = [];
+      }
+
       if (wType === 'rain' || wType === 'sakura') {
-        if (gardenState.weatherParticles.length < (wType === 'rain' ? 36 : 20)) {
+        const targetCnt = wType === 'rain' ? 42 : 22;
+        if (gardenState.weatherParticles.length < targetCnt) {
           gardenState.weatherParticles.push({
-            x: Math.random() * (m.vw || 400),
-            y: -15 - Math.random() * 80,
-            vx: wType === 'rain' ? -42 : (-18 - Math.random() * 16),
-            vy: wType === 'rain' ? (260 + Math.random() * 90) : (26 + Math.random() * 22),
+            x: Math.random() * (vwNow + 60),
+            y: -15 - Math.random() * 90,
+            vx: wType === 'rain' ? -48 : (-16 - Math.random() * 14),
+            vy: wType === 'rain' ? (280 + Math.random() * 110) : (26 + Math.random() * 20),
             rot: Math.random() * Math.PI * 2,
-            size: wType === 'rain' ? (10 + Math.random() * 8) : (4 + Math.random() * 3.5)
+            swayPhase: Math.random() * Math.PI * 2,
+            size: wType === 'rain' ? (10 + Math.random() * 8) : (4.2 + Math.random() * 3.2)
           });
         }
         for (let i = gardenState.weatherParticles.length - 1; i >= 0; i--) {
           const wp = gardenState.weatherParticles[i];
-          wp.x += wp.vx * dt; wp.y += wp.vy * dt; wp.rot += dt * 1.8;
-          if (wp.y > (m.vh || 700) + 20 || wp.x < -30) {
-            wp.x = Math.random() * ((m.vw || 400) + 60);
+          wp.swayPhase = (wp.swayPhase || 0) + dt * 2.4;
+          const swayVx = wType === 'sakura' ? Math.sin(wp.swayPhase) * 18 : 0;
+          wp.x += (wp.vx + swayVx) * dt; wp.y += wp.vy * dt; wp.rot += dt * 1.8;
+          if (wp.y > vhNow + 16 || wp.x < -30) {
+            if (wType === 'rain' && Math.random() < 0.35 && gardenState.weatherRipples.length < 12) {
+              gardenState.weatherRipples.push({
+                x: 24 + Math.random() * Math.max(80, vwNow - 48),
+                y: 120 + Math.random() * Math.max(120, vhNow - 220),
+                life: 0, maxLife: 0.65
+              });
+            }
+            wp.x = Math.random() * (vwNow + 80);
             wp.y = -12;
           }
         }
       } else if (gardenState.weatherParticles.length > 0) {
         gardenState.weatherParticles = [];
+      }
+
+      for (let i = gardenState.weatherRipples.length - 1; i >= 0; i--) {
+        const rp = gardenState.weatherRipples[i];
+        rp.life += dt;
+        if (rp.life >= rp.maxLife) gardenState.weatherRipples.splice(i, 1);
       }
     }
 
@@ -2704,7 +2796,7 @@
           if (!img || !img.complete) continue;
           const h = Math.max(52, cell * 0.88);
           const w = h * (img.naturalWidth / (img.naturalHeight || 1));
-          let jumpY = Math.abs(Math.sin(b.hopPhase)) * 10;
+          let jumpY = Math.abs(Math.sin(b.hopPhase)) * 9 * (b.hopAmp || 0);
           if (b.reactTime > 0) jumpY += Math.sin((b.reactTime / 0.45) * Math.PI) * 20;
 
           gCtx.fillStyle = 'rgba(60, 40, 25, 0.18)';
@@ -2773,23 +2865,50 @@
       }
       gCtx.restore();
 
-      // Screen-space Dynamic Weather Overlay (Watercolor Rainbow PNG / Rain streaks / Sakura Petal PNG)
+      // Screen-space Animated Weather Overlay (Wide High-Sky Rainbow + Drifting Clouds + Rain Ripples + Sakura)
       const curW = getFarmWeather().id;
       if (curW === 'rainbow') {
         const rbImg = IMAGES.farm_rainbow;
         if (rbImg && rbImg.complete && rbImg.naturalWidth > 0) {
           gCtx.save();
-          gCtx.globalAlpha = 0.84 + Math.sin(tSec * 1.6) * 0.06;
-          const rbW = Math.min(vw * 0.88, 330);
-          const rbH = rbW * 0.5;
-          gCtx.drawImage(rbImg, (vw - rbW) / 2, 54 + Math.sin(tSec * 1.2) * 3, rbW, rbH);
+          const rbW = vw * 1.18;
+          const rbH = rbW * (260 / 760);
+          const rbX = (vw - rbW) / 2;
+          const rbY = 26 + Math.sin(tSec * 1.1) * 3;
+          gCtx.globalAlpha = 0.72 + Math.sin(tSec * 1.6) * 0.10;
+          gCtx.drawImage(rbImg, rbX, rbY, rbW, rbH);
+          // Animated shimmering starlight sparkles drifting along the high rainbow arch
+          if (IMAGES.ui_star && IMAGES.ui_star.complete) {
+            for (const sp of gardenState.weatherSparkles) {
+              const p = sp.life / sp.maxLife;
+              const a = Math.sin(p * Math.PI);
+              const sx = rbX + sp.t * rbW;
+              const arch = Math.sin(sp.t * Math.PI);
+              const sy = rbY + rbH * (0.86 - arch * 0.72) + sp.offY;
+              const sz = sp.size * (0.65 + a * 0.45);
+              gCtx.globalAlpha = a * 0.85;
+              gCtx.drawImage(IMAGES.ui_star, sx - sz / 2, sy - sz / 2, sz, sz);
+            }
+          }
           gCtx.restore();
         }
       } else if (curW === 'rain') {
         gCtx.save();
-        gCtx.strokeStyle = 'rgba(165, 212, 248, 0.55)'; gCtx.lineWidth = 1.6;
+        gCtx.fillStyle = 'rgba(130, 178, 224, 0.12)';
+        gCtx.fillRect(0, 0, vw, vh);
+        gCtx.strokeStyle = 'rgba(182, 224, 255, 0.62)'; gCtx.lineWidth = 1.6;
+        gCtx.lineCap = 'round';
         for (const wp of gardenState.weatherParticles) {
-          gCtx.beginPath(); gCtx.moveTo(wp.x, wp.y); gCtx.lineTo(wp.x - 3, wp.y + wp.size); gCtx.stroke();
+          gCtx.beginPath(); gCtx.moveTo(wp.x, wp.y); gCtx.lineTo(wp.x - 3.5, wp.y + wp.size); gCtx.stroke();
+        }
+        // Expanding water ripples where raindrops hit the meadow
+        for (const rp of gardenState.weatherRipples) {
+          const p = rp.life / rp.maxLife;
+          gCtx.strokeStyle = `rgba(205, 236, 255, ${(1 - p) * 0.65})`;
+          gCtx.lineWidth = 1.4;
+          gCtx.beginPath();
+          gCtx.ellipse(rp.x, rp.y, 4 + p * 14, 2 + p * 6, 0, 0, Math.PI * 2);
+          gCtx.stroke();
         }
         gCtx.restore();
       } else if (curW === 'sakura') {
@@ -2803,6 +2922,19 @@
             gCtx.drawImage(petImg, -ps / 2, -ps / 2, ps, ps);
           }
           gCtx.restore();
+        }
+        gCtx.restore();
+      }
+
+      // Soft drifting sky clouds floating along the very top edge (never obscuring farm plots!)
+      const clImg = IMAGES.farm_cloud;
+      if (clImg && clImg.complete && clImg.naturalWidth > 0 && gardenState.weatherClouds.length > 0) {
+        gCtx.save();
+        for (const cl of gardenState.weatherClouds) {
+          const ch = cl.w * 0.5;
+          const bob = Math.sin(cl.phase) * 2.5;
+          gCtx.globalAlpha = cl.alpha;
+          gCtx.drawImage(clImg, cl.x, cl.y + bob, cl.w, ch);
         }
         gCtx.restore();
       }
@@ -3654,6 +3786,26 @@
     // =========================================================================
     // 10. HIDDEN-OBJECT GAMEPLAY ENGINE (WORLD, UPDATE, RENDER, INPUT)
     // =========================================================================
+    function findNextUnplayedLevel() {
+      for (let tIdx = 0; tIdx < THEMES.length; tIdx++) {
+        const theme = THEMES[tIdx];
+        for (let lIdx = 0; lIdx < theme.levels.length; lIdx++) {
+          const lvl = theme.levels[lIdx];
+          const rec = saveData.levelRecords[`${theme.id}-${lvl.levelNum}`];
+          if (!rec || !rec.stars) return { themeIdx: tIdx, levelIdx: lIdx };
+        }
+      }
+      for (let tIdx = 0; tIdx < THEMES.length; tIdx++) {
+        const theme = THEMES[tIdx];
+        for (let lIdx = 0; lIdx < theme.levels.length; lIdx++) {
+          const lvl = theme.levels[lIdx];
+          const rec = saveData.levelRecords[`${theme.id}-${lvl.levelNum}`];
+          if (!rec || rec.stars < 3) return { themeIdx: tIdx, levelIdx: lIdx };
+        }
+      }
+      return { themeIdx: 0, levelIdx: 0 };
+    }
+
     function getCurrentTheme() { return THEMES[state.themeIdx]; }
     function getCurrentLevel() {
       if (state.isDailyChallenge && state.dailyLevelConfig) return state.dailyLevelConfig;
@@ -6232,7 +6384,10 @@
     // =========================================================================
     function bindEvents() {
       // Home navigation
-      document.getElementById('btn-home-play').addEventListener('click', () => startLevel(state.themeIdx, state.levelIdx));
+      document.getElementById('btn-home-play').addEventListener('click', () => {
+        const nxt = findNextUnplayedLevel();
+        startLevel(nxt.themeIdx, nxt.levelIdx);
+      });
       document.getElementById('btn-home-garden').addEventListener('click', () => switchView('garden'));
       document.getElementById('btn-home-album').addEventListener('click', openAlbumModal);
       document.getElementById('btn-home-levels').addEventListener('click', openLevelsModal);
@@ -6497,18 +6652,11 @@
       document.addEventListener('pointerdown', () => BGM.unlockAndStart(), { once: true });
     }
 
-    function showBunnyLoader(label, progressPct = 20) {
-      const el = document.getElementById('bunny-loader');
-      const bar = document.getElementById('loader-progress-bar');
-      const txt = document.getElementById('loader-label');
-      if (txt && label) txt.textContent = label;
-      if (bar) bar.style.width = `${Math.max(8, Math.min(100, progressPct))}%`;
-      if (el) el.classList.remove('is-hidden');
-    }
-
-    function hideBunnyLoader() {
-      const el = document.getElementById('bunny-loader');
-      if (el) el.classList.add('is-hidden');
+    function updateSplashProgress(progressPct = 20) {
+      const wrap = document.getElementById('splash-progress-wrap');
+      const bar = document.getElementById('splash-progress-bar');
+      if (wrap) wrap.style.opacity = '1';
+      if (bar) bar.style.width = `${Math.max(10, Math.min(100, progressPct))}%`;
     }
 
     function preloadImages(onProgress, cb) {
@@ -6544,37 +6692,39 @@
         navigator.serviceWorker.register('./sw.js').catch(() => {});
       }
       const splash = document.getElementById('logo-splash');
-      let splashDone = false, gameReady = false, currentPct = 10;
+      let splashMinElapsed = false, gameReady = false, splashLeft = false;
 
-      const leaveSplash = () => {
-        if (splashDone) return;
-        splashDone = true;
-        if (!gameReady) {
-          showBunnyLoader(`正在載入兔兔資源… ${currentPct}%`, currentPct);
-        }
+      const tryLeaveSplash = () => {
+        if (splashLeft || !gameReady || !splashMinElapsed) return;
+        splashLeft = true;
         splash.classList.add('is-leaving');
         setTimeout(() => splash.remove(), 420);
       };
 
-      setTimeout(leaveSplash, 3100);
-      splash.addEventListener('pointerdown', leaveSplash);
+      setTimeout(() => {
+        splashMinElapsed = true;
+        if (!gameReady) updateSplashProgress(25);
+        tryLeaveSplash();
+      }, 2800);
+      splash.addEventListener('pointerdown', () => {
+        splashMinElapsed = true;
+        tryLeaveSplash();
+      });
 
       preloadImages(
         (pct) => {
-          currentPct = pct;
-          if (splashDone && !gameReady) {
-            showBunnyLoader(`正在載入兔兔資源… ${pct}%`, pct);
-          }
+          if (splashMinElapsed && !gameReady) updateSplashProgress(pct);
         },
         () => {
           gameReady = true;
+          updateSplashProgress(100);
           syncGlobalCounters();
           switchView('home');
           if (!saveData.tutorialDone) openTutorial();
           lastFrameTime = performance.now();
           if (state.rafId) cancelAnimationFrame(state.rafId);
           state.rafId = requestAnimationFrame(mainLoop);
-          hideBunnyLoader();
+          tryLeaveSplash();
         }
       );
     };
