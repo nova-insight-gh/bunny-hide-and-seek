@@ -665,8 +665,10 @@
                 <span id="hud-progress" class="text-[11px] font-black px-1.5 py-0.5 rounded-lg bg-[#FFEDD5] border border-[#C2410C]/30 text-[#C2410C]">0/3</span>
                 <span id="hud-combo" class="hidden text-[9px] font-black text-[#D97706] mt-0.5">FEVER</span>
               </div>
-              <div id="target-list" class="flex-1 min-w-0 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 pr-2" style="min-width:0;flex-wrap:nowrap;justify-content:flex-start;touch-action:pan-x;-webkit-overflow-scrolling:touch;"></div>
-              <button id="btn-toggle-targets" type="button" class="shrink-0 text-[10px] font-black px-1.5 py-1 rounded-lg bg-[#EAD7C0] text-[#5A3A28] whitespace-nowrap" title="查看已找到的兔兔">已找 0 ▼</button>
+              <div class="flex-1 min-w-0 flex justify-center overflow-hidden">
+                <div id="target-list" class="flex items-center overflow-x-auto no-scrollbar py-0.5" style="width:100%;max-width:248px;gap:8px;flex-wrap:nowrap;justify-content:flex-start;scroll-snap-type:x mandatory;touch-action:pan-x;-webkit-overflow-scrolling:touch;"></div>
+              </div>
+              <button id="btn-toggle-targets" type="button" class="shrink-0 w-7 h-7 rounded-xl bg-[#EAD7C0] text-[#5A3A28] flex items-center justify-center text-xs font-black active:scale-95" title="查看已找到的兔兔">▼</button>
             </div>
             <div id="found-target-row" class="hidden pt-1 border-t border-[#5A3A28]/15 flex items-center gap-1.5 min-w-0 w-full">
               <span class="shrink-0 text-[9px] font-black whitespace-nowrap pr-1" style="color:#52A88B;">已找到</span>
@@ -1530,7 +1532,6 @@
       ssr_shell_ride: "assets/ssr_shell_ride.webp",
       ssr_cake_train: "assets/ssr_cake_train.webp",
       ssr_paper_plane: "assets/ssr_paper_plane.webp",
-      ssr_farm_king: "assets/ssr_farm_king.png",
       b_sandwich: "assets/b_sandwich.webp",
       b_watermelon: "assets/b_watermelon.png",
       b_butterfly: "assets/b_butterfly_clean.png",
@@ -1707,7 +1708,6 @@
       ['b_duckring',        '小鴨泳圈兔',     'park', 'SR',  '腰間套著黃色小鴨泳圈，隨時準備跳進水池玩水！'],
       ['ssr_cloud_ride',    '雲朵飛天兔',     'park', 'SSR', '坐著會微笑的粉藍軟綿綿雲朵飄過公園上空！'],
       ['ssr_strawberry_car','草莓跑車兔',     'park', 'SSR', '開著巨型紅通通草莓跑車在草地上兜風！'],
-      ['ssr_farm_king',     '黃金田園王冠兔', 'park', 'SSR', '集齊 10 款黃金突變作物即可召喚的傳說農場之王！'],
 
       // === 2. 櫻花庭園 (20隻: 10N / 5R / 3SR / 2SSR) ===
       ['decoy_grey',        '灰垂耳乖乖兔',   'sakura', 'N',   '溫柔安靜的灰毛垂耳兔，最喜歡坐在樹下賞花。'],
@@ -2055,7 +2055,7 @@
     const STAMINA_REGEN_MS = 15 * 60 * 1000;
 
     function applyParsedSave(parsed) {
-      if (Array.isArray(parsed.unlockedCards)) saveData.unlockedCards = parsed.unlockedCards;
+      if (Array.isArray(parsed.unlockedCards)) saveData.unlockedCards = parsed.unlockedCards.filter(id => id !== "ssr_farm_king");
       if (parsed.levelRecords && typeof parsed.levelRecords === 'object') saveData.levelRecords = parsed.levelRecords;
       if (typeof parsed.coins === 'number') saveData.coins = parsed.coins;
       else saveData.coins = 180 + saveData.unlockedCards.length * 25;
@@ -2070,7 +2070,7 @@
       if (Array.isArray(parsed.gardenGrid) && parsed.gardenGrid.length > 0) {
         saveData.gardenGrid = parsed.gardenGrid.filter(t => t && t.id !== 'dec_carrot_patch');
       }
-      if (Array.isArray(parsed.gardenBunnies) && parsed.gardenBunnies.length > 0) saveData.gardenBunnies = parsed.gardenBunnies;
+      if (Array.isArray(parsed.gardenBunnies) && parsed.gardenBunnies.length > 0) saveData.gardenBunnies = parsed.gardenBunnies.filter(id => id !== "ssr_farm_king");
       else saveData.gardenBunnies = saveData.unlockedCards.slice(0, 10);
       if (parsed.gardenCoinReadyAt && typeof parsed.gardenCoinReadyAt === 'object') saveData.gardenCoinReadyAt = parsed.gardenCoinReadyAt;
       if (Array.isArray(parsed.homeMascots) && parsed.homeMascots.length === 4) saveData.homeMascots = parsed.homeMascots;
@@ -2151,7 +2151,9 @@
       editMode: false,
       movingPlotIdx: null,
       wildBunny: null,
-      wildTimer: 6,
+      wildTimer: 28,
+      rainbowAnimStart: null,
+      rainbowDone: false,
       weatherParticles: [],
       weatherClouds: [],
       weatherRipples: [],
@@ -2188,6 +2190,9 @@
       closeAllModals();
       if (viewName !== 'garden') { setGardenEditMode(false); setFarmPlantMode(false); }
 
+      const toastWrap = document.getElementById('toast-container');
+      if (toastWrap) toastWrap.style.bottom = viewName === 'play' ? '136px' : '';
+
       if (viewName === 'home') {
         state.paused = true;
         BGM.playTheme('park');
@@ -2195,6 +2200,8 @@
       } else if (viewName === 'garden') {
         state.paused = true;
         BGM.playTheme('park');
+        gardenState.rainbowAnimStart = null;
+        gardenState.rainbowDone = false;
         processFarmAutoHarvest(true);
         if (!gardenState.initializedCam) { centerGardenCamera(); gardenState.initializedCam = true; }
         else clampGardenCamera();
@@ -2639,7 +2646,7 @@
       } else {
         gardenState.wildTimer -= dt;
         if (gardenState.wildTimer <= 0) {
-          gardenState.wildTimer = 28 + Math.random() * 18;
+          gardenState.wildTimer = 75 + Math.random() * 45;
           maybeSpawnFarmWildBunny(m);
         }
       }
@@ -2922,59 +2929,59 @@
       }
       gCtx.restore();
 
-      // Screen-space Animated Weather Overlay (Giant Top-Right -> Bottom-Right Progressive Rainbow + Rain Ripples + Sakura)
+      // Screen-space Animated Weather Overlay (Natural Upper-Sky Arch Rainbow: Unfolds ONCE Left -> Right & Fades Gently)
       const curW = getFarmWeather().id;
       if (curW === 'rainbow') {
         const rbImg = IMAGES.farm_rainbow;
-        if (rbImg && rbImg.complete && rbImg.naturalWidth > 0) {
-          const cycle = tSec % 14.0;
+        if (rbImg && rbImg.complete && rbImg.naturalWidth > 0 && !gardenState.rainbowDone) {
+          if (!gardenState.rainbowAnimStart) gardenState.rainbowAnimStart = now;
+          const el = (now - gardenState.rainbowAnimStart) / 1000;
           let reveal = 0, masterAlpha = 0;
-          if (cycle < 4.2) {
-            // Smoothly grow/paint downward from Top-Right to Bottom-Right!
-            const u = cycle / 4.2;
-            reveal = 1 - Math.pow(1 - u, 2.2); // easeOut
-            masterAlpha = Math.min(1, u * 3.0) * 0.82;
-          } else if (cycle < 10.6) {
+          if (el < 3.4) {
+            const u = el / 3.4;
+            reveal = 1 - Math.pow(1 - u, 2.2);
+            masterAlpha = Math.min(1, u * 3.0) * 0.80;
+          } else if (el < 8.4) {
             reveal = 1.0;
-            masterAlpha = 0.74 + Math.sin(tSec * 1.8) * 0.08;
-          } else if (cycle < 12.8) {
+            masterAlpha = 0.74 + Math.sin(tSec * 1.8) * 0.06;
+          } else if (el < 10.6) {
             reveal = 1.0;
-            masterAlpha = (1 - (cycle - 10.6) / 2.2) * 0.76;
+            masterAlpha = (1 - (el - 8.4) / 2.2) * 0.76;
+          } else {
+            gardenState.rainbowDone = true;
           }
 
-          if (masterAlpha > 0.01 && reveal > 0.01) {
-            const rbH = vh * 0.88;
-            const rbW = rbH * (480 / 840);
-            const rbX = vw - rbW * 0.76;
-            const rbY = vh * 0.06;
+          if (!gardenState.rainbowDone && masterAlpha > 0.01 && reveal > 0.01) {
+            const rbW = vw * 1.10;
+            const rbH = rbW * (340 / 820);
+            const rbX = (vw - rbW) / 2;
+            const rbY = 58;
 
             gCtx.save();
-            // Progressive reveal clip from Top-Right downward toward Bottom-Right
             gCtx.beginPath();
-            gCtx.rect(rbX - 20, rbY - 10, rbW + 40, (rbH + 20) * reveal);
+            gCtx.rect(rbX - 10, rbY - 10, (rbW + 20) * reveal, rbH + 20);
             gCtx.clip();
             gCtx.globalAlpha = masterAlpha;
             gCtx.drawImage(rbImg, rbX, rbY, rbW, rbH);
             gCtx.restore();
 
-            // Twinkling golden sparkles along the revealed right-side rainbow arc + glowing growth tip!
             if (IMAGES.ui_star && IMAGES.ui_star.complete) {
               gCtx.save();
               for (const sp of gardenState.weatherSparkles) {
                 if (sp.t > reveal) continue;
                 const p = sp.life / sp.maxLife;
                 const a = Math.sin(p * Math.PI) * masterAlpha;
-                const curveX = Math.sin(sp.t * Math.PI); // bulges inward cleanly along the arc
-                const sx = rbX + rbW * (0.78 - curveX * 0.44) + sp.offY * 0.5;
-                const sy = rbY + sp.t * rbH;
-                const sz = sp.size * (0.65 + a * 0.5);
+                const arch = Math.sin(sp.t * Math.PI);
+                const sx = rbX + sp.t * rbW;
+                const sy = rbY + rbH * (0.86 - arch * 0.70) + sp.offY * 0.4;
+                const sz = sp.size * (0.65 + a * 0.45);
                 gCtx.globalAlpha = Math.min(1, a * 1.1);
                 gCtx.drawImage(IMAGES.ui_star, sx - sz / 2, sy - sz / 2, sz, sz);
               }
               if (reveal > 0.05 && reveal < 0.98) {
-                const tipCurve = Math.sin(reveal * Math.PI);
-                const tipX = rbX + rbW * (0.78 - tipCurve * 0.44);
-                const tipY = rbY + reveal * rbH;
+                const tipArch = Math.sin(reveal * Math.PI);
+                const tipX = rbX + reveal * rbW;
+                const tipY = rbY + rbH * (0.86 - tipArch * 0.70);
                 gCtx.globalAlpha = 0.92;
                 gCtx.drawImage(IMAGES.ui_star, tipX - 13, tipY - 13, 26, 26);
               }
@@ -3973,6 +3980,8 @@
       state.timeLeft = lvl.timeLimit; state.lastTickSec = 11;
       state.running = true; state.paused = false;
       state.radar = null; state.goldenBunny = null; state.goldenSpawnedThisRun = false;
+      state.goldenWillSpawn = Math.random() < 0.25;
+      state.goldenTriggerElapsed = 18 + Math.random() * 14;
       state.particles = []; state.floatingTexts = [];
 
       document.getElementById('golden-alert').classList.add('hidden');
@@ -4145,7 +4154,7 @@
         }
 
         const lvl = getCurrentLevel();
-        if (!state.goldenSpawnedThisRun && (lvl.timeLimit - state.timeLeft) > 12 && state.foundIds.size < state.targetIds.length) {
+        if (state.goldenWillSpawn && !state.goldenSpawnedThisRun && (lvl.timeLimit - state.timeLeft) > (state.goldenTriggerElapsed || 20) && state.foundIds.size < state.targetIds.length) {
           state.goldenSpawnedThisRun = true;
           spawnGoldenEscapeBunny();
         }
@@ -4719,6 +4728,7 @@
           chip.type = 'button';
           chip.title = `${meta.name}（${meta.rarity}）`;
           chip.className = 'target-chip-lg shrink-0 relative flex items-center justify-center overflow-hidden';
+          chip.style.scrollSnapAlign = 'start';
           if (borderMap[meta.rarity]) chip.style.borderColor = borderMap[meta.rarity];
           chip.innerHTML = `<img src="${SPRITE_SRCS[tid]}" alt="${meta.name}" />`;
           chip.addEventListener('click', () => {
@@ -4756,7 +4766,10 @@
       }
 
       if (foundRow) foundRow.classList.toggle('hidden', !state.showFoundDrawer);
-      if (toggleBtn) toggleBtn.textContent = state.showFoundDrawer ? '收起 ▲' : `已找 ${foundIdsArr.length} ▼`;
+      if (toggleBtn) {
+        toggleBtn.textContent = state.showFoundDrawer ? '▲' : '▼';
+        toggleBtn.title = state.showFoundDrawer ? '收起已找到的兔兔' : `查看已找到的兔兔 (${foundIdsArr.length})`;
+      }
     }
 
     function showLevelClearModal() {
@@ -6379,7 +6392,7 @@
     const FARM_DEX_MILESTONES = [
       { id: 'dex_3',  req: 3,  label: '收集 3 款黃金作物',  rewardText: '+200 金幣 + 體力胡蘿蔔汁 ×2', coins: 200, item: 'carrot_juice', itemQty: 2 },
       { id: 'dex_6',  req: 6,  label: '收集 6 款黃金作物',  rewardText: '+400 金幣 + SSR 誘兔鈴 ×2',   coins: 400, item: 'ssr_lure',     itemQty: 2 },
-      { id: 'dex_10', req: 10, label: '收集全部 10 款黃金', rewardText: '解鎖農場限定 SSR「黃金田園王冠兔」', ssr: 'ssr_farm_king' }
+      { id: 'dex_10', req: 10, label: '收集全部 10 款黃金', rewardText: '解鎖 1 隻未擁有傳說 SSR 兔兔 ＋ 800 金幣', randomSsr: true, coins: 800 }
     ];
 
     function getGoldenDexCount() {
@@ -6436,14 +6449,25 @@
             if (!saveData.items) saveData.items = { golden_carrot: 0, ssr_lure: 0, time_plus: 0, carrot_juice: 0 };
             saveData.items[ms.item] = (saveData.items[ms.item] || 0) + (ms.itemQty || 1);
           }
-          if (ms.ssr) {
-            if (!saveData.unlockedCards.includes(ms.ssr)) saveData.unlockedCards.push(ms.ssr);
-            if (!saveData.gardenBunnies.includes(ms.ssr)) saveData.gardenBunnies.push(ms.ssr);
-            rebuildGardenBunnies();
+          let toastMsg = `領取成功！獲得：${ms.rewardText}！`;
+          if (ms.randomSsr) {
+            const unownedSsr = BUNNY_CATALOG.filter(b => b.rarity === 'SSR' && !saveData.unlockedCards.includes(b.id));
+            if (unownedSsr.length > 0) {
+              const pickSsr = unownedSsr[Math.floor(Math.random() * unownedSsr.length)];
+              saveData.unlockedCards.push(pickSsr.id);
+              if (!saveData.gardenBunnies.includes(pickSsr.id)) saveData.gardenBunnies.push(pickSsr.id);
+              rebuildGardenBunnies();
+              toastMsg = `恭喜集齊 10 款黃金作物！解鎖傳說 SSR「${pickSsr.name}」並獲得 +800 金幣！`;
+            } else {
+              saveData.coins += 400;
+              if (!saveData.items) saveData.items = { golden_carrot: 0, ssr_lure: 0, time_plus: 0, carrot_juice: 0 };
+              saveData.items.ssr_lure = (saveData.items.ssr_lure || 0) + 3;
+              toastMsg = '恭喜集齊 10 款黃金作物！已全數擁有 SSR，額外獲贈 +1,200 金幣與誘兔鈴 ×3！';
+            }
           }
           persistSave(); syncGlobalCounters(); SFX.win();
           openFarmDexModal();
-          showToast(`領取成功！獲得：${ms.rewardText}！`);
+          showToast(toastMsg);
         });
       });
 
