@@ -533,7 +533,7 @@
           </div>
         </div>
         <p class="game-btn rounded-full px-3.5 py-1 text-xs font-black text-[#6B4F40] mb-4">
-          收集 100 隻韓日繪本兔兔・草叢收服＆經營兔兔農場
+          100 隻繪本兔兔・尋寶與農場
         </p>
 
         <!-- Bouncing Mascot Showcase (Tap any bunny to customize!) -->
@@ -784,7 +784,7 @@
         <!-- Fast Tap-Tap-Tap Planting Seed Bar (pick seed once -> tap empty beds or 一鍵種滿!) -->
         <div id="farm-plant-bar" class="hidden absolute inset-x-2 bottom-20 z-20 game-panel rounded-2xl p-2 flex flex-col gap-1.5">
           <div class="flex items-center justify-between px-1 gap-1.5">
-            <span id="farm-plant-bar-hint" class="text-[11px] font-black text-[#5A3A28] truncate">選好種子，連點空農田即可快速播種！</span>
+            <span id="farm-plant-bar-hint" class="text-[11px] font-black text-[#5A3A28] truncate">點空田播種</span>
             <div class="flex items-center gap-1 shrink-0">
               <button id="btn-farm-replant" type="button" class="text-[10px] font-black px-2 py-0.5 rounded-lg active:scale-95 whitespace-nowrap" style="background:#EDF6FC;color:#3B6E9C;border:1px solid #6CA6D9;">再種一輪</button>
               <button id="btn-farm-plant-all" type="button" class="text-[10px] font-black px-2 py-0.5 rounded-lg text-white active:scale-95 whitespace-nowrap" style="background:#52A88B;">一鍵種滿</button>
@@ -797,7 +797,7 @@
         <!-- Grid Build Mode Palette Strip (appears cleanly above bottom dock) -->
         <div id="garden-build-bar" class="hidden absolute inset-x-2 bottom-20 z-20 game-panel rounded-2xl p-2 flex flex-col gap-1.5">
           <div class="flex items-center justify-between px-1 gap-1.5">
-            <span id="garden-build-hint" class="text-[11px] font-black text-[#5A3A28] truncate">點擺設放草地・點農田可移動位置</span>
+            <span id="garden-build-hint" class="text-[11px] font-black text-[#5A3A28] truncate">點空地擺設・點農田移動</span>
             <div class="flex items-center gap-1 shrink-0">
               <button id="btn-garden-shop-inline" type="button" class="text-[10px] font-black px-2 py-0.5 rounded-lg" style="background:#FEF3C7;color:#9A5410;border:1px solid #E5B974;">買擺設</button>
               <button id="btn-garden-build-done" type="button" class="text-[10px] font-black px-2 py-0.5 rounded-lg bg-[#F97316] text-white">完成</button>
@@ -924,7 +924,7 @@
         <!-- Bold Tap Prompt ABOVE the bush (never overlaps!) -->
         <div id="cap-tap-hint" class="inline-flex items-center gap-1.5 mb-2 px-3.5 py-1 rounded-full bg-[#FFFDF8] border-2 border-[#D97706] text-xs font-black text-[#9A3412] animate-bounce">
           <img class="img-star-icon w-4 h-4 object-contain" src="" alt="" />
-          <span>連點下方草叢吸引兔兔出來！</span>
+          <span id="cap-tap-hint-text">連點草叢！</span>
           <img class="img-star-icon w-4 h-4 object-contain" src="" alt="" />
         </div>
 
@@ -2152,7 +2152,7 @@
       editMode: false,
       movingPlotIdx: null,
       wildBunny: null,
-      wildTimer: 28,
+      wildTimer: 90,
       rainbowAnimStart: null,
       rainbowDone: false,
       weatherParticles: [],
@@ -2288,8 +2288,8 @@
       const gSub = document.getElementById('garden-status-sub');
       if (gSub) {
         gSub.textContent = readyPlots > 0
-          ? `${pCount} 塊農地・${readyPlots} 塊可收成・景觀加成 +${land.bonusPct}%`
-          : `${pCount} 塊農地・景觀分 ${land.score}（賣價+${land.bonusPct}%・黃金率${Math.round(land.goldenChance*100)}%）`;
+          ? `${pCount} 塊田 · ${readyPlots} 可收成 · 賣價+${land.bonusPct}%`
+          : `${pCount} 塊田 · 賣價+${land.bonusPct}% · 黃金${Math.round(land.goldenChance*100)}%`;
       }
       document.getElementById('home-account-label').textContent = saveData.account.nickname || '設定暱稱';
       document.getElementById('img-account-avatar').src = SPRITE_SRCS[saveData.account.avatar || 'sp_strawberry'];
@@ -2647,8 +2647,8 @@
       } else {
         gardenState.wildTimer -= dt;
         if (gardenState.wildTimer <= 0) {
-          gardenState.wildTimer = 75 + Math.random() * 45;
-          maybeSpawnFarmWildBunny(m);
+          gardenState.wildTimer = 180 + Math.random() * 80;
+          if (Math.random() < 0.50) maybeSpawnFarmWildBunny(m);
         }
       }
 
@@ -3054,10 +3054,10 @@
       const el = document.getElementById('garden-build-hint');
       if (!el) return;
       if (gardenState.movingPlotIdx !== null) {
-        el.textContent = '已選取農田！點擊任一空草地格仔即可移動';
+        el.textContent = '點空草地移動農田';
         el.style.color = '#2D6A54';
       } else {
-        el.textContent = '點擺設放草地・點農田可移動位置（再點擺設收回）';
+        el.textContent = '點空地擺設・點農田移動';
         el.style.color = '#5A3A28';
       }
     }
@@ -3600,7 +3600,7 @@
     }
 
     // ---- POKEMON-GO STYLE RAPID-TAP BUSH CAPTURE ----
-    const capState = { active: false, cardId: null, taps: 0, needed: 8, timeLeft: 5.0, maxTime: 5.0, timerId: null, boosted: false };
+    const capState = { active: false, cardId: null, taps: 0, needed: 8, timeLeft: 5.0, maxTime: 5.0, timerId: null, boosted: false, attempts: 1, maxAttempts: 3 };
 
     function renderCaptureBoostBtn() {
       const btn = document.getElementById('btn-cap-use-gcarrot');
@@ -3634,7 +3634,7 @@
       showToast('已使用黃金紅蘿蔔！本次收服機率大幅提升 +35%！');
     }
 
-    function openCaptureMiniGame(cardId) {
+    function openCaptureMiniGame(cardId, isRetry = false) {
       const meta = BUNNY_BY_ID[cardId];
       if (!meta) return;
       state.paused = true;
@@ -3642,6 +3642,7 @@
       capState.boosted = false;
       capState.cardId = cardId;
       capState.taps = 0;
+      capState.attempts = isRetry ? (capState.attempts + 1) : 1;
       capState.needed = meta.rarity === 'SSR' ? 16 : meta.rarity === 'SR' ? 12 : meta.rarity === 'R' ? 8 : 5;
       capState.maxTime = meta.rarity === 'SSR' ? 4.8 : 5.2;
       capState.timeLeft = capState.maxTime;
@@ -3650,7 +3651,7 @@
       badge.textContent = meta.rarity;
       badge.className = `px-2.5 py-0.5 rounded-full text-xs font-black text-white ${meta.rarity === 'SSR' ? 'bg-[#C47F17]' : meta.rarity === 'SR' ? 'bg-[#8652A8]' : meta.rarity === 'R' ? 'bg-[#4E7FA3]' : 'bg-[#8B735B]'}`;
       document.getElementById('cap-banner-title').textContent = meta.rarity === 'SSR' ? '傳說 SSR 現身！' : '草叢捉兔兔！';
-      document.getElementById('cap-bunny-hint').textContent = `連點草叢吸引「${meta.name}」出來跟你回家！`;
+      document.getElementById('cap-bunny-hint').textContent = `${meta.name}（第 ${capState.attempts}/${capState.maxAttempts} 次）`;
       document.getElementById('cap-bush-img').src = SPRITE_SRCS.prop_bush;
       document.getElementById('cap-bush-img').classList.remove('hidden');
       document.getElementById('cap-bunny-img').src = SPRITE_SRCS[cardId];
@@ -3727,9 +3728,18 @@
         if (shareBtn) shareBtn.classList.remove('hidden');
       } else {
         SFX.lose();
-        document.getElementById('cap-banner-title').textContent = '差一點點溜走了！';
-        document.getElementById('cap-result-msg').textContent = `「${meta.name}」太害羞，躲回草叢深處了！`;
-        retryBtn.classList.remove('hidden');
+        const remTries = capState.maxAttempts - capState.attempts;
+        if (remTries > 0) {
+          document.getElementById('cap-banner-title').textContent = '差一點點！';
+          document.getElementById('cap-result-msg').textContent = `「${meta.name}」躲進草叢（還剩 ${remTries} 次機會）`;
+          const retrySpan = retryBtn.querySelector('span');
+          if (retrySpan) retrySpan.textContent = `20 金幣再引一次（剩 ${remTries} 次）`;
+          retryBtn.classList.remove('hidden');
+        } else {
+          document.getElementById('cap-banner-title').textContent = '兔兔逃走啦！';
+          document.getElementById('cap-result-msg').textContent = `「${meta.name}」受驚逃進森林深處，下次關卡再遇吧！`;
+          retryBtn.classList.add('hidden');
+        }
         gardenBtn.classList.add('hidden');
         if (shareBtn) shareBtn.classList.add('hidden');
       }
@@ -5466,18 +5476,27 @@
 
         if (!p.cropId) {
           const emptyBed = IMAGES.farm_bed_empty;
+          if (gardenState.plantMode) {
+            const pulseA = 0.45 + Math.sin(tSec * 5 + idx) * 0.25;
+            c.save();
+            c.strokeStyle = `rgba(82, 168, 139, ${pulseA})`;
+            c.lineWidth = 2.6;
+            roundRect(c, left + 2, top + 2, sz - 4, sz - 4, 14);
+            c.stroke();
+            c.restore();
+          }
           if (emptyBed && emptyBed.complete && emptyBed.naturalWidth > 0) {
             c.drawImage(emptyBed, left, top, sz, sz);
           }
-          c.fillStyle = 'rgba(255, 250, 240, 0.90)';
-          c.strokeStyle = 'rgba(90, 58, 40, 0.35)';
-          c.lineWidth = 1.2;
-          roundRect(c, center.x - 24, center.y - 9, 48, 18, 9);
+          c.fillStyle = gardenState.plantMode ? 'rgba(232, 248, 242, 0.95)' : 'rgba(255, 250, 240, 0.88)';
+          c.strokeStyle = gardenState.plantMode ? '#52A88B' : 'rgba(90, 58, 40, 0.32)';
+          c.lineWidth = 1.3;
+          roundRect(c, center.x - 14, center.y - 11, 28, 18, 9);
           c.fill(); c.stroke();
-          c.fillStyle = '#5A3A28';
-          c.font = '900 9.5px "Noto Sans TC", sans-serif';
+          c.fillStyle = gardenState.plantMode ? '#2D6A54' : '#5A3A28';
+          c.font = '900 12px "Noto Sans TC", sans-serif';
           c.textAlign = 'center'; c.textBaseline = 'middle';
-          c.fillText('+ 播種', center.x, center.y);
+          c.fillText('+', center.x, center.y - 1.5);
         } else if (isReady) {
           const crop = FARM_CROP_BY_ID[p.cropId];
           const bedImg = crop ? IMAGES[crop.bedImg] : IMAGES.dec_carrot_patch;
@@ -5755,34 +5774,38 @@
         if (p.event) {
           const ev = p.event;
           p.event = null;
-          p.readyAt = Math.max(Date.now(), p.readyAt - 10 * 60 * 1000);
+          const nowT = Date.now();
+          const remMs = Math.max(0, p.readyAt - nowT);
+          const cutMs = Math.min(10 * 60 * 1000, Math.round(remMs * 0.20));
+          const minFloor = remMs > 60 * 1000 ? nowT + 60 * 1000 : nowT;
+          p.readyAt = Math.max(minFloor, p.readyAt - cutMs);
+          const cutMin = Math.max(1, Math.round((remMs - Math.max(0, p.readyAt - nowT)) / 60000));
           saveData.coins += 10;
           persistSave(); syncGlobalCounters(); SFX.coin();
-          const evTxt = ev === 'butterfly' ? '蝴蝶祝福 -10分 +10幣！' : '除草完成 -10分 +10幣！';
+          const evTxt = `-${cutMin}分 +10幣`;
           gardenState.floatingTexts.push({ x: center.x, y: center.y - 24, text: evTxt, color: '#FEF08A', life: 1.1, maxLife: 1.1 });
           for (let i = 0; i < 10; i++) {
             const ang = (Math.PI * 2 * i) / 10;
             gardenState.particles.push({ x: center.x, y: center.y - 6, vx: Math.cos(ang) * 46, vy: Math.sin(ang) * 46 - 30, size: 3.2, color: ev === 'butterfly' ? '#F9A8D4' : '#86EFAC', life: 0.55, maxLife: 0.55 });
           }
-          showToast(ev === 'butterfly' ? '遇見田間蝴蝶祝福！縮短 10 分鐘並獲得 +10 金幣！' : '幫農田除草完成！縮短 10 分鐘並獲得 +10 金幣！');
         } else if (!p.watered) {
           p.watered = true;
-          p.readyAt = Math.max(Date.now(), p.readyAt - 15 * 60 * 1000);
+          const nowT = Date.now();
+          const remMs = Math.max(0, p.readyAt - nowT);
+          const cutMs = Math.min(15 * 60 * 1000, Math.round(remMs * 0.25));
+          const minFloor = remMs > 60 * 1000 ? nowT + 60 * 1000 : nowT;
+          p.readyAt = Math.max(minFloor, p.readyAt - cutMs);
+          const cutMin = Math.max(1, Math.round((remMs - Math.max(0, p.readyAt - nowT)) / 60000));
           persistSave(); syncGlobalCounters(); SFX.coin();
           for (let i = 0; i < 12; i++) {
             const ang = (Math.PI * 2 * i) / 12;
             gardenState.particles.push({ x: center.x, y: center.y - 8, vx: Math.cos(ang) * 44, vy: Math.sin(ang) * 44 - 36, size: 3.2, color: i % 2 === 0 ? '#60A5FA' : '#BAE6FD', life: 0.55, maxLife: 0.55 });
           }
-          gardenState.floatingTexts.push({ x: center.x, y: center.y - 22, text: '澆水 -15分！', color: '#BAE6FD', life: 1.0, maxLife: 1.0 });
-          if (Date.now() >= p.readyAt) {
-            showToast(`澆水成功！「${crop ? crop.name : '作物'}」已經成熟，快點一下收成！`);
-          } else {
-            showToast(`澆水成功！「${crop ? crop.name : '作物'}」縮短 15 分鐘，剩餘 ${formatFarmCountdown(p.readyAt - Date.now())}！`);
-          }
+          gardenState.floatingTexts.push({ x: center.x, y: center.y - 22, text: `澆水 -${cutMin}分`, color: '#BAE6FD', life: 1.0, maxLife: 1.0 });
         } else {
           const rem = formatFarmCountdown(p.readyAt - Date.now());
           SFX.tap();
-          showToast(`「${crop ? crop.name : '作物'}」已澆水，距離成熟還有 ${rem}（可按上方「廣告 -30分」全場加速）`);
+          gardenState.floatingTexts.push({ x: center.x, y: center.y - 20, text: `剩 ${rem}`, color: '#FFFBEB', life: 0.9, maxLife: 0.9 });
         }
       }
       return true;
@@ -6566,9 +6589,10 @@
       document.getElementById('btn-cap-add-garden').addEventListener('click', () => closeCaptureModal(true));
       document.getElementById('btn-cap-share').addEventListener('click', () => generateCaptureShareCard(capState.cardId));
       document.getElementById('btn-cap-retry-carrot').addEventListener('click', () => {
+        if (capState.attempts >= capState.maxAttempts) { SFX.wrong(); return; }
         if (saveData.coins < 20) { SFX.wrong(); showToast('金幣不足 20 枚！'); return; }
         saveData.coins -= 20; persistSave(); syncGlobalCounters(); SFX.coin();
-        openCaptureMiniGame(capState.cardId);
+        openCaptureMiniGame(capState.cardId, true);
       });
       document.getElementById('btn-home-sound').addEventListener('click', openAudioModal);
       document.getElementById('btn-close-audio').addEventListener('click', () => document.getElementById('modal-audio').classList.add('hidden'));
