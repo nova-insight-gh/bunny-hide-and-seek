@@ -504,12 +504,17 @@
       <img id="img-home-bg" src="" alt="草地背景" class="absolute inset-0 w-full h-full object-cover" />
       <div class="absolute inset-0 bg-gradient-to-b from-[#FFF9F0]/15 via-transparent to-[#FFF9F0]/75 pointer-events-none"></div>
       <div id="home-time-overlay" class="absolute inset-0 pointer-events-none transition-all duration-1000" style="z-index:1;"></div>
+      <div id="home-fireflies" class="absolute inset-0 pointer-events-none overflow-hidden" style="z-index:2;"></div>
 
       <!-- Home Top Status Bar (pl-12 avoids mobile top-left close overlay) -->
       <div class="relative z-10 flex items-center justify-end gap-1.5 pl-12 pr-3 pt-3">
-        <button id="btn-home-account" type="button" class="game-btn rounded-2xl px-2.5 py-1 flex items-center gap-1 text-[11px] font-black text-[#5A3A28] max-w-[130px] truncate">
+        <button id="btn-home-account" type="button" class="game-btn rounded-2xl px-2 py-1 flex items-center gap-1 text-[11px] font-black text-[#5A3A28] max-w-[104px] truncate">
           <img id="img-account-avatar" src="" alt="頭像" class="w-4 h-4 object-contain shrink-0" />
           <span id="home-account-label" class="truncate">設定暱稱</span>
+        </button>
+        <button id="btn-home-bg" type="button" class="game-btn game-btn-pink rounded-2xl px-2 py-1 flex items-center gap-1 text-[11px] font-black text-[#5A3A28] shrink-0" title="更換首頁背景">
+          <img class="img-garden-icon w-4 h-4 object-contain shrink-0" src="" alt="背景" />
+          <span>背景</span>
         </button>
         <button id="btn-home-stamina" type="button" class="game-btn game-btn-mint rounded-2xl px-2 py-1 flex items-center gap-1 text-xs font-black text-[#14532D] shrink-0" title="體力補充站">
           <img src="assets/ui_carrot_single.png" alt="體力" class="w-4 h-4 object-contain" />
@@ -1259,6 +1264,24 @@
       </div>
     </div>
 
+    <!-- ================= MODAL: HOME BACKGROUND SHOP & SWITCHER (首頁背景商店) ================= -->
+    <div id="modal-home-bg" class="hidden absolute inset-0 z-50 bg-black/55 backdrop-blur-[2px] flex items-end sm:items-center justify-center p-3">
+      <div class="game-panel animate-pop w-full max-h-[84%] rounded-3xl px-4 pb-4 pt-6 flex flex-col relative">
+        <button id="btn-close-home-bg" type="button" class="game-btn absolute top-2.5 right-2.5 rounded-xl w-9 h-9 flex items-center justify-center font-black z-30 text-sm">✕</button>
+        <div class="banner-header">
+          <img class="img-banner-ribbon" src="" alt="橫幅" />
+          <span class="banner-header-title">首頁背景商店</span>
+        </div>
+        <div class="shrink-0 flex items-center justify-center gap-1.5 mb-2.5">
+          <span class="game-btn game-btn-gold rounded-full px-2.5 py-0.5 inline-flex items-center gap-1 text-xs font-black text-[#6B3E08]">
+            <img class="img-coin-icon w-4 h-4 object-contain" src="" alt="金幣" />
+            <span class="coin-display tabular-nums">150</span>
+          </span>
+        </div>
+        <div id="home-bg-grid" class="flex-1 min-h-0 grid grid-cols-2 gap-2.5 overflow-y-auto no-scrollbar pt-0.5 pb-2 content-start"></div>
+      </div>
+    </div>
+
     <!-- ================= MODAL: CUSTOMIZE HOME MASCOT (自訂首頁兔兔) ================= -->
     <div id="modal-home-mascot" class="hidden absolute inset-0 z-50 bg-black/55 backdrop-blur-[2px] flex items-end sm:items-center justify-center p-3">
       <div class="game-panel animate-pop w-full max-h-[84%] rounded-3xl px-4 pb-4 pt-6 flex flex-col relative">
@@ -1658,7 +1681,9 @@
       bg_hk: "assets/bg_hk.webp",
       bg_camp: "assets/bg_camp.webp",
       bg_dessert: "assets/bg_dessert.webp",
-      bg_home_story: "assets/bg_home_story.webp"
+      bg_home_story: "assets/bg_home_story.webp",
+      bg_home_moonlight: "assets/bg_home_moonlight.jpg",
+      share_card_bg: "assets/share_card_bg.jpg"
     };
 
     const IMAGES = {};
@@ -2035,6 +2060,8 @@
       gardenBunnies: [],
       gardenCoinReadyAt: {},
       homeMascots: ['sp_strawberry', 'sp_farmer', 'sp_sakura', 'sp_macaron'],
+      ownedHomeBgs: ['bg_home_story'],
+      activeHomeBg: 'bg_home_story',
       audio: { bgm: true, sfx: true },
       tutorialDone: false,
       farmGuideDone: false,
@@ -2074,6 +2101,8 @@
       else saveData.gardenBunnies = saveData.unlockedCards.slice(0, 10);
       if (parsed.gardenCoinReadyAt && typeof parsed.gardenCoinReadyAt === 'object') saveData.gardenCoinReadyAt = parsed.gardenCoinReadyAt;
       if (Array.isArray(parsed.homeMascots) && parsed.homeMascots.length === 4) saveData.homeMascots = parsed.homeMascots;
+      if (Array.isArray(parsed.ownedHomeBgs) && parsed.ownedHomeBgs.length > 0) saveData.ownedHomeBgs = [...new Set(['bg_home_story', ...parsed.ownedHomeBgs])];
+      if (typeof parsed.activeHomeBg === 'string' && SPRITE_SRCS[parsed.activeHomeBg]) saveData.activeHomeBg = parsed.activeHomeBg;
       if (parsed.audio && typeof parsed.audio === 'object') saveData.audio = { bgm: parsed.audio.bgm !== false, sfx: parsed.audio.sfx !== false };
       if (typeof parsed.tutorialDone === 'boolean') saveData.tutorialDone = parsed.tutorialDone;
       if (typeof parsed.farmGuideDone === 'boolean') saveData.farmGuideDone = parsed.farmGuideDone;
@@ -2230,14 +2259,32 @@
 
     function applyHomeTimeLighting() {
       const ov = document.getElementById('home-time-overlay');
+      const ffWrap = document.getElementById('home-fireflies');
+      const bgEl = document.getElementById('img-home-bg');
+      if (bgEl) {
+        const bgKey = (saveData.activeHomeBg && SPRITE_SRCS[saveData.activeHomeBg]) ? saveData.activeHomeBg : 'bg_home_story';
+        if (bgEl.getAttribute('data-bg-key') !== bgKey) {
+          bgEl.src = SPRITE_SRCS[bgKey];
+          bgEl.setAttribute('data-bg-key', bgKey);
+        }
+      }
       if (!ov) return;
       const period = getDayPeriod();
       if (period === 'night') {
-        ov.style.background = 'linear-gradient(180deg, rgba(22,32,74,0.42) 0%, rgba(36,48,96,0.24) 55%, rgba(255,244,214,0.12) 100%)';
+        // Bright, dreamy silver-gold moonlight glow from upper-right sky (keeps the whole scene bright & lovely!)
+        ov.style.background = 'radial-gradient(circle at 82% 14%, rgba(255,250,224,0.42) 0%, rgba(255,246,214,0.16) 28%, rgba(44,62,126,0.14) 72%, rgba(38,52,108,0.10) 100%)';
+        if (ffWrap && ffWrap.childElementCount === 0) {
+          const spots = [[16, 28, 0], [78, 36, 0.9], [28, 56, 1.7], [84, 58, 2.4]];
+          ffWrap.innerHTML = spots.map(([lx, ty, d]) =>
+            `<img src="${SPRITE_SRCS.fx_firefly}" alt="" class="absolute w-6 h-6 object-contain animate-star-float" style="left:${lx}%;top:${ty}%;opacity:0.88;animation-delay:${d}s;filter:drop-shadow(0 0 6px rgba(255,236,150,0.9));" />`
+          ).join('');
+        }
       } else if (period === 'sunset') {
-        ov.style.background = 'linear-gradient(180deg, rgba(255,146,84,0.26) 0%, rgba(255,196,120,0.14) 60%, rgba(255,249,240,0.05) 100%)';
+        ov.style.background = 'linear-gradient(180deg, rgba(255,156,94,0.20) 0%, rgba(255,204,132,0.10) 58%, transparent 100%)';
+        if (ffWrap) ffWrap.innerHTML = '';
       } else {
         ov.style.background = 'transparent';
+        if (ffWrap) ffWrap.innerHTML = '';
       }
     }
 
@@ -2322,7 +2369,7 @@
     }
 
     function hydrateStaticUIImages() {
-      document.getElementById('img-home-bg').src = SPRITE_SRCS.bg_home_story;
+      applyHomeTimeLighting();
       document.getElementById('img-account-avatar').src = SPRITE_SRCS[saveData.account.avatar || 'sp_strawberry'];
       updateHomeNotificationDots();
       renderHomeMascots();
@@ -2814,7 +2861,7 @@
 
       // Real-time Night Fireflies drifting gently across the farm meadow (19:00-05:59)
       if (getDayPeriod() === 'night') {
-        while (gardenState.fireflies.length < 7) {
+        while (gardenState.fireflies.length < 4) {
           gardenState.fireflies.push({
             x: m.originX + 40 + Math.random() * Math.max(180, m.gridW - 80),
             y: m.originY + 40 + Math.random() * Math.max(180, m.gridH - 80),
@@ -3073,18 +3120,7 @@
         }
       }
 
-      // Zero-text hand-painted watercolor pointer guide over the first empty wooden bed on first farm visit!
-      if (!saveData.farmGuideDone && !gardenState.editMode && IMAGES.fx_hand_pointer && IMAGES.fx_hand_pointer.complete) {
-        const firstEmpty = (saveData.farm && Array.isArray(saveData.farm.plots)) ? saveData.farm.plots.find(p => p && !p.cropId) : null;
-        if (firstEmpty) {
-          const ec = cellCenter(firstEmpty.col, firstEmpty.row, m);
-          const tapOff = Math.abs(Math.sin(tSec * 4.2)) * 10;
-          gCtx.save();
-          gCtx.translate(ec.x + 14, ec.y + 14 + tapOff);
-          gCtx.drawImage(IMAGES.fx_hand_pointer, -22, -22, 46, 46);
-          gCtx.restore();
-        }
-      }
+
 
       for (const ft of gardenState.floatingTexts) {
         gCtx.save(); gCtx.globalAlpha = Math.max(0, ft.life / ft.maxLife);
@@ -3094,18 +3130,24 @@
       }
       gCtx.restore();
 
-      // Real-time Day / Sunset / Night sky lighting tint on Farm
+      // Real-time Day / Sunset / Luminous Moonlit Night on Farm (soft moonlight glow, never dark or gloomy!)
       const dayP = getDayPeriod();
       if (dayP === 'night') {
         gCtx.save();
-        gCtx.fillStyle = 'rgba(20, 30, 68, 0.30)';
+        gCtx.fillStyle = 'rgba(34, 52, 112, 0.12)';
+        gCtx.fillRect(0, 0, vw, vh);
+        const mg = gCtx.createRadialGradient(vw * 0.84, 54, 12, vw * 0.84, 54, vw * 0.85);
+        mg.addColorStop(0, 'rgba(255, 250, 224, 0.34)');
+        mg.addColorStop(0.38, 'rgba(255, 246, 214, 0.12)');
+        mg.addColorStop(1, 'rgba(255, 246, 214, 0)');
+        gCtx.fillStyle = mg;
         gCtx.fillRect(0, 0, vw, vh);
         gCtx.restore();
       } else if (dayP === 'sunset') {
         gCtx.save();
         const sg = gCtx.createLinearGradient(0, 0, 0, vh);
-        sg.addColorStop(0, 'rgba(255, 146, 86, 0.24)');
-        sg.addColorStop(1, 'rgba(255, 206, 134, 0.08)');
+        sg.addColorStop(0, 'rgba(255, 156, 94, 0.18)');
+        sg.addColorStop(1, 'rgba(255, 206, 134, 0.05)');
         gCtx.fillStyle = sg;
         gCtx.fillRect(0, 0, vw, vh);
         gCtx.restore();
@@ -3971,72 +4013,68 @@
       return { out, c };
     }
 
-    function generateCaptureShareCard(cardId) {
-      const b = BUNNY_BY_ID[cardId];
-      if (!b) return;
-      const { out, c } = drawShareCardBase(720, 920);
+    function drawWatercolorSharePostcard(cardId, titleLabel) {
+      const b = BUNNY_BY_ID[cardId] || BUNNY_CATALOG[0];
+      const out = document.createElement('canvas');
+      out.width = 720; out.height = 960;
+      const c = out.getContext('2d');
+      const bgImg = IMAGES.share_card_bg;
+      if (bgImg && bgImg.complete && bgImg.naturalWidth > 0) {
+        c.drawImage(bgImg, 0, 0, 720, 960);
+      } else {
+        c.fillStyle = '#FFF9F0'; c.fillRect(0, 0, 720, 960);
+      }
       const nick = saveData.account.nickname || '兔兔玩家';
       const badgeColors = { SSR: '#D97706', SR: '#8652A8', R: '#4E7FA3', N: '#8B735B' };
+
+      // Rarity ribbon pill
+      c.save();
       c.fillStyle = badgeColors[b.rarity] || '#8B735B';
-      roundRect(c, 260, 74, 200, 56, 28); c.fill();
-      c.fillStyle = '#FFFFFF'; c.font = '900 30px "Noto Sans TC", sans-serif'; c.textAlign = 'center';
-      c.fillText(`${b.rarity} 收藏達成`, 360, 113);
-      c.fillStyle = '#FFFFFF'; c.strokeStyle = 'rgba(92,61,43,0.18)'; c.lineWidth = 4;
-      roundRect(c, 110, 158, 500, 400, 32); c.fill(); c.stroke();
-      const img = IMAGES[cardId];
+      roundRect(c, 280, 128, 160, 48, 24); c.fill();
+      c.fillStyle = '#FFFFFF'; c.font = '900 26px "Noto Sans TC", sans-serif'; c.textAlign = 'center';
+      c.fillText(b.rarity, 360, 161);
+      c.restore();
+
+      // Big centered adorable bunny portrait (no clutter, no stats!)
+      const img = IMAGES[b.id];
       if (img && img.complete && img.naturalWidth > 0) {
-        const sc = Math.min(360 / img.naturalWidth, 330 / img.naturalHeight);
+        const sc = Math.min(400 / img.naturalWidth, 400 / img.naturalHeight);
         const dw = img.naturalWidth * sc, dh = img.naturalHeight * sc;
-        c.drawImage(img, 360 - dw / 2, 358 - dh / 2, dw, dh);
+        c.save();
+        c.shadowColor = 'rgba(90, 58, 40, 0.16)';
+        c.shadowBlur = 18;
+        c.shadowOffsetY = 8;
+        c.drawImage(img, 360 - dw / 2, 415 - dh / 2, dw, dh);
+        c.restore();
       }
-      c.fillStyle = '#5A3A28'; c.font = '900 44px "Noto Sans TC", sans-serif';
-      c.fillText(b.name, 360, 628);
+
+      // Bunny name + cute 1-line bio
+      c.textAlign = 'center';
+      c.fillStyle = '#5A3A28'; c.font = '900 46px "Noto Sans TC", sans-serif';
+      c.fillText(b.name, 360, 682);
       c.fillStyle = '#7C5A46'; c.font = '700 22px "Noto Sans TC", sans-serif';
-      const line1 = b.bio.slice(0, 22), line2 = b.bio.slice(22, 44);
-      c.fillText(line1, 360, 678);
-      if (line2) c.fillText(line2, 360, 712);
-      c.fillStyle = '#B45309'; c.font = '900 24px "Noto Sans TC", sans-serif';
-      c.fillText(`${nick} · 已收集 ${saveData.unlockedCards.length}/${BUNNY_CATALOG.length} 隻兔兔`, 360, 790);
-      c.fillStyle = '#8C6D5D'; c.font = '700 20px "Noto Sans TC", sans-serif';
-      c.fillText(`兔兔躲貓貓 · ${todayStr()}`, 360, 838);
-      openPhotoPreview(`收服分享卡 · ${b.name}`, out.toDataURL('image/png'), `bunny-catch-${cardId}.png`);
+      const l1 = b.bio.slice(0, 20), l2 = b.bio.slice(20, 42);
+      c.fillText(l1, 360, 732);
+      if (l2) c.fillText(l2, 360, 766);
+
+      // Clean cozy postcard footer (zero seconds, zero coins, zero score!)
+      c.fillStyle = 'rgba(255, 250, 242, 0.85)';
+      roundRect(c, 150, 822, 420, 56, 28); c.fill();
+      c.fillStyle = '#6B4F40'; c.font = '900 22px "Noto Sans TC", sans-serif';
+      c.fillText(`《兔兔躲貓貓》 · ${nick}`, 360, 858);
+
+      openPhotoPreview(titleLabel || `兔兔紀念卡 · ${b.name}`, out.toDataURL('image/png'), `bunny-card-${b.id}.png`);
+    }
+
+    function generateCaptureShareCard(cardId) {
+      drawWatercolorSharePostcard(cardId);
     }
 
     function generateClearShareCard() {
-      const sum = state.lastClearSummary;
-      if (!sum) return;
-      const { out, c } = drawShareCardBase(720, 920);
-      const nick = saveData.account.nickname || '兔兔玩家';
-      c.fillStyle = '#5A3A28'; c.font = '900 42px "Noto Sans TC", sans-serif'; c.textAlign = 'center';
-      c.fillText('兔兔躲貓貓 · 過關紀念', 360, 128);
-      c.fillStyle = '#B45309'; c.font = '900 30px "Noto Sans TC", sans-serif';
-      c.fillText(sum.subtitle, 360, 184);
-      const starImg = IMAGES.ui_star;
-      for (let i = 0; i < 3; i++) {
-        c.save();
-        if (i >= sum.stars) c.globalAlpha = 0.25;
-        if (starImg && starImg.complete) c.drawImage(starImg, 180 + i * 130, i === 1 ? 215 : 230, 100, 100);
-        c.restore();
-      }
-      c.fillStyle = '#FFFFFF'; c.strokeStyle = 'rgba(92,61,43,0.18)'; c.lineWidth = 4;
-      roundRect(c, 90, 365, 540, 290, 30); c.fill(); c.stroke();
-      c.fillStyle = '#7C5A46'; c.font = '700 26px "Noto Sans TC", sans-serif';
-      c.fillText('最終總分', 360, 425);
-      c.fillStyle = '#D97706'; c.font = '900 68px "Noto Sans TC", sans-serif';
-      c.fillText(sum.finalScore.toLocaleString(), 360, 505);
-      c.fillStyle = '#15803D'; c.font = '900 26px "Noto Sans TC", sans-serif';
-      c.fillText(`剩餘時間 +${sum.remSec} 秒 · 獲得 +${sum.coinReward} 金幣`, 360, 575);
-      c.fillStyle = '#5A3A28'; c.font = '700 22px "Noto Sans TC", sans-serif';
-      c.fillText(`玩家：${nick} · 圖鑑進度 ${saveData.unlockedCards.length}/${BUNNY_CATALOG.length}`, 360, 628);
-      const mascotImg = IMAGES[getCurrentTheme().mascot];
-      if (mascotImg && mascotImg.complete && mascotImg.naturalWidth > 0) {
-        const sc = Math.min(130 / mascotImg.naturalWidth, 130 / mascotImg.naturalHeight);
-        const dw = mascotImg.naturalWidth * sc, dh = mascotImg.naturalHeight * sc;
-        c.drawImage(mascotImg, 360 - dw / 2, 680, dw, dh);
-      }
-      c.fillStyle = '#8C6D5D'; c.font = '700 20px "Noto Sans TC", sans-serif';
-      c.fillText(`${todayStr()} · 一起來找可愛兔兔！`, 360, 845);
-      openPhotoPreview('過關分享卡', out.toDataURL('image/png'), `bunny-clear-${todayStr()}.png`);
+      const pickId = (state.newlyUnlockedThisRun && state.newlyUnlockedThisRun[0])
+        || (state.targetIds && state.targetIds[state.targetIds.length - 1])
+        || getCurrentTheme().mascot;
+      drawWatercolorSharePostcard(pickId, '可愛兔兔紀念卡');
     }
 
     // ---- GARDEN POLAROID PHOTO SNAPSHOT ----
@@ -4560,22 +4598,6 @@
         ctx.save(); ctx.globalAlpha = Math.max(0, pt.life / pt.maxLife); ctx.fillStyle = pt.color;
         ctx.beginPath(); ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2); ctx.fill(); ctx.restore();
       }
-      // Hand-painted Japanese watercolor firework bursts (for SR/SSR celebratory finds!)
-      for (const fw of state.fireworks) {
-        if (fw.delay > 0) continue;
-        const fwImg = IMAGES[fw.img];
-        if (!fwImg || !fwImg.complete || !fwImg.naturalWidth) continue;
-        const p = fw.life / fw.maxLife;
-        const sc = 0.25 + (1 - Math.pow(1 - p, 2.4)) * 1.05;
-        const alpha = p < 0.72 ? 1.0 : Math.max(0, (1 - p) / 0.28);
-        const sz = fw.size * sc;
-        ctx.save();
-        ctx.globalAlpha = alpha;
-        ctx.translate(fw.x, fw.y);
-        ctx.rotate(fw.rot + p * 0.18);
-        ctx.drawImage(fwImg, -sz / 2, -sz / 2, sz, sz);
-        ctx.restore();
-      }
       for (const ft of state.floatingTexts) {
         ctx.save(); ctx.globalAlpha = Math.max(0, ft.life / ft.maxLife);
         ctx.font = '900 22px "Noto Sans TC", sans-serif'; ctx.textAlign = 'center';
@@ -4583,17 +4605,6 @@
         ctx.fillStyle = ft.color; ctx.fillText(ft.text, ft.x, ft.y); ctx.restore();
       }
       ctx.restore();
-
-      // Zero-text hand-painted watercolor gesture pointer on first hidden-object level
-      if (!saveData.playGuideDone && state.running && !state.paused && IMAGES.fx_hand_pointer && IMAGES.fx_hand_pointer.complete) {
-        const gt = (now / 1000) % 2.8;
-        const gx = vw * 0.52 + Math.sin(gt * Math.PI * 0.9) * 58;
-        const gy = vh * 0.56 + Math.cos(gt * Math.PI * 0.9) * 20;
-        ctx.save();
-        ctx.globalAlpha = 0.92;
-        ctx.drawImage(IMAGES.fx_hand_pointer, gx - 26, gy - 26, 52, 52);
-        ctx.restore();
-      }
     }
 
     function roundRect(c, x, y, w, h, r) {
@@ -4776,38 +4787,11 @@
           document.getElementById('golden-alert').classList.add('hidden');
         }
 
-        const foundMeta = BUNNY_BY_ID[hitBunny.spriteKey];
-        const isRareFind = foundMeta && (foundMeta.rarity === 'SSR' || foundMeta.rarity === 'SR');
-        if (isRareFind) {
-          state.targetCamX = hitBunny.x;
-          state.targetCamY = hitBunny.y - 26;
-          state.targetZoom = Math.min(state.maxZoom, Math.max(state.zoom, 1.38));
-          state.camShake = 0.35;
-          const fwImgs = ['fx_firework_gold', 'fx_firework_pink', 'fx_firework_mint'];
-          const fwCount = foundMeta.rarity === 'SSR' ? 5 : 3;
-          for (let fi = 0; fi < fwCount; fi++) {
-            const ang = (Math.PI * 2 * fi) / fwCount + Math.random() * 0.4;
-            const dist = 35 + Math.random() * 55;
-            state.fireworks.push({
-              img: fwImgs[fi % fwImgs.length],
-              x: hitBunny.x + Math.cos(ang) * dist,
-              y: hitBunny.y - 45 + Math.sin(ang) * dist * 0.7,
-              size: foundMeta.rarity === 'SSR' ? (135 + Math.random() * 45) : (105 + Math.random() * 35),
-              rot: (Math.random() - 0.5) * 0.6,
-              delay: fi * 0.13,
-              life: 0,
-              maxLife: 1.05
-            });
-          }
-          SFX.goldenCatch();
-        }
-
-        const capDelay = isRareFind ? 920 : 320;
         if (!alreadyOwned) {
           state.pendingLevelClear = cleared;
-          setTimeout(() => openCaptureMiniGame(hitBunny.spriteKey), capDelay);
+          setTimeout(() => openCaptureMiniGame(hitBunny.spriteKey), 320);
         } else if (cleared) {
-          setTimeout(showLevelClearModal, isRareFind ? 1050 : 520);
+          setTimeout(showLevelClearModal, 520);
         }
       } else if (!hitBunny.isTarget) {
         hitBunny.reactTime = 0.4; state.combo = 0; state.wrongTaps += 1;
@@ -4906,6 +4890,66 @@
         const cnt = (saveData.items && saveData.items.ssr_lure) || 0;
         lureLbl.textContent = cnt > 0 ? `誘兔鈴 (${cnt})` : '90 誘SSR';
       }
+    }
+
+    const HOME_BG_CATALOG = [
+      { id: 'bg_home_story',     name: '暖陽草地', price: 0 },
+      { id: 'bg_sakura',         name: '櫻花茶會', price: 250 },
+      { id: 'bg_hk',             name: '港式夜市', price: 350 },
+      { id: 'bg_camp',           name: '星空露營', price: 450 },
+      { id: 'bg_dessert',        name: '夢幻甜品', price: 500 },
+      { id: 'bg_home_moonlight', name: '月光花海', price: 600 }
+    ];
+
+    function openHomeBgModal() {
+      const grid = document.getElementById('home-bg-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      if (!Array.isArray(saveData.ownedHomeBgs)) saveData.ownedHomeBgs = ['bg_home_story'];
+      const activeId = saveData.activeHomeBg || 'bg_home_story';
+      HOME_BG_CATALOG.forEach(bg => {
+        const owned = bg.price === 0 || saveData.ownedHomeBgs.includes(bg.id);
+        const isActive = activeId === bg.id;
+        const canAfford = saveData.coins >= bg.price;
+        const card = document.createElement('div');
+        card.className = 'rounded-2xl border-2 p-2 flex flex-col items-center text-center';
+        card.style.cssText = isActive
+          ? 'background:#FFF8EB;border-color:#F97316;'
+          : 'background:rgba(255,255,255,0.95);border-color:rgba(90,58,40,0.18);';
+        card.innerHTML = `
+          <div class="w-full h-24 rounded-xl overflow-hidden mb-1.5 border border-[#5A3A28]/15 relative">
+            <img src="${SPRITE_SRCS[bg.id]}" alt="${bg.name}" class="w-full h-full object-cover" />
+            ${isActive ? '<span class="absolute top-1 right-1 px-1.5 py-0.5 rounded-full text-[9px] font-black text-white" style="background:#52A88B;">使用中</span>' : ''}
+          </div>
+          <div class="text-xs font-black text-[#5A3A28] mb-1.5">${bg.name}</div>
+          <button type="button" data-home-bg="${bg.id}" class="pick-home-bg-btn w-full py-1.5 rounded-xl text-xs font-black flex items-center justify-center gap-1 ${
+            isActive ? 'bg-[#E3F0DF] text-[#15803D]' : owned ? 'game-btn game-btn-mint text-[#2D6A54]' : canAfford ? 'game-btn game-btn-gold text-[#6B3E08]' : 'bg-[#E7DDD3] text-[#8C7B6E]'
+          }">
+            ${isActive ? '目前背景 ✓' : owned ? '套用背景' : `<img src="${SPRITE_SRCS.ui_coin}" class="w-3.5 h-3.5 object-contain" /><span>${bg.price} 購買</span>`}
+          </button>
+        `;
+        grid.appendChild(card);
+      });
+      grid.querySelectorAll('.pick-home-bg-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const bg = HOME_BG_CATALOG.find(x => x.id === btn.dataset.homeBg);
+          if (!bg) return;
+          const owned = bg.price === 0 || saveData.ownedHomeBgs.includes(bg.id);
+          if (!owned) {
+            if (saveData.coins < bg.price) { SFX.wrong(); showToast('金幣不足！'); return; }
+            saveData.coins -= bg.price;
+            saveData.ownedHomeBgs.push(bg.id);
+            SFX.win();
+          } else {
+            SFX.tap();
+          }
+          saveData.activeHomeBg = bg.id;
+          persistSave();
+          syncGlobalCounters();
+          openHomeBgModal();
+        });
+      });
+      document.getElementById('modal-home-bg').classList.remove('hidden');
     }
 
     const DEFAULT_HOME_MASCOTS = ['sp_strawberry', 'sp_farmer', 'sp_sakura', 'sp_macaron'];
@@ -6813,6 +6857,8 @@
         openCaptureMiniGame(capState.cardId, true);
       });
       document.getElementById('btn-home-sound').addEventListener('click', openAudioModal);
+      document.getElementById('btn-home-bg').addEventListener('click', openHomeBgModal);
+      document.getElementById('btn-close-home-bg').addEventListener('click', () => document.getElementById('modal-home-bg').classList.add('hidden'));
       document.getElementById('btn-close-audio').addEventListener('click', () => document.getElementById('modal-audio').classList.add('hidden'));
       document.getElementById('btn-toggle-bgm').addEventListener('click', () => {
         saveData.audio.bgm = !saveData.audio.bgm;
