@@ -974,7 +974,6 @@
           <img class="img-banner-ribbon" src="" alt="橫幅" />
           <span class="banner-header-title">今日小任務</span>
         </div>
-        <p class="text-[11px] font-bold text-[#7C5A46] text-center mb-3">每日完成簡單目標即可免費領取紅蘿蔔金幣！</p>
         <div id="quests-list" class="space-y-2.5"></div>
       </div>
     </div>
@@ -1213,30 +1212,24 @@
         </div>
         <p id="clear-subtitle" class="text-xs font-bold text-[#8C6D5D] mb-2.5"></p>
 
-        <!-- Coins Earned Pill -->
-        <div class="inline-flex items-center gap-1.5 game-btn game-btn-gold rounded-full px-3.5 py-1 mb-3 text-xs font-black text-[#6B3E08]">
-          <img class="img-coin-icon w-5 h-5 object-contain" src="" alt="金幣" />
-          <span id="clear-coins-earned">獲得 +150 紅蘿蔔金幣！</span>
+        <!-- Clean Visual Reward Pills (No verbose score accounting table!) -->
+        <div class="flex items-center justify-center gap-2 mb-3 flex-wrap">
+          <div class="inline-flex items-center gap-1.5 game-btn game-btn-gold rounded-full px-3.5 py-1 text-sm font-black text-[#6B3E08]">
+            <img class="img-coin-icon w-5 h-5 object-contain" src="" alt="金幣" />
+            <span id="clear-coins-earned">+150</span>
+          </div>
+          <div class="inline-flex items-center gap-1 game-btn rounded-full px-3 py-1 text-sm font-black text-[#3B6E9C]">
+            <img class="img-clock-icon w-4 h-4 object-contain" src="" alt="時間" />
+            <span id="clear-time" class="tabular-nums">24s</span>
+          </div>
         </div>
 
         <div id="clear-new-cards-box" class="hidden border-2 rounded-2xl p-2 mb-2.5" style="background:#FFF6F8;border-color:#F3C2D0;">
-          <div class="text-[11px] font-black mb-1" style="color:#C25E7A;">本關解鎖新兔兔：</div>
           <div id="clear-new-cards-list" class="flex items-center justify-center gap-1.5 flex-wrap"></div>
         </div>
 
         <div id="clear-bonus-item-box" class="hidden border-2 rounded-2xl p-2 mb-2.5" style="background:#FFF9EC;border-color:#E8C48B;">
-          <div class="text-[11px] font-black mb-1" style="color:#A66321;">過關加贈冒險道具：</div>
           <div id="clear-bonus-item-list" class="flex items-center justify-center gap-1.5 flex-wrap"></div>
-        </div>
-
-        <div class="bg-white/90 rounded-2xl border-2 border-[#5A3A28]/15 p-2.5 mb-3.5 space-y-1 text-xs font-bold">
-          <div class="flex justify-between"><span class="text-[#7C5A46]">剩餘時間</span><span id="clear-time" class="font-black tabular-nums" style="color:#6CA6D9;">+24 秒</span></div>
-          <div class="flex justify-between"><span class="text-[#7C5A46]">尋獲與連擊分</span><span id="clear-base-score" class="font-black text-[#5A3A28] tabular-nums">+1,500</span></div>
-          <div class="flex justify-between"><span class="text-[#7C5A46]">剩餘時間獎勵</span><span id="clear-time-bonus" class="font-black tabular-nums" style="color:#52A88B;">+480</span></div>
-          <div class="border-t-2 border-dashed border-[#E7DDD3] pt-1 flex justify-between text-base">
-            <span class="font-black text-[#5A3A28]">總分</span>
-            <span id="clear-total-score" class="font-black tabular-nums" style="color:#D97C98;">2,230</span>
-          </div>
         </div>
 
         <div class="flex flex-col gap-2">
@@ -1376,7 +1369,6 @@
             <span class="coin-display tabular-nums">150</span>
           </span>
         </div>
-        <p class="shrink-0 text-[10px] font-bold text-[#8C6D5D] text-center mb-2.5">出發找兔兔前先準備好道具！過關第 3、5、6、9、10 關或每日挑戰亦會免費贈送道具喔。</p>
         <div id="item-shop-list" class="flex-1 min-h-0 space-y-2.5 overflow-y-auto no-scrollbar pt-0.5 pb-2"></div>
       </div>
     </div>
@@ -1436,7 +1428,6 @@
           <img class="img-banner-ribbon" src="" alt="橫幅" />
           <span class="banner-header-title">每日兔兔外賣訂單</span>
         </div>
-        <p id="farm-orders-sub" class="shrink-0 text-[11px] font-bold text-[#7C5A46] text-center mb-2">完成每日外賣訂單可獲額外金幣與體力胡蘿蔔汁！</p>
         <div id="farm-orders-list" class="flex-1 min-h-0 space-y-2.5 overflow-y-auto no-scrollbar pt-0.5 pb-2"></div>
         <div id="farm-orders-bonus-box" class="shrink-0 mt-2 rounded-2xl p-2.5 flex items-center justify-between gap-2" style="background:#FFF8EB;border:1.5px solid #E5B974;">
           <div class="min-w-0 text-left">
@@ -1458,7 +1449,6 @@
           <img class="img-banner-ribbon" src="" alt="橫幅" />
           <span class="banner-header-title">兔兔茶檔加工坊</span>
         </div>
-        <p class="shrink-0 text-[11px] font-bold text-[#7C5A46] text-center mb-2">用自家收成的農作物現場製作體力胡蘿蔔汁、高價套餐與冒險道具！</p>
         <div id="farm-cafe-list" class="flex-1 min-h-0 space-y-2.5 overflow-y-auto no-scrollbar pt-0.5 pb-2"></div>
       </div>
     </div>
@@ -2152,9 +2142,11 @@
       editMode: false,
       movingPlotIdx: null,
       wildBunny: null,
-      wildTimer: 90,
+      wildTimer: 120,
       rainbowAnimStart: null,
       rainbowDone: false,
+      butterflies: [],
+      waterAnims: [],
       weatherParticles: [],
       weatherClouds: [],
       weatherRipples: [],
@@ -2647,8 +2639,8 @@
       } else {
         gardenState.wildTimer -= dt;
         if (gardenState.wildTimer <= 0) {
-          gardenState.wildTimer = 180 + Math.random() * 80;
-          if (Math.random() < 0.50) maybeSpawnFarmWildBunny(m);
+          gardenState.wildTimer = 240 + Math.random() * 120;
+          if (Math.random() < 0.20) maybeSpawnFarmWildBunny(m);
         }
       }
 
@@ -2741,6 +2733,50 @@
         const rp = gardenState.weatherRipples[i];
         rp.life += dt;
         if (rp.life >= rp.maxLife) gardenState.weatherRipples.splice(i, 1);
+      }
+
+      // Free-roaming ambient meadow butterflies (purely scenic — never chased away!)
+      while (gardenState.butterflies.length < 3) {
+        const bi = gardenState.butterflies.length;
+        const bx = m.originX + 60 + Math.random() * Math.max(160, m.gridW - 120);
+        const by = m.originY + 60 + Math.random() * Math.max(160, m.gridH - 120);
+        gardenState.butterflies.push({
+          x: bx, y: by, tx: bx, ty: by,
+          timer: 1 + bi * 1.4,
+          phase: Math.random() * Math.PI * 2,
+          scale: 0.85 + Math.random() * 0.25
+        });
+      }
+      for (const bf of gardenState.butterflies) {
+        bf.phase += dt * 11;
+        bf.timer -= dt;
+        if (bf.timer <= 0) {
+          bf.timer = 3.5 + Math.random() * 4.0;
+          const pList = (saveData.farm && Array.isArray(saveData.farm.plots)) ? saveData.farm.plots.filter(p => p && p.cropId) : [];
+          if (pList.length > 0 && Math.random() < 0.65) {
+            const pick = pList[Math.floor(Math.random() * pList.length)];
+            const pc = cellCenter(pick.col, pick.row, m);
+            bf.tx = pc.x + (Math.random() - 0.5) * 60;
+            bf.ty = pc.y - 16 + (Math.random() - 0.5) * 36;
+          } else {
+            bf.tx = m.originX + 50 + Math.random() * Math.max(140, m.gridW - 100);
+            bf.ty = m.originY + 50 + Math.random() * Math.max(140, m.gridH - 100);
+          }
+        }
+        const dx = bf.tx - bf.x, dy = bf.ty - bf.y;
+        const d = Math.hypot(dx, dy);
+        if (d > 2) {
+          const spd = Math.min(d, 34 * dt);
+          bf.x += (dx / d) * spd;
+          bf.y += (dy / d) * spd;
+        }
+      }
+
+      // Update watering pour animations
+      for (let i = gardenState.waterAnims.length - 1; i >= 0; i--) {
+        const wa = gardenState.waterAnims[i];
+        wa.life += dt;
+        if (wa.life >= wa.maxLife) gardenState.waterAnims.splice(i, 1);
       }
     }
 
@@ -2922,6 +2958,54 @@
         gCtx.save(); gCtx.globalAlpha = Math.max(0, pt.life / pt.maxLife); gCtx.fillStyle = pt.color;
         gCtx.beginPath(); gCtx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2); gCtx.fill(); gCtx.restore();
       }
+      // Render free-roaming ambient butterflies fluttering peacefully around the farm
+      if (IMAGES.farm_butterfly && IMAGES.farm_butterfly.complete && IMAGES.farm_butterfly.naturalWidth > 0) {
+        for (const bf of gardenState.butterflies) {
+          const flapX = 0.55 + Math.abs(Math.sin(bf.phase)) * 0.45;
+          const hoverY = Math.sin(bf.phase * 0.45) * 5;
+          const sz = 28 * bf.scale;
+          gCtx.save();
+          gCtx.translate(bf.x, bf.y + hoverY);
+          gCtx.rotate(Math.sin(bf.phase * 0.3) * 0.16);
+          gCtx.scale(flapX, 1);
+          gCtx.drawImage(IMAGES.farm_butterfly, -sz / 2, -sz / 2, sz, sz);
+          gCtx.restore();
+        }
+      }
+
+      // Render watering pour animations (tilted droplet shower + falling stream + soil splash rings!)
+      for (const wa of gardenState.waterAnims) {
+        const p = wa.life / wa.maxLife;
+        const fade = p < 0.15 ? p / 0.15 : (p > 0.78 ? (1 - p) / 0.22 : 1);
+        gCtx.save();
+        gCtx.globalAlpha = Math.max(0, fade);
+        // Falling water stream arcs pouring into the soil box
+        for (let k = 0; k < 7; k++) {
+          const dp = (p * 2.2 + k * 0.16) % 1;
+          const sx = wa.x + 18 - dp * 22 + Math.sin(k * 2.1) * 5;
+          const sy = wa.y - 36 + dp * 34;
+          const r = 2.6 + (1 - dp) * 1.4;
+          gCtx.fillStyle = k % 2 === 0 ? '#60A5FA' : '#BAE6FD';
+          gCtx.beginPath(); gCtx.ellipse(sx, sy, r * 0.75, r * 1.35, 0.35, 0, Math.PI * 2); gCtx.fill();
+        }
+        // Expanding water splash ripple right on the soil surface
+        const rp = (p * 1.6) % 1;
+        gCtx.strokeStyle = `rgba(96, 165, 250, ${(1 - rp) * 0.75})`;
+        gCtx.lineWidth = 2.0;
+        gCtx.beginPath();
+        gCtx.ellipse(wa.x, wa.y - 4, 6 + rp * 20, 3 + rp * 9, 0, 0, Math.PI * 2);
+        gCtx.stroke();
+        // Cute tilted watering droplet emblem hovering at top-right of the pour
+        if (IMAGES.farm_waterdrop && IMAGES.farm_waterdrop.complete) {
+          gCtx.save();
+          gCtx.translate(wa.x + 20, wa.y - 38 + Math.sin(p * Math.PI * 3) * 2);
+          gCtx.rotate(-0.45 - Math.sin(p * Math.PI) * 0.25);
+          gCtx.drawImage(IMAGES.farm_waterdrop, -13, -13, 26, 26);
+          gCtx.restore();
+        }
+        gCtx.restore();
+      }
+
       for (const ft of gardenState.floatingTexts) {
         gCtx.save(); gCtx.globalAlpha = Math.max(0, ft.life / ft.maxLife);
         gCtx.font = '900 16px "Noto Sans TC", sans-serif'; gCtx.textAlign = 'center';
@@ -4834,11 +4918,8 @@
       document.querySelectorAll('.clear-star-img').forEach((img, idx) => img.classList.toggle('star-dim', idx >= stars));
       document.getElementById('clear-title').textContent = stars === 3 ? '完美三星通關！' : stars === 2 ? '太厲害了！順利過關！' : '全部找齊了！';
       document.getElementById('clear-subtitle').textContent = subtitle;
-      document.getElementById('clear-coins-earned').textContent = firstDailyClear ? `每日首通雙倍獎勵 +${coinReward} 紅蘿蔔金幣！` : `過關獎勵 +${coinReward} 紅蘿蔔金幣！`;
-      document.getElementById('clear-time').textContent = `+${remSec} 秒`;
-      document.getElementById('clear-base-score').textContent = `+${state.score.toLocaleString()}`;
-      document.getElementById('clear-time-bonus').textContent = `+${timeBonus.toLocaleString()}`;
-      document.getElementById('clear-total-score').textContent = finalScore.toLocaleString();
+      document.getElementById('clear-coins-earned').textContent = firstDailyClear ? `+${coinReward} (×2)` : `+${coinReward}`;
+      document.getElementById('clear-time').textContent = `${remSec}s`;
 
       const newBox = document.getElementById('clear-new-cards-box'), newList = document.getElementById('clear-new-cards-list');
       if (state.newlyUnlockedThisRun.length > 0) {
@@ -5705,7 +5786,7 @@
       p.readyAt = Date.now() + growMs;
       p.golden = Math.random() < b.goldenChance;
       p.watered = (b.weather && b.weather.id === 'rain');
-      p.event = Math.random() < 0.36 ? (Math.random() < 0.5 ? 'butterfly' : 'weed') : null;
+      p.event = Math.random() < 0.22 ? 'weed' : null;
       p.lastCropId = c.id;
       saveData.farm.lastCropId = c.id;
       const m = getGridMetrics();
@@ -5801,7 +5882,8 @@
             const ang = (Math.PI * 2 * i) / 12;
             gardenState.particles.push({ x: center.x, y: center.y - 8, vx: Math.cos(ang) * 44, vy: Math.sin(ang) * 44 - 36, size: 3.2, color: i % 2 === 0 ? '#60A5FA' : '#BAE6FD', life: 0.55, maxLife: 0.55 });
           }
-          gardenState.floatingTexts.push({ x: center.x, y: center.y - 22, text: `澆水 -${cutMin}分`, color: '#BAE6FD', life: 1.0, maxLife: 1.0 });
+          gardenState.waterAnims.push({ x: center.x, y: center.y, life: 0, maxLife: 0.95 });
+          gardenState.floatingTexts.push({ x: center.x, y: center.y - 24, text: `-${cutMin}分`, color: '#BAE6FD', life: 1.0, maxLife: 1.0 });
         } else {
           const rem = formatFarmCountdown(p.readyAt - Date.now());
           SFX.tap();
