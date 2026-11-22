@@ -503,6 +503,7 @@
       <!-- Hand-Painted Meadow Backdrop -->
       <img id="img-home-bg" src="" alt="草地背景" class="absolute inset-0 w-full h-full object-cover" />
       <div class="absolute inset-0 bg-gradient-to-b from-[#FFF9F0]/15 via-transparent to-[#FFF9F0]/75 pointer-events-none"></div>
+      <div id="home-time-overlay" class="absolute inset-0 pointer-events-none transition-all duration-1000" style="z-index:1;"></div>
 
       <!-- Home Top Status Bar (pl-12 avoids mobile top-left close overlay) -->
       <div class="relative z-10 flex items-center justify-end gap-1.5 pl-12 pr-3 pt-3">
@@ -1459,7 +1460,7 @@
         <button id="btn-close-farm-dex" type="button" class="game-btn absolute top-2.5 right-2.5 rounded-xl w-9 h-9 flex items-center justify-center font-black z-30 text-sm">✕</button>
         <div class="banner-header">
           <img class="img-banner-ribbon" src="" alt="橫幅" />
-          <span class="banner-header-title">農作重量與黃金圖鑑</span>
+          <span class="banner-header-title">農作物收成圖鑑</span>
         </div>
         <div id="farm-dex-milestones" class="shrink-0 space-y-1.5 mb-2.5"></div>
         <div id="farm-dex-grid" class="flex-1 min-h-0 grid grid-cols-2 gap-2 overflow-y-auto no-scrollbar pt-0.5 pb-2 content-start"></div>
@@ -1646,6 +1647,12 @@
       weather_rain: "assets/weather_rain.png",
       weather_rainbow: "assets/weather_rainbow.png",
       weather_sakura: "assets/weather_sakura.png",
+      fx_hand_pointer: "assets/fx_hand_pointer.png",
+      fx_firework_gold: "assets/fx_firework_gold.png",
+      fx_firework_pink: "assets/fx_firework_pink.png",
+      fx_firework_mint: "assets/fx_firework_mint.png",
+      fx_firefly: "assets/fx_firefly.png",
+      fx_watercan: "assets/fx_watercan.png",
       bg_meadow: "assets/bg_meadow.webp",
       bg_sakura: "assets/bg_sakura.webp",
       bg_hk: "assets/bg_hk.webp",
@@ -2030,6 +2037,8 @@
       homeMascots: ['sp_strawberry', 'sp_farmer', 'sp_sakura', 'sp_macaron'],
       audio: { bgm: true, sfx: true },
       tutorialDone: false,
+      farmGuideDone: false,
+      playGuideDone: false,
       dailyChallengeDate: '',
       stamina: 5,
       staminaUpdatedAt: Date.now(),
@@ -2067,6 +2076,8 @@
       if (Array.isArray(parsed.homeMascots) && parsed.homeMascots.length === 4) saveData.homeMascots = parsed.homeMascots;
       if (parsed.audio && typeof parsed.audio === 'object') saveData.audio = { bgm: parsed.audio.bgm !== false, sfx: parsed.audio.sfx !== false };
       if (typeof parsed.tutorialDone === 'boolean') saveData.tutorialDone = parsed.tutorialDone;
+      if (typeof parsed.farmGuideDone === 'boolean') saveData.farmGuideDone = parsed.farmGuideDone;
+      if (typeof parsed.playGuideDone === 'boolean') saveData.playGuideDone = parsed.playGuideDone;
       if (typeof parsed.dailyChallengeDate === 'string') saveData.dailyChallengeDate = parsed.dailyChallengeDate;
       if (typeof parsed.stamina === 'number') saveData.stamina = Math.max(0, Math.min(MAX_STAMINA, Math.floor(parsed.stamina)));
       if (typeof parsed.staminaUpdatedAt === 'number') saveData.staminaUpdatedAt = parsed.staminaUpdatedAt;
@@ -2122,7 +2133,7 @@
       camX: 590, camY: 690, zoom: 0.72, minZoom: 0.42, maxZoom: 2.0,
       targetCamX: null, targetCamY: null, targetZoom: null,
 
-      bunnies: [], props: [], particles: [], floatingTexts: [], ambient: [],
+      bunnies: [], props: [], particles: [], floatingTexts: [], ambient: [], fireworks: [], camShake: 0,
       radar: null, goldenBunny: null, goldenSpawnedThisRun: false,
 
       targetIds: [], foundIds: new Set(), newlyUnlockedThisRun: [],
@@ -2146,6 +2157,7 @@
       rainbowAnimStart: null,
       rainbowDone: false,
       butterflies: [],
+      fireflies: [],
       waterAnims: [],
       weatherParticles: [],
       weatherClouds: [],
@@ -2209,7 +2221,28 @@
       }
     }
 
+    function getDayPeriod() {
+      const hr = new Date().getHours();
+      if (hr >= 19 || hr < 6) return 'night';
+      if (hr >= 17 && hr < 19) return 'sunset';
+      return 'day';
+    }
+
+    function applyHomeTimeLighting() {
+      const ov = document.getElementById('home-time-overlay');
+      if (!ov) return;
+      const period = getDayPeriod();
+      if (period === 'night') {
+        ov.style.background = 'linear-gradient(180deg, rgba(22,32,74,0.42) 0%, rgba(36,48,96,0.24) 55%, rgba(255,244,214,0.12) 100%)';
+      } else if (period === 'sunset') {
+        ov.style.background = 'linear-gradient(180deg, rgba(255,146,84,0.26) 0%, rgba(255,196,120,0.14) 60%, rgba(255,249,240,0.05) 100%)';
+      } else {
+        ov.style.background = 'transparent';
+      }
+    }
+
     function syncGlobalCounters() {
+      applyHomeTimeLighting();
       document.querySelectorAll('.coin-display').forEach(el => { el.textContent = saveData.coins.toLocaleString(); });
       if (!saveData.items) saveData.items = { golden_carrot: 0, ssr_lure: 0, time_plus: 0, carrot_juice: 1 };
       ['time_plus', 'golden_carrot', 'ssr_lure', 'carrot_juice'].forEach(k => {
@@ -2281,7 +2314,7 @@
       if (gSub) {
         gSub.textContent = readyPlots > 0
           ? `${pCount} 塊田 · ${readyPlots} 可收成 · 賣價+${land.bonusPct}%`
-          : `${pCount} 塊田 · 賣價+${land.bonusPct}% · 黃金${Math.round(land.goldenChance*100)}%`;
+          : `${pCount} 塊田 · 賣價+${land.bonusPct}%`;
       }
       document.getElementById('home-account-label').textContent = saveData.account.nickname || '設定暱稱';
       document.getElementById('img-account-avatar').src = SPRITE_SRCS[saveData.account.avatar || 'sp_strawberry'];
@@ -2778,6 +2811,29 @@
         wa.life += dt;
         if (wa.life >= wa.maxLife) gardenState.waterAnims.splice(i, 1);
       }
+
+      // Real-time Night Fireflies drifting gently across the farm meadow (19:00-05:59)
+      if (getDayPeriod() === 'night') {
+        while (gardenState.fireflies.length < 7) {
+          gardenState.fireflies.push({
+            x: m.originX + 40 + Math.random() * Math.max(180, m.gridW - 80),
+            y: m.originY + 40 + Math.random() * Math.max(180, m.gridH - 80),
+            vx: (Math.random() - 0.5) * 20,
+            vy: (Math.random() - 0.5) * 16,
+            phase: Math.random() * Math.PI * 2,
+            size: 22 + Math.random() * 10
+          });
+        }
+        for (const ff of gardenState.fireflies) {
+          ff.phase += dt * 3.2;
+          ff.x += (ff.vx + Math.sin(ff.phase * 0.7) * 10) * dt;
+          ff.y += (ff.vy + Math.cos(ff.phase * 0.5) * 8) * dt;
+          if (ff.x < m.originX + 20 || ff.x > m.originX + m.gridW - 20) ff.vx *= -1;
+          if (ff.y < m.originY + 20 || ff.y > m.originY + m.gridH - 20) ff.vy *= -1;
+        }
+      } else if (gardenState.fireflies.length > 0) {
+        gardenState.fireflies = [];
+      }
     }
 
     function renderGarden(now) {
@@ -2995,15 +3051,39 @@
         gCtx.beginPath();
         gCtx.ellipse(wa.x, wa.y - 4, 6 + rp * 20, 3 + rp * 9, 0, 0, Math.PI * 2);
         gCtx.stroke();
-        // Cute tilted watering droplet emblem hovering at top-right of the pour
-        if (IMAGES.farm_waterdrop && IMAGES.farm_waterdrop.complete) {
+        // Adorable hand-painted Japanese watercolor mint watering can tilting & pouring!
+        if (IMAGES.fx_watercan && IMAGES.fx_watercan.complete && IMAGES.fx_watercan.naturalWidth > 0) {
           gCtx.save();
-          gCtx.translate(wa.x + 20, wa.y - 38 + Math.sin(p * Math.PI * 3) * 2);
-          gCtx.rotate(-0.45 - Math.sin(p * Math.PI) * 0.25);
-          gCtx.drawImage(IMAGES.farm_waterdrop, -13, -13, 26, 26);
+          gCtx.translate(wa.x + 24, wa.y - 34 + Math.sin(p * Math.PI * 3) * 2);
+          gCtx.rotate(-0.26 - Math.sin(p * Math.PI) * 0.22);
+          gCtx.drawImage(IMAGES.fx_watercan, -22, -22, 44, 44);
           gCtx.restore();
         }
         gCtx.restore();
+      }
+
+      // Render glowing hand-painted watercolor fireflies at night!
+      if (gardenState.fireflies.length > 0 && IMAGES.fx_firefly && IMAGES.fx_firefly.complete) {
+        for (const ff of gardenState.fireflies) {
+          const glow = 0.55 + Math.abs(Math.sin(ff.phase)) * 0.45;
+          gCtx.save();
+          gCtx.globalAlpha = glow;
+          gCtx.drawImage(IMAGES.fx_firefly, ff.x - ff.size / 2, ff.y - ff.size / 2, ff.size, ff.size);
+          gCtx.restore();
+        }
+      }
+
+      // Zero-text hand-painted watercolor pointer guide over the first empty wooden bed on first farm visit!
+      if (!saveData.farmGuideDone && !gardenState.editMode && IMAGES.fx_hand_pointer && IMAGES.fx_hand_pointer.complete) {
+        const firstEmpty = (saveData.farm && Array.isArray(saveData.farm.plots)) ? saveData.farm.plots.find(p => p && !p.cropId) : null;
+        if (firstEmpty) {
+          const ec = cellCenter(firstEmpty.col, firstEmpty.row, m);
+          const tapOff = Math.abs(Math.sin(tSec * 4.2)) * 10;
+          gCtx.save();
+          gCtx.translate(ec.x + 14, ec.y + 14 + tapOff);
+          gCtx.drawImage(IMAGES.fx_hand_pointer, -22, -22, 46, 46);
+          gCtx.restore();
+        }
       }
 
       for (const ft of gardenState.floatingTexts) {
@@ -3013,6 +3093,23 @@
         gCtx.fillStyle = ft.color; gCtx.fillText(ft.text, ft.x, ft.y); gCtx.restore();
       }
       gCtx.restore();
+
+      // Real-time Day / Sunset / Night sky lighting tint on Farm
+      const dayP = getDayPeriod();
+      if (dayP === 'night') {
+        gCtx.save();
+        gCtx.fillStyle = 'rgba(20, 30, 68, 0.30)';
+        gCtx.fillRect(0, 0, vw, vh);
+        gCtx.restore();
+      } else if (dayP === 'sunset') {
+        gCtx.save();
+        const sg = gCtx.createLinearGradient(0, 0, 0, vh);
+        sg.addColorStop(0, 'rgba(255, 146, 86, 0.24)');
+        sg.addColorStop(1, 'rgba(255, 206, 134, 0.08)');
+        gCtx.fillStyle = sg;
+        gCtx.fillRect(0, 0, vw, vh);
+        gCtx.restore();
+      }
 
       // Screen-space Animated Weather Overlay (Natural Upper-Sky Arch Rainbow: Unfolds ONCE Left -> Right & Fades Gently)
       const curW = getFarmWeather().id;
@@ -3391,12 +3488,11 @@
             <img src="${SPRITE_SRCS[it.img]}" alt="${it.name}" class="w-12 h-12 object-contain" />
           </div>
           <div class="flex-1 min-w-0 text-left">
-            <div class="flex items-center gap-1.5 flex-wrap">
-              <span class="text-xs font-black text-[#5A3A28]">${it.name}</span>
-              <span class="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-[#FEF3C7] text-[#B45309]">${it.tag}</span>
+            <div class="text-xs font-black text-[#5A3A28] truncate">${it.name}</div>
+            <div class="flex items-center gap-1.5 mt-1 flex-wrap">
+              <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#B45309]">${it.tag}</span>
+              <span class="text-[10px] font-black px-2 py-0.5 rounded-full" style="background:#E8F8F2;color:#2D6A54;">×${owned}</span>
             </div>
-            <div class="text-[10px] font-bold text-[#7C5A46] leading-snug mt-0.5">${it.desc}</div>
-            <div class="text-[10px] font-black mt-1" style="color:#52A88B;">目前已持有：${owned} 個</div>
           </div>
           <button type="button" data-buy-adv="${it.id}"
             class="buy-adv-btn shrink-0 px-2.5 py-2 rounded-xl text-xs font-black flex flex-col items-center justify-center gap-0.5 ${canAfford ? 'game-btn game-btn-gold text-[#6B3E08]' : 'bg-[#E7DDD3] text-[#9A887A] border-2 border-[#C9B8A8]'}">
@@ -4077,7 +4173,7 @@
       state.radar = null; state.goldenBunny = null; state.goldenSpawnedThisRun = false;
       state.goldenWillSpawn = Math.random() < 0.25;
       state.goldenTriggerElapsed = 18 + Math.random() * 14;
-      state.particles = []; state.floatingTexts = [];
+      state.particles = []; state.floatingTexts = []; state.fireworks = []; state.camShake = 0;
 
       document.getElementById('golden-alert').classList.add('hidden');
       document.getElementById('danger-vignette').classList.remove('active');
@@ -4328,6 +4424,14 @@
         ft.y -= 38 * dt;
       }
       if (state.radar && now - state.radar.startTime > state.radar.duration) state.radar = null;
+      if (state.camShake > 0) state.camShake = Math.max(0, state.camShake - dt);
+      for (let i = state.fireworks.length - 1; i >= 0; i--) {
+        const fw = state.fireworks[i];
+        fw.delay -= dt;
+        if (fw.delay > 0) continue;
+        fw.life += dt;
+        if (fw.life >= fw.maxLife) state.fireworks.splice(i, 1);
+      }
     }
 
     function renderPlay(now) {
@@ -4344,7 +4448,9 @@
       ctx.fillStyle = theme.outerColor;
       ctx.fillRect(0, 0, vw, vh);
 
-      ctx.translate(vw / 2, vh / 2);
+      const shX = state.camShake > 0 ? (Math.random() - 0.5) * 10 * (state.camShake / 0.35) : 0;
+      const shY = state.camShake > 0 ? (Math.random() - 0.5) * 10 * (state.camShake / 0.35) : 0;
+      ctx.translate(vw / 2 + shX, vh / 2 + shY);
       ctx.scale(state.zoom, state.zoom);
       ctx.translate(-state.camX, -state.camY);
 
@@ -4454,6 +4560,22 @@
         ctx.save(); ctx.globalAlpha = Math.max(0, pt.life / pt.maxLife); ctx.fillStyle = pt.color;
         ctx.beginPath(); ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2); ctx.fill(); ctx.restore();
       }
+      // Hand-painted Japanese watercolor firework bursts (for SR/SSR celebratory finds!)
+      for (const fw of state.fireworks) {
+        if (fw.delay > 0) continue;
+        const fwImg = IMAGES[fw.img];
+        if (!fwImg || !fwImg.complete || !fwImg.naturalWidth) continue;
+        const p = fw.life / fw.maxLife;
+        const sc = 0.25 + (1 - Math.pow(1 - p, 2.4)) * 1.05;
+        const alpha = p < 0.72 ? 1.0 : Math.max(0, (1 - p) / 0.28);
+        const sz = fw.size * sc;
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.translate(fw.x, fw.y);
+        ctx.rotate(fw.rot + p * 0.18);
+        ctx.drawImage(fwImg, -sz / 2, -sz / 2, sz, sz);
+        ctx.restore();
+      }
       for (const ft of state.floatingTexts) {
         ctx.save(); ctx.globalAlpha = Math.max(0, ft.life / ft.maxLife);
         ctx.font = '900 22px "Noto Sans TC", sans-serif'; ctx.textAlign = 'center';
@@ -4461,6 +4583,17 @@
         ctx.fillStyle = ft.color; ctx.fillText(ft.text, ft.x, ft.y); ctx.restore();
       }
       ctx.restore();
+
+      // Zero-text hand-painted watercolor gesture pointer on first hidden-object level
+      if (!saveData.playGuideDone && state.running && !state.paused && IMAGES.fx_hand_pointer && IMAGES.fx_hand_pointer.complete) {
+        const gt = (now / 1000) % 2.8;
+        const gx = vw * 0.52 + Math.sin(gt * Math.PI * 0.9) * 58;
+        const gy = vh * 0.56 + Math.cos(gt * Math.PI * 0.9) * 20;
+        ctx.save();
+        ctx.globalAlpha = 0.92;
+        ctx.drawImage(IMAGES.fx_hand_pointer, gx - 26, gy - 26, 52, 52);
+        ctx.restore();
+      }
     }
 
     function roundRect(c, x, y, w, h, r) {
@@ -4492,6 +4625,7 @@
 
     canvas.addEventListener('pointerdown', (e) => {
       SFX.ensure(); BGM.unlockAndStart();
+      if (!saveData.playGuideDone) { saveData.playGuideDone = true; persistSave(); }
       canvas.setPointerCapture(e.pointerId);
       pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
       state.targetCamX = state.targetCamY = state.targetZoom = null;
@@ -4642,13 +4776,38 @@
           document.getElementById('golden-alert').classList.add('hidden');
         }
 
+        const foundMeta = BUNNY_BY_ID[hitBunny.spriteKey];
+        const isRareFind = foundMeta && (foundMeta.rarity === 'SSR' || foundMeta.rarity === 'SR');
+        if (isRareFind) {
+          state.targetCamX = hitBunny.x;
+          state.targetCamY = hitBunny.y - 26;
+          state.targetZoom = Math.min(state.maxZoom, Math.max(state.zoom, 1.38));
+          state.camShake = 0.35;
+          const fwImgs = ['fx_firework_gold', 'fx_firework_pink', 'fx_firework_mint'];
+          const fwCount = foundMeta.rarity === 'SSR' ? 5 : 3;
+          for (let fi = 0; fi < fwCount; fi++) {
+            const ang = (Math.PI * 2 * fi) / fwCount + Math.random() * 0.4;
+            const dist = 35 + Math.random() * 55;
+            state.fireworks.push({
+              img: fwImgs[fi % fwImgs.length],
+              x: hitBunny.x + Math.cos(ang) * dist,
+              y: hitBunny.y - 45 + Math.sin(ang) * dist * 0.7,
+              size: foundMeta.rarity === 'SSR' ? (135 + Math.random() * 45) : (105 + Math.random() * 35),
+              rot: (Math.random() - 0.5) * 0.6,
+              delay: fi * 0.13,
+              life: 0,
+              maxLife: 1.05
+            });
+          }
+          SFX.goldenCatch();
+        }
+
+        const capDelay = isRareFind ? 920 : 320;
         if (!alreadyOwned) {
           state.pendingLevelClear = cleared;
-          setTimeout(() => openCaptureMiniGame(hitBunny.spriteKey), 320);
+          setTimeout(() => openCaptureMiniGame(hitBunny.spriteKey), capDelay);
         } else if (cleared) {
-          setTimeout(showLevelClearModal, 520);
-        } else {
-          showToast(`找到「${BUNNY_BY_ID[hitBunny.spriteKey].name}」！+15 金幣`);
+          setTimeout(showLevelClearModal, isRareFind ? 1050 : 520);
         }
       } else if (!hitBunny.isTarget) {
         hitBunny.reactTime = 0.4; state.combo = 0; state.wrongTaps += 1;
@@ -5396,8 +5555,8 @@
       const land = getGardenLandscapeStats();
       const w = getFarmWeather();
       const totalSpeed = Math.min(60, speedPct + (w.id === 'rain' ? 20 : 0));
-      const weatherPrice = w.id === 'sakura' ? 15 : 0;
-      const goldenRate = Math.min(0.50, land.goldenChance * (w.id === 'rainbow' ? 2 : 1));
+      const weatherPrice = w.id === 'rainbow' ? 20 : (w.id === 'sakura' ? 15 : 0);
+      const goldenRate = 0;
       return {
         speedPct: totalSpeed,
         helperPricePct: Math.min(75, helperPricePct),
@@ -5485,48 +5644,33 @@
       const p = saveData.farm.plots[idx];
       if (!p || !p.cropId || Date.now() < p.readyAt) return false;
       const crop = FARM_CROP_BY_ID[p.cropId];
-      const isGolden = Boolean(p.golden);
-      const qty = isGolden ? 2 : 1;
-      const weight = recordFarmDexHarvest(p.cropId, qty, isGolden);
+      const qty = 1;
+      recordFarmDexHarvest(p.cropId, qty);
       saveData.farm.barn[p.cropId] = (saveData.farm.barn[p.cropId] || 0) + qty;
-      if (isGolden) saveData.coins += 15;
       p.lastCropId = p.cropId;
       p.cropId = null; p.plantedAt = 0; p.readyAt = 0; p.golden = false; p.watered = false; p.event = null;
       persistSave();
       syncGlobalCounters();
-      if (!silent) {
-        if (isGolden) {
-          SFX.goldenCatch();
-          showToast(`黃金特大豐收（${weight}kg）！「${crop ? crop.name : '農作物'}」×2 + 15 金幣！`);
-        } else {
-          SFX.found();
-          showToast(`收成「${crop ? crop.name : '農作物'}」（${weight}kg）×1！已存入倉庫。`);
-        }
-      }
-      return { qty, isGolden, weight };
+      if (!silent) SFX.found();
+      return { qty };
     }
 
     function harvestAllReadyPlots() {
       ensureFarmState();
       const now = Date.now();
-      let count = 0, goldenCnt = 0;
+      let count = 0;
       for (let i = 0; i < saveData.farm.plots.length; i++) {
         const p = saveData.farm.plots[i];
         if (p && p.cropId && now >= p.readyAt) {
-          const isG = Boolean(p.golden);
-          const qty = isG ? 2 : 1;
-          recordFarmDexHarvest(p.cropId, qty, isG);
-          saveData.farm.barn[p.cropId] = (saveData.farm.barn[p.cropId] || 0) + qty;
-          if (isG) { goldenCnt += 1; saveData.coins += 15; }
+          recordFarmDexHarvest(p.cropId, 1);
+          saveData.farm.barn[p.cropId] = (saveData.farm.barn[p.cropId] || 0) + 1;
           p.lastCropId = p.cropId;
           p.cropId = null; p.plantedAt = 0; p.readyAt = 0; p.golden = false; p.watered = false; p.event = null;
-          count += qty;
+          count += 1;
         }
       }
       if (count > 0) {
         persistSave(); syncGlobalCounters(); SFX.win();
-        const gNote = goldenCnt > 0 ? `（含 ${goldenCnt} 塊黃金突變雙倍 +${goldenCnt * 15} 金幣！）` : '';
-        showToast(`一鍵收成完成！共收穫 ${count} 份作物${gNote}`);
       } else {
         SFX.tap();
         showToast('目前尚未有成熟的作物喔！');
@@ -5786,6 +5930,8 @@
       p.readyAt = Date.now() + growMs;
       p.golden = Math.random() < b.goldenChance;
       p.watered = (b.weather && b.weather.id === 'rain');
+      if (!saveData.farmGuideDone) saveData.farmGuideDone = true;
+      p.golden = false;
       p.event = Math.random() < 0.22 ? 'weed' : null;
       p.lastCropId = c.id;
       saveData.farm.lastCropId = c.id;
@@ -6312,7 +6458,7 @@
     const FARM_WEATHERS = [
       { id: 'sunny',   icon: 'weather_sunny',   name: '暖陽晴天', shortLabel: '晴天',          desc: '陽光明媚的好天氣，兔兔們在農場開心地跳來跳去！', bg: 'rgba(255,250,240,0.92)', color: '#6B4F40', border: '#D9B88F' },
       { id: 'rain',    icon: 'weather_rain',    name: '毛毛細雨', shortLabel: '細雨 速+20%',   desc: '全場作物自動免澆水，生長速度額外加速 +20%！', bg: '#EDF6FC', color: '#3B6E9C', border: '#6CA6D9' },
-      { id: 'rainbow', icon: 'weather_rainbow', name: '彩虹放晴', shortLabel: '彩虹 黃金×2',   desc: '天空掛起粉彩彩虹，黃金突變大作物機率直接雙倍！', bg: '#FFF8EB', color: '#9A5410', border: '#E5B974' },
+      { id: 'rainbow', icon: 'weather_rainbow', name: '彩虹放晴', shortLabel: '彩虹 價+20%',   desc: '天空掛起粉彩彩虹，農夫市集全場賣價額外 +20%！', bg: '#FFF8EB', color: '#9A5410', border: '#E5B974' },
       { id: 'sakura',  icon: 'weather_sakura',  name: '櫻花微風', shortLabel: '櫻花 價+15%',   desc: '漫天櫻花飄落農場，農夫市集全場作物賣價額外 +15%！', bg: '#FFF1F5', color: '#B54A6A', border: '#E89EB5' }
     ];
 
@@ -6386,11 +6532,11 @@
       gardenState.swipeCombo += 1;
       const notes = [523, 587, 659, 784, 880, 1046];
       SFX.tone(notes[(gardenState.swipeCombo - 1) % notes.length], 0.14, 'triangle', 0.16);
-      const txt = res.isGolden ? `黃金 ${res.weight}kg ×2！` : `+1 ${crop ? crop.name : '作物'} (${res.weight}kg)`;
-      gardenState.floatingTexts.push({ x: center.x, y: center.y - 24, text: txt, color: res.isGolden ? '#FEF08A' : '#E8F8F2', life: 1.15, maxLife: 1.15 });
+      const txt = `+1 ${crop ? crop.name : '作物'}`;
+      gardenState.floatingTexts.push({ x: center.x, y: center.y - 24, text: txt, color: '#E8F8F2', life: 1.15, maxLife: 1.15 });
       for (let i = 0; i < 10; i++) {
         const ang = (Math.PI * 2 * i) / 10;
-        gardenState.particles.push({ x: center.x, y: center.y, vx: Math.cos(ang) * 50, vy: Math.sin(ang) * 50 - 34, size: 3.4, color: res.isGolden ? '#FACC15' : '#6BC4A6', life: 0.55, maxLife: 0.55 });
+        gardenState.particles.push({ x: center.x, y: center.y, vx: Math.cos(ang) * 50, vy: Math.sin(ang) * 50 - 34, size: 3.4, color: '#6BC4A6', life: 0.55, maxLife: 0.55 });
       }
     }
 
@@ -6430,28 +6576,24 @@
           const c = FARM_CROP_BY_ID[r.cropId];
           const have = saveData.farm.barn[r.cropId] || 0;
           const ok = have >= r.qty;
-          return `<span class="inline-flex items-center gap-1 rounded-xl px-2 py-0.5 text-[10px] font-black" style="background:${ok ? '#E8F8F2' : '#FFFBF2'};border:1.5px solid ${ok ? '#52A88B' : 'rgba(90,58,40,0.2)'};color:${ok ? '#2D6A54' : '#8C5220'};">
-            <img src="${SPRITE_SRCS[c ? c.img : 'crop_carrot']}" class="w-4 h-4 object-contain" />${c ? c.name : ''} ${have}/${r.qty}
+          return `<span class="inline-flex items-center gap-1 rounded-xl px-1.5 py-1 text-[10px] font-black" style="background:${ok ? '#E8F8F2' : '#FFFBF2'};border:1.5px solid ${ok ? '#52A88B' : 'rgba(90,58,40,0.18)'};color:${ok ? '#2D6A54' : '#8C5220'};">
+            <img src="${SPRITE_SRCS[c ? c.img : 'crop_carrot']}" class="w-6 h-6 object-contain" />${have}/${r.qty}
           </span>`;
-        }).join('');
+        }).join('<span class="text-xs font-black text-[#9A7B69]">+</span>');
+        const outBadge = rec.rewardType === 'coins'
+          ? `<span class="inline-flex items-center gap-1 rounded-xl px-2 py-1 text-xs font-black" style="background:#FFF8EB;border:1.5px solid #E5B974;color:#9A5410;"><img src="${SPRITE_SRCS.ui_coin}" class="w-5 h-5 object-contain" />+${rec.rewardVal}</span>`
+          : `<span class="inline-flex items-center gap-1 rounded-xl px-2 py-1 text-xs font-black" style="background:#FFF8EB;border:1.5px solid #E5B974;color:#5A3A28;"><img src="${SPRITE_SRCS[rec.img]}" class="w-6 h-6 object-contain" />×1</span>`;
         const row = document.createElement('div');
-        row.className = 'bg-white/95 rounded-2xl border-2 border-[#5A3A28]/15 p-2.5 flex flex-col gap-2';
+        row.className = 'bg-white/95 rounded-2xl border-2 border-[#5A3A28]/15 p-2.5 flex items-center justify-between gap-1.5';
         row.innerHTML = `
-          <div class="flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2 min-w-0">
-              <div class="w-11 h-11 shrink-0 rounded-2xl flex items-center justify-center" style="background:#FFF8EB;border:1.5px solid #E5B974;">
-                <img src="${SPRITE_SRCS[rec.img]}" alt="${rec.name}" class="w-9 h-9 object-contain" />
-              </div>
-              <div class="min-w-0 text-left">
-                <div class="text-xs font-black text-[#5A3A28] truncate">${rec.name}</div>
-                <div class="text-[10px] font-bold" style="color:#2D6A54;">${rec.rewardLabel}</div>
-              </div>
-            </div>
-            <button type="button" data-craft-rec="${rec.id}" class="craft-rec-btn shrink-0 rounded-xl px-3 py-1.5 text-xs font-black whitespace-nowrap ${canCraft ? 'game-btn game-btn-gold text-[#6B3E08]' : 'bg-[#E7DDD3] text-[#8C7B6E]'}">
-              ${canCraft ? '立即製作' : '材料不足'}
-            </button>
+          <div class="flex items-center gap-1.5 flex-wrap min-w-0">
+            ${reqHtml}
+            <span class="text-xs font-black text-[#D97706]">➜</span>
+            ${outBadge}
           </div>
-          <div class="flex items-center gap-1.5 flex-wrap">${reqHtml}</div>
+          <button type="button" data-craft-rec="${rec.id}" class="craft-rec-btn shrink-0 rounded-xl px-3 py-1.5 text-xs font-black whitespace-nowrap ${canCraft ? 'game-btn game-btn-gold text-[#6B3E08]' : 'bg-[#E7DDD3] text-[#8C7B6E]'}">
+            ${canCraft ? '製作' : '不足'}
+          </button>
         `;
         list.appendChild(row);
       });
@@ -6480,49 +6622,44 @@
       document.getElementById('modal-farm-cafe').classList.remove('hidden');
     }
 
-    function recordFarmDexHarvest(cropId, qty, isGolden) {
+    function recordFarmDexHarvest(cropId, qty = 1) {
       ensureFarmState();
       if (!saveData.farm.dex || typeof saveData.farm.dex !== 'object') saveData.farm.dex = {};
-      const entry = saveData.farm.dex[cropId] || { count: 0, maxWeight: 0, golden: false };
-      const rawW = isGolden ? (2.4 + Math.random() * 1.8) : (0.7 + Math.random() * 1.2);
-      const weight = Math.round(rawW * 10) / 10;
+      const entry = saveData.farm.dex[cropId] || { count: 0 };
       entry.count += qty;
-      if (weight > entry.maxWeight) entry.maxWeight = weight;
-      if (isGolden) entry.golden = true;
       saveData.farm.dex[cropId] = entry;
-      return weight;
+      return entry.count;
     }
 
     const FARM_DEX_MILESTONES = [
-      { id: 'dex_3',  req: 3,  label: '收集 3 款黃金作物',  rewardText: '+200 金幣 + 體力胡蘿蔔汁 ×2', coins: 200, item: 'carrot_juice', itemQty: 2 },
-      { id: 'dex_6',  req: 6,  label: '收集 6 款黃金作物',  rewardText: '+400 金幣 + SSR 誘兔鈴 ×2',   coins: 400, item: 'ssr_lure',     itemQty: 2 },
-      { id: 'dex_10', req: 10, label: '收集全部 10 款黃金', rewardText: '解鎖 1 隻未擁有傳說 SSR 兔兔 ＋ 800 金幣', randomSsr: true, coins: 800 }
+      { id: 'dex_3',  req: 10, type: 'total',   label: '累計收成 10 次',   rewardText: '+200 金幣 + 胡蘿蔔汁 ×2', coins: 200, item: 'carrot_juice', itemQty: 2 },
+      { id: 'dex_6',  req: 30, type: 'total',   label: '累計收成 30 次',   rewardText: '+400 金幣 + 誘兔鈴 ×2',   coins: 400, item: 'ssr_lure',     itemQty: 2 },
+      { id: 'dex_10', req: 10, type: 'variety', label: '集齊 10 款農作物', rewardText: '隨機未擁有 SSR ＋ 800 金幣', randomSsr: true, coins: 800 }
     ];
 
-    function getGoldenDexCount() {
+    function getFarmDexMetric(ms) {
       ensureFarmState();
       const dex = saveData.farm.dex || {};
-      return FARM_CROPS.filter(c => dex[c.id] && dex[c.id].golden).length;
+      if (ms.type === 'variety') return FARM_CROPS.filter(c => dex[c.id] && dex[c.id].count > 0).length;
+      return FARM_CROPS.reduce((sum, c) => sum + ((dex[c.id] && dex[c.id].count) || 0), 0);
     }
 
     function hasClaimableFarmDexReward() {
       ensureFarmState();
-      const gCnt = getGoldenDexCount();
       const claimed = saveData.farm.dexClaimed || [];
-      return FARM_DEX_MILESTONES.some(m => gCnt >= m.req && !claimed.includes(m.id));
+      return FARM_DEX_MILESTONES.some(m => getFarmDexMetric(m) >= m.req && !claimed.includes(m.id));
     }
 
     function openFarmDexModal() {
       ensureFarmState();
       const dex = saveData.farm.dex || {};
       const claimed = saveData.farm.dexClaimed || [];
-      const gCnt = getGoldenDexCount();
-
       const mWrap = document.getElementById('farm-dex-milestones');
       mWrap.innerHTML = '';
       FARM_DEX_MILESTONES.forEach(ms => {
+        const curV = getFarmDexMetric(ms);
         const done = claimed.includes(ms.id);
-        const ready = gCnt >= ms.req && !done;
+        const ready = curV >= ms.req && !done;
         const bar = document.createElement('div');
         bar.className = 'rounded-2xl px-2.5 py-1.5 flex items-center justify-between gap-2';
         bar.style.cssText = done
@@ -6532,11 +6669,11 @@
             : 'background:rgba(255,255,255,0.88);border:1.5px solid rgba(90,58,40,0.16);';
         bar.innerHTML = `
           <div class="min-w-0 text-left">
-            <div class="text-[10px] font-black text-[#5A3A28]">${ms.label}（${Math.min(gCnt, ms.req)}/${ms.req}）</div>
+            <div class="text-[10px] font-black text-[#5A3A28]">${ms.label}（${Math.min(curV, ms.req)}/${ms.req}）</div>
             <div class="text-[9.5px] font-bold text-[#7C5A46] truncate">${ms.rewardText}</div>
           </div>
           <button type="button" data-claim-dex="${ms.id}" class="claim-dex-btn shrink-0 rounded-xl px-2.5 py-1 text-[10px] font-black whitespace-nowrap ${done ? 'bg-[#E3F0DF] text-[#15803D]' : ready ? 'game-btn game-btn-orange' : 'bg-[#E7DDD3] text-[#8C7B6E]'}">
-            ${done ? '已領取 ✓' : ready ? '領取獎勵' : '未達成'}
+            ${done ? '已領取 ✓' : ready ? '領取' : '未達成'}
           </button>
         `;
         mWrap.appendChild(bar);
@@ -6546,7 +6683,7 @@
           const ms = FARM_DEX_MILESTONES.find(x => x.id === btn.dataset.claimDex);
           if (!ms) return;
           if (!Array.isArray(saveData.farm.dexClaimed)) saveData.farm.dexClaimed = [];
-          if (saveData.farm.dexClaimed.includes(ms.id) || getGoldenDexCount() < ms.req) return;
+          if (saveData.farm.dexClaimed.includes(ms.id) || getFarmDexMetric(ms) < ms.req) return;
           saveData.farm.dexClaimed.push(ms.id);
           if (ms.coins) saveData.coins += ms.coins;
           if (ms.item) {
@@ -6578,18 +6715,17 @@
       const grid = document.getElementById('farm-dex-grid');
       grid.innerHTML = '';
       FARM_CROPS.forEach(c => {
-        const rec = dex[c.id] || { count: 0, maxWeight: 0, golden: false };
+        const rec = dex[c.id] || { count: 0 };
         const card = document.createElement('div');
         card.className = 'rounded-2xl border-2 p-2 flex items-center gap-2 text-left';
-        card.style.cssText = rec.golden
-          ? 'background:#FFFBEB;border-color:#D97706;'
+        card.style.cssText = rec.count > 0
+          ? 'background:#F4FBF7;border-color:#7CCBB0;'
           : 'background:rgba(255,255,255,0.92);border-color:rgba(90,58,40,0.16);';
         card.innerHTML = `
           <img src="${SPRITE_SRCS[c.img]}" alt="${c.name}" class="w-10 h-10 object-contain shrink-0 ${rec.count > 0 ? '' : 'locked-silhouette'}" />
           <div class="min-w-0 leading-tight">
             <div class="text-[11px] font-black text-[#5A3A28] truncate">${c.name}</div>
-            <div class="text-[9.5px] font-bold text-[#7C5A46]">已收 ${rec.count} 次</div>
-            <div class="text-[9.5px] font-black" style="color:${rec.golden ? '#B45309' : '#4B82B0'};">${rec.maxWeight > 0 ? `最高 ${rec.maxWeight}kg` : '尚未收成'}${rec.golden ? ' ★金' : ''}</div>
+            <div class="text-[10px] font-black mt-0.5" style="color:${rec.count > 0 ? '#2D6A54' : '#9A887A'};">${rec.count > 0 ? `×${rec.count}` : '未收成'}</div>
           </div>
         `;
         grid.appendChild(card);
