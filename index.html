@@ -508,8 +508,13 @@
 
       <!-- Home Top Status Bar (pl-12 avoids mobile top-left close overlay) -->
       <div class="relative z-10 flex items-center justify-end gap-1.5 pl-12 pr-3 pt-3">
-        <button id="btn-home-account" type="button" class="game-btn rounded-2xl px-2 py-1 flex items-center gap-1 text-[11px] font-black text-[#5A3A28] max-w-[104px] truncate">
-          <img id="img-account-avatar" src="" alt="頭像" class="w-4 h-4 object-contain shrink-0" />
+        <button id="btn-home-account" type="button" class="game-btn rounded-2xl flex items-center gap-1.5 text-[11px] font-black text-[#5A3A28] truncate" style="padding:3px 9px 3px 4px;max-width:124px;" title="更換頭像與頭像框">
+          <span style="position:relative;width:28px;height:28px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;">
+            <span style="width:21px;height:21px;border-radius:9999px;background:#FFFDF9;border:1.5px solid rgba(90,58,40,0.22);overflow:hidden;display:flex;align-items:center;justify-content:center;">
+              <img id="img-account-avatar" src="" alt="頭像" style="width:18px;height:18px;object-fit:contain;" />
+            </span>
+            <img id="img-account-frame" src="" alt="" class="hidden" style="position:absolute;inset:-2px;width:32px;height:32px;object-fit:contain;pointer-events:none;" />
+          </span>
           <span id="home-account-label" class="truncate">設定暱稱</span>
         </button>
         <button id="btn-home-bg" type="button" class="game-btn game-btn-pink rounded-2xl px-2 py-1 flex items-center gap-1 text-[11px] font-black text-[#5A3A28] shrink-0" title="更換首頁背景">
@@ -550,19 +555,26 @@
           <img id="home-b4" data-slot="3" src="" alt="兔兔4" title="點擊更換首頁兔兔" class="home-mascot-slot cursor-pointer h-24 w-auto object-contain animate-bunny-hop drop-shadow-md -ml-2 active:scale-95" style="animation-delay:0.75s" />
         </div>
 
-        <!-- Adventure Item Bag & Shop Strip (Visible on Home before playing!) -->
-        <button id="btn-home-item-shop" type="button" class="game-btn game-btn-gold w-full max-w-[340px] mb-2.5 px-3 py-1.5 rounded-2xl flex items-center justify-between gap-2 text-xs font-black text-[#6B3E08]">
-          <div class="flex items-center gap-2.5">
-            <span class="inline-flex items-center gap-0.5" title="魔法加時鐘"><img src="assets/item_time_plus.png" alt="加時鐘" class="w-5 h-5 object-contain" /><span class="item-cnt-time_plus tabular-nums">1</span></span>
-            <span class="inline-flex items-center gap-0.5" title="黃金紅蘿蔔"><img src="assets/item_golden_carrot.png" alt="金蘿蔔" class="w-5 h-5 object-contain" /><span class="item-cnt-golden_carrot tabular-nums">1</span></span>
-            <span class="inline-flex items-center gap-0.5" title="SSR 幸運誘兔鈴"><img src="assets/item_ssr_lure.png" alt="誘兔鈴" class="w-5 h-5 object-contain" /><span class="item-cnt-ssr_lure tabular-nums">1</span></span>
-            <span class="inline-flex items-center gap-0.5" title="體力胡蘿蔔汁"><img src="assets/item_carrot_juice.png" alt="胡蘿蔔汁" class="w-5 h-5 object-contain" /><span class="item-cnt-carrot_juice tabular-nums">1</span></span>
-          </div>
-          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-xl bg-white/80 text-[11px] text-[#9A3412]">
-            <img class="img-shop-icon w-4 h-4 object-contain" src="" alt="道具商店" />
-            <span>道具商店</span>
-          </span>
-        </button>
+        <!-- Adventure Item Bag + Daily Lucky Gacha Strip -->
+        <div class="w-full max-w-[340px] mb-2.5 flex items-center gap-2">
+          <button id="btn-home-item-shop" type="button" class="game-btn game-btn-gold flex-1 min-w-0 px-2.5 py-1.5 rounded-2xl flex items-center justify-between gap-1.5 text-xs font-black text-[#6B3E08]">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-0.5" title="魔法加時鐘"><img src="assets/item_time_plus.png" alt="加時鐘" class="w-4 h-4 object-contain" /><span class="item-cnt-time_plus tabular-nums text-[11px]">1</span></span>
+              <span class="inline-flex items-center gap-0.5" title="黃金紅蘿蔔"><img src="assets/item_golden_carrot.png" alt="金蘿蔔" class="w-4 h-4 object-contain" /><span class="item-cnt-golden_carrot tabular-nums text-[11px]">1</span></span>
+              <span class="inline-flex items-center gap-0.5" title="SSR 幸運誘兔鈴"><img src="assets/item_ssr_lure.png" alt="誘兔鈴" class="w-4 h-4 object-contain" /><span class="item-cnt-ssr_lure tabular-nums text-[11px]">1</span></span>
+              <span class="inline-flex items-center gap-0.5" title="體力胡蘿蔔汁"><img src="assets/item_carrot_juice.png" alt="胡蘿蔔汁" class="w-4 h-4 object-contain" /><span class="item-cnt-carrot_juice tabular-nums text-[11px]">1</span></span>
+            </div>
+            <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-xl bg-white/80 text-[10px] text-[#9A3412] shrink-0">
+              <img class="img-shop-icon w-3.5 h-3.5 object-contain" src="" alt="商店" />
+              <span>商店</span>
+            </span>
+          </button>
+          <button id="btn-home-gacha" type="button" class="game-btn game-btn-pink relative shrink-0 px-3 py-1.5 rounded-2xl flex items-center gap-1 text-xs font-black text-[#5A3A28]">
+            <img src="assets/item_ssr_lure.png" alt="扭蛋" class="w-4 h-4 object-contain" />
+            <span>每日扭蛋</span>
+            <span id="dot-gacha" class="hidden absolute -top-1 -right-1 w-3 h-3 rounded-full bg-[#DC2626] border-2 border-white"></span>
+          </button>
+        </div>
 
         <!-- Primary Navigation Buttons -->
         <div class="w-full max-w-[340px] space-y-2.5">
@@ -577,7 +589,8 @@
               <span>兔兔農場</span>
               <span id="home-garden-sub" class="text-[10px] font-bold">種植特色作物與佈置</span>
             </button>
-            <button id="btn-home-album" type="button" class="game-btn game-btn-pink py-3 px-2 rounded-3xl flex flex-col items-center justify-center gap-1 text-sm font-black">
+            <button id="btn-home-album" type="button" class="game-btn game-btn-pink relative py-3 px-2 rounded-3xl flex flex-col items-center justify-center gap-1 text-sm font-black">
+              <span id="dot-home-album" class="hidden absolute top-2 right-2 w-3 h-3 rounded-full bg-[#DC2626] border-2 border-white"></span>
               <img class="img-album-icon w-9 h-9 object-contain drop-shadow-xs" src="" alt="圖鑑" />
               <span>兔兔圖鑑</span>
               <span id="home-album-sub" class="text-[10px] font-bold">已收集 0/100</span>
@@ -1017,16 +1030,45 @@
 
     <!-- ================= MODAL: PLAYER PROFILE & SAVE BACKUP (玩家資料與存檔備份) ================= -->
     <div id="modal-login" class="hidden absolute inset-0 z-50 bg-black/60 backdrop-blur-[2px] flex items-center justify-center p-4">
-      <div class="game-panel animate-pop w-full max-w-[345px] max-h-[90%] overflow-y-auto no-scrollbar rounded-3xl px-4 pb-4 pt-6 text-center relative">
+      <div class="game-panel animate-pop w-full max-w-[355px] max-h-[92%] overflow-y-auto no-scrollbar rounded-3xl px-4 pb-4 pt-6 text-center relative">
         <button id="btn-close-login" type="button" class="game-btn absolute top-2.5 right-2.5 rounded-xl w-9 h-9 flex items-center justify-center font-black z-30 text-sm">✕</button>
         <div class="banner-header">
           <img class="img-banner-ribbon" src="" alt="橫幅" />
-          <span class="banner-header-title">玩家資料與存檔</span>
+          <span class="banner-header-title">玩家頭像與存檔</span>
         </div>
-        <p id="login-status-desc" class="text-[11px] font-bold text-[#7C5A46] mb-2.5">設定暱稱後，紀念相片與分享卡都會顯示你的名字。</p>
+
+        <!-- Live Framed Avatar Showcase -->
+        <div style="background:linear-gradient(135deg,#FFFDF7,#FFF1E6);border:2px solid rgba(90,58,40,0.16);border-radius:20px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;gap:12px;text-align:left;">
+          <div style="position:relative;width:86px;height:86px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+            <div style="width:60px;height:60px;border-radius:9999px;background:#FFFFFF;border:2px solid rgba(90,58,40,0.16);overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 2px 6px rgba(90,58,40,0.08);">
+              <img id="profile-preview-avatar" src="" alt="頭像預覽" style="width:52px;height:52px;object-fit:contain;" />
+            </div>
+            <img id="profile-preview-frame" src="" alt="" class="hidden" style="position:absolute;inset:0;width:86px;height:86px;object-fit:contain;pointer-events:none;filter:drop-shadow(0 2px 4px rgba(90,58,40,0.18));" />
+          </div>
+          <div class="flex-1 min-w-0">
+            <div id="profile-preview-name" class="text-sm font-black text-[#5A3A28] truncate">兔兔玩家</div>
+            <div id="profile-preview-frame-badge" class="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-black" style="background:#FFF3D6;color:#9A5410;border:1px solid #E5B974;">未配戴頭像框</div>
+            <div id="profile-frame-count" class="text-[10px] font-bold text-[#8C6D5D] mt-1">已收藏水彩頭像框 0 / 6</div>
+          </div>
+        </div>
+
+        <!-- Watercolor Avatar Frame Picker -->
+        <div class="bg-white/90 rounded-2xl border-2 border-[#5A3A28]/15 p-2.5 mb-2.5 text-left">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[11px] font-black text-[#5A3A28]">水彩頭像框</span>
+            <span class="text-[10px] font-bold text-[#9A7B69]">主題圖鑑 10 隻解鎖</span>
+          </div>
+          <div id="profile-frame-picker" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;"></div>
+        </div>
+
+        <!-- Bunny Avatar Picker -->
+        <div class="bg-white/90 rounded-2xl border-2 border-[#5A3A28]/15 p-2.5 mb-2.5 text-left">
+          <div class="text-[11px] font-black text-[#5A3A28] mb-1.5">選擇頭像兔兔</div>
+          <div id="profile-avatar-picker" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5"></div>
+        </div>
 
         <div class="bg-white/90 rounded-2xl border-2 border-[#5A3A28]/15 p-3 mb-2.5 text-left">
-          <label for="input-nickname" class="block text-[11px] font-black text-[#5A3A28] mb-1">玩家暱稱</label>
+          <label for="input-nickname" class="block text-[11px] font-black text-[#5A3A28] mb-1">玩家暱稱（顯示於主頁與明信片）</label>
           <div class="flex items-center gap-1.5">
             <input id="input-nickname" type="text" maxlength="12" placeholder="例如：兔兔小隊長"
               class="flex-1 min-w-0 rounded-xl border-2 border-[#5A3A28]/30 bg-[#FFFDF9] px-3 py-1.5 text-xs font-bold text-[#5A3A28] focus:outline-none focus:border-[#F97316]" />
@@ -1130,8 +1172,57 @@
           <span id="album-progress-label" class="absolute inset-0 flex items-center justify-center text-[11px] font-black text-[#5A3A28]">0 / 100 已收集 (0%)</span>
         </div>
 
-        <div id="album-filters" class="shrink-0 flex items-center gap-2 mb-2.5 overflow-x-auto no-scrollbar py-1.5 px-0.5"></div>
+        <div id="album-filters" class="shrink-0 flex items-center gap-2 mb-2 overflow-x-auto no-scrollbar py-1 px-0.5"></div>
+        <div id="album-milestone-strip" class="shrink-0 mb-2"></div>
         <div id="album-grid" class="flex-1 min-h-0 grid grid-cols-3 gap-2.5 overflow-y-auto no-scrollbar pt-0.5 pb-3 content-start"></div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL: DAILY LUCKY GACHA (每日幸運扭蛋機) ================= -->
+    <div id="modal-gacha" class="hidden absolute inset-0 z-50 bg-black/60 backdrop-blur-[2px] flex items-center justify-center p-4">
+      <div class="game-panel animate-pop w-full max-w-[345px] max-h-[90%] overflow-y-auto no-scrollbar rounded-3xl px-4 pb-4 pt-6 text-center relative">
+        <button id="btn-close-gacha" type="button" class="game-btn absolute top-2.5 right-2.5 rounded-xl w-9 h-9 flex items-center justify-center font-black z-30 text-sm">✕</button>
+        <div class="banner-header">
+          <img class="img-banner-ribbon" src="" alt="橫幅" />
+          <span class="banner-header-title">每日幸運扭蛋</span>
+        </div>
+        <div id="gacha-quota-pill" class="inline-block px-3 py-0.5 rounded-full text-[11px] font-black mb-2.5" style="background:#FFF3D6;color:#9A5410;border:1.5px solid #E5B974;">今日免費 1 次！</div>
+
+        <!-- Gacha Visual Stage -->
+        <div id="gacha-stage" style="background:linear-gradient(180deg,#FFFDF7,#FFF0E0);border:2px solid rgba(90,58,40,0.16);border-radius:22px;padding:16px 12px;margin-bottom:10px;min-height:152px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;">
+          <div id="gacha-idle-view" class="flex flex-col items-center">
+            <img id="gacha-capsule-img" src="assets/frame_royal.png" alt="幸運扭蛋" style="width:88px;height:88px;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(90,58,40,0.18));transition:transform 0.15s;" />
+            <div class="text-xs font-black text-[#5A3A28] mt-2">轉出金幣、冒險道具、限定頭像框與稀有兔兔</div>
+          </div>
+          <div id="gacha-result-view" class="hidden flex flex-col items-center animate-pop">
+            <img id="gacha-result-img" src="" alt="扭蛋獎勵" style="width:88px;height:88px;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(90,58,40,0.18));" />
+            <div id="gacha-result-badge" class="mt-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black text-white" style="background:#D97706;">好運大獎</div>
+            <div id="gacha-result-title" class="text-base font-black text-[#5A3A28] mt-1">+120 金幣</div>
+            <div id="gacha-result-sub" class="text-[11px] font-bold text-[#7C5A46]">已放入背包</div>
+          </div>
+        </div>
+
+        <!-- Prize Preview Icons -->
+        <div class="bg-white/85 rounded-2xl border border-[#5A3A28]/15 px-2.5 py-2 mb-3 flex items-center justify-around">
+          <div class="flex flex-col items-center gap-0.5">
+            <img src="assets/frame_royal.png" alt="黃金星冠框" style="width:30px;height:30px;object-fit:contain;" />
+            <span class="text-[9px] font-black text-[#9A5410]">星冠頭像框</span>
+          </div>
+          <div class="flex flex-col items-center gap-0.5">
+            <img src="assets/sp_macaron.png" alt="稀有兔兔" style="width:30px;height:30px;object-fit:contain;" />
+            <span class="text-[9px] font-black text-[#8652A8]">SR/SSR 兔兔</span>
+          </div>
+          <div class="flex flex-col items-center gap-0.5">
+            <img src="assets/item_time_plus.png" alt="冒險道具" style="width:30px;height:30px;object-fit:contain;" />
+            <span class="text-[9px] font-black text-[#2D6A54]">冒險道具</span>
+          </div>
+          <div class="flex flex-col items-center gap-0.5">
+            <img src="assets/ui_coin.png" alt="金幣" style="width:30px;height:30px;object-fit:contain;" />
+            <span class="text-[9px] font-black text-[#6B3E08]">60~250 幣</span>
+          </div>
+        </div>
+
+        <button id="btn-gacha-spin" type="button" class="game-btn game-btn-orange w-full py-3 rounded-2xl text-sm font-black text-white">免費抽一次！</button>
       </div>
     </div>
 
@@ -1679,7 +1770,13 @@
       bg_dessert: "assets/bg_dessert.webp",
       bg_home_story: "assets/bg_home_story.webp",
       bg_home_moonlight: "assets/bg_home_moonlight.jpg",
-      share_card_bg: "assets/share_card_bg.jpg"
+      share_card_bg: "assets/share_card_bg.jpg",
+      frame_park: "assets/frame_park.png",
+      frame_sakura: "assets/frame_sakura.png",
+      frame_hk: "assets/frame_hk.png",
+      frame_camp: "assets/frame_camp.png",
+      frame_dessert: "assets/frame_dessert.png",
+      frame_royal: "assets/frame_royal.png"
     };
 
     const IMAGES = {};
@@ -2058,6 +2155,10 @@
       homeMascots: ['sp_strawberry', 'sp_farmer', 'sp_sakura', 'sp_macaron'],
       ownedHomeBgs: ['bg_home_story'],
       activeHomeBg: 'bg_home_story',
+      ownedFrames: [],
+      activeFrame: '',
+      albumClaimed: [],
+      gacha: { date: '', freeUsed: false, paidCount: 0 },
       audio: { bgm: true, sfx: true },
       tutorialDone: false,
       farmGuideDone: false,
@@ -2099,6 +2200,10 @@
       if (Array.isArray(parsed.homeMascots) && parsed.homeMascots.length === 4) saveData.homeMascots = parsed.homeMascots;
       if (Array.isArray(parsed.ownedHomeBgs) && parsed.ownedHomeBgs.length > 0) saveData.ownedHomeBgs = [...new Set(['bg_home_story', ...parsed.ownedHomeBgs])];
       if (typeof parsed.activeHomeBg === 'string' && SPRITE_SRCS[parsed.activeHomeBg]) saveData.activeHomeBg = parsed.activeHomeBg;
+      if (Array.isArray(parsed.ownedFrames)) saveData.ownedFrames = [...new Set(parsed.ownedFrames.filter(id => SPRITE_SRCS[id]))];
+      if (typeof parsed.activeFrame === 'string' && (!parsed.activeFrame || SPRITE_SRCS[parsed.activeFrame])) saveData.activeFrame = parsed.activeFrame;
+      if (Array.isArray(parsed.albumClaimed)) saveData.albumClaimed = [...new Set(parsed.albumClaimed)];
+      if (parsed.gacha && typeof parsed.gacha === 'object') saveData.gacha = { date: parsed.gacha.date || '', freeUsed: !!parsed.gacha.freeUsed, paidCount: Math.max(0, Number(parsed.gacha.paidCount) || 0) };
       if (parsed.audio && typeof parsed.audio === 'object') saveData.audio = { bgm: parsed.audio.bgm !== false, sfx: parsed.audio.sfx !== false };
       if (typeof parsed.tutorialDone === 'boolean') saveData.tutorialDone = parsed.tutorialDone;
       if (typeof parsed.farmGuideDone === 'boolean') saveData.farmGuideDone = parsed.farmGuideDone;
@@ -2360,13 +2465,29 @@
           : `${pCount} 塊田 · 賣價+${land.bonusPct}%`;
       }
       document.getElementById('home-account-label').textContent = saveData.account.nickname || '設定暱稱';
-      document.getElementById('img-account-avatar').src = SPRITE_SRCS[saveData.account.avatar || 'sp_strawberry'];
+      syncAccountAvatarBadge();
       updateHomeNotificationDots();
+    }
+
+    function syncAccountAvatarBadge() {
+      const avImg = document.getElementById('img-account-avatar');
+      if (avImg) avImg.src = SPRITE_SRCS[saveData.account.avatar || 'sp_strawberry'] || SPRITE_SRCS.sp_strawberry;
+      const frImg = document.getElementById('img-account-frame');
+      if (frImg) {
+        const fid = saveData.activeFrame;
+        if (fid && SPRITE_SRCS[fid]) {
+          frImg.src = SPRITE_SRCS[fid];
+          frImg.classList.remove('hidden');
+        } else {
+          frImg.src = '';
+          frImg.classList.add('hidden');
+        }
+      }
     }
 
     function hydrateStaticUIImages() {
       applyHomeTimeLighting();
-      document.getElementById('img-account-avatar').src = SPRITE_SRCS[saveData.account.avatar || 'sp_strawberry'];
+      syncAccountAvatarBadge();
       updateHomeNotificationDots();
       renderHomeMascots();
 
@@ -3719,6 +3840,15 @@
       if (dc) dc.classList.toggle('hidden', !canCheckin);
       const dd = document.getElementById('dot-daily-challenge');
       if (dd) dd.classList.toggle('hidden', saveData.dailyChallengeDate === todayStr());
+      const dg = document.getElementById('dot-gacha');
+      if (dg) {
+        const g = saveData.gacha || { date: '', freeUsed: false };
+        dg.classList.toggle('hidden', g.date === todayStr() && g.freeUsed);
+      }
+      const da = document.getElementById('dot-home-album');
+      if (da && typeof hasClaimableAlbumMilestone === 'function') {
+        da.classList.toggle('hidden', !hasClaimableAlbumMilestone());
+      }
     }
 
     function openQuestsModal() {
@@ -4053,11 +4183,27 @@
       c.fillText(l1, 360, 732);
       if (l2) c.fillText(l2, 360, 766);
 
-      // Clean cozy postcard footer (zero seconds, zero coins, zero score!)
-      c.fillStyle = 'rgba(255, 250, 242, 0.85)';
-      roundRect(c, 150, 822, 420, 56, 28); c.fill();
+      // Clean cozy postcard footer with player's framed circular avatar stamp
+      c.fillStyle = 'rgba(255, 250, 242, 0.90)';
+      roundRect(c, 126, 816, 468, 68, 34); c.fill();
+      const avCx = 166, avCy = 850;
+      c.save();
+      c.beginPath(); c.arc(avCx, avCy, 22, 0, Math.PI * 2); c.fillStyle = '#FFFFFF'; c.fill();
+      c.lineWidth = 2; c.strokeStyle = 'rgba(90,58,40,0.2)'; c.stroke();
+      c.clip();
+      const avImg = IMAGES[saveData.account.avatar || 'sp_strawberry'];
+      if (avImg && avImg.complete && avImg.naturalWidth > 0) {
+        const asc = Math.min(38 / avImg.naturalWidth, 38 / avImg.naturalHeight);
+        const aw = avImg.naturalWidth * asc, ah = avImg.naturalHeight * asc;
+        c.drawImage(avImg, avCx - aw / 2, avCy - ah / 2, aw, ah);
+      }
+      c.restore();
+      if (saveData.activeFrame && IMAGES[saveData.activeFrame] && IMAGES[saveData.activeFrame].complete) {
+        c.drawImage(IMAGES[saveData.activeFrame], avCx - 33, avCy - 33, 66, 66);
+      }
+      c.textAlign = 'center';
       c.fillStyle = '#6B4F40'; c.font = '900 22px "Noto Sans TC", sans-serif';
-      c.fillText(`《兔兔躲貓貓》 · ${nick}`, 360, 858);
+      c.fillText(`《兔兔躲貓貓》 · ${nick}`, 388, 858);
 
       openPhotoPreview(titleLabel || `兔兔紀念卡 · ${b.name}`, out.toDataURL('image/png'), `bunny-card-${b.id}.png`);
     }
@@ -5206,12 +5352,117 @@
       document.getElementById('modal-album').classList.remove('hidden');
     }
 
+    // =========================================================================
+    // WATERCOLOR AVATAR FRAMES & THEME ALBUM MILESTONES (#3)
+    // =========================================================================
+    const AVATAR_FRAMES = [
+      { id: 'frame_park',    name: '野餐雛菊花環', short: '雛菊', themeId: 'park',    goal: 10, hint: '公園圖鑑 10/20' },
+      { id: 'frame_sakura',  name: '櫻花飛舞花環', short: '櫻花', themeId: 'sakura',  goal: 10, hint: '櫻花圖鑑 10/20' },
+      { id: 'frame_hk',      name: '港式茶檔花環', short: '港式', themeId: 'hk',      goal: 10, hint: '港式圖鑑 10/20' },
+      { id: 'frame_camp',    name: '星空露營花環', short: '星空', themeId: 'camp',    goal: 10, hint: '露營圖鑑 10/20' },
+      { id: 'frame_dessert', name: '草莓馬卡龍框', short: '甜品', themeId: 'dessert', goal: 10, hint: '甜品圖鑑 10/20' },
+      { id: 'frame_royal',   name: '傳說黃金星冠', short: '星冠', themeId: 'all',     goal: 50, hint: '總圖鑑 50/100 或扭蛋' }
+    ];
+
+    function getAlbumThemeCount(themeId) {
+      if (themeId === 'all') return saveData.unlockedCards.length;
+      return BUNNY_CATALOG.filter(b => b.themeId === themeId && saveData.unlockedCards.includes(b.id)).length;
+    }
+
+    function getAlbumMilestonesForTab(tabId) {
+      if (tabId === 'all') {
+        return [
+          { id: 'all_50',  goal: 50,  frameId: 'frame_royal', label: '傳說星冠頭像框', img: SPRITE_SRCS.frame_royal },
+          { id: 'all_100', goal: 100, coins: 800, lure: 3,    label: '800 幣 + 誘兔鈴×3', img: SPRITE_SRCS.ui_coin }
+        ];
+      }
+      const fr = AVATAR_FRAMES.find(f => f.themeId === tabId);
+      return [
+        { id: `${tabId}_10`, goal: 10, frameId: fr.id,    label: fr.name,           img: SPRITE_SRCS[fr.id] },
+        { id: `${tabId}_20`, goal: 20, coins: 300, lure: 1, label: '300 幣 + 誘兔鈴×1', img: SPRITE_SRCS.ui_coin }
+      ];
+    }
+
+    function hasClaimableAlbumMilestone() {
+      if (!Array.isArray(saveData.albumClaimed)) saveData.albumClaimed = [];
+      const tabs = ['all', 'park', 'sakura', 'hk', 'camp', 'dessert'];
+      return tabs.some(tab => {
+        const cnt = getAlbumThemeCount(tab);
+        return getAlbumMilestonesForTab(tab).some(m => cnt >= m.goal && !saveData.albumClaimed.includes(m.id));
+      });
+    }
+
+    function claimAlbumMilestone(tabId, m) {
+      if (!Array.isArray(saveData.albumClaimed)) saveData.albumClaimed = [];
+      if (!Array.isArray(saveData.ownedFrames)) saveData.ownedFrames = [];
+      if (saveData.albumClaimed.includes(m.id)) return;
+      if (getAlbumThemeCount(tabId) < m.goal) { SFX.wrong(); showToast(`收集滿 ${m.goal} 隻即可領取！`); return; }
+      saveData.albumClaimed.push(m.id);
+      let msg = '';
+      if (m.frameId) {
+        if (saveData.ownedFrames.includes(m.frameId)) {
+          saveData.coins += 200;
+          msg = `已擁有「${m.label}」，改贈 +200 金幣！`;
+        } else {
+          saveData.ownedFrames.push(m.frameId);
+          if (!saveData.activeFrame) saveData.activeFrame = m.frameId;
+          msg = `獲得水彩頭像框「${m.label}」！可於主頁左上角更換`;
+        }
+      } else {
+        saveData.coins += (m.coins || 0);
+        if (m.lure) saveData.items.ssr_lure = (saveData.items.ssr_lure || 0) + m.lure;
+        msg = `圖鑑滿額獎勵：+${m.coins} 金幣、誘兔鈴 ×${m.lure}！`;
+      }
+      SFX.found();
+      persistSave(); syncGlobalCounters(); renderAlbumGrid();
+      showToast(msg);
+    }
+
+    function renderAlbumMilestones() {
+      const strip = document.getElementById('album-milestone-strip');
+      if (!strip) return;
+      if (!Array.isArray(saveData.albumClaimed)) saveData.albumClaimed = [];
+      const tabId = state.albumFilter || 'all';
+      const cnt = getAlbumThemeCount(tabId);
+      const list = getAlbumMilestonesForTab(tabId);
+      strip.innerHTML = '';
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;';
+      list.forEach(m => {
+        const claimed = saveData.albumClaimed.includes(m.id);
+        const ready = cnt >= m.goal && !claimed;
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'rounded-2xl p-2 flex items-center gap-2 text-left transition-transform active:scale-95';
+        card.style.cssText = ready
+          ? 'background:linear-gradient(135deg,#FFF8DC,#FFE8A3);border:2px solid #D97706;box-shadow:0 2px 6px rgba(217,119,6,0.22);'
+          : 'background:rgba(255,253,249,0.88);border:1.5px solid rgba(90,58,40,0.16);';
+        const statusText = claimed ? '已領取' : ready ? '點擊領取' : `${Math.min(cnt, m.goal)}/${m.goal}`;
+        const statusStyle = claimed
+          ? 'background:#E7DDD3;color:#8C7B6E;'
+          : ready
+            ? 'background:#EA580C;color:#FFFFFF;'
+            : 'background:#F3ECE4;color:#7C5A46;';
+        card.innerHTML = `
+          <img src="${m.img}" alt="${m.label}" style="width:36px;height:36px;object-fit:contain;flex-shrink:0;${claimed ? 'opacity:0.6;' : ''}" />
+          <div class="flex-1 min-w-0">
+            <div class="text-[10px] font-black text-[#5A3A28] truncate">${m.label}</div>
+            <span class="inline-block mt-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-black" style="${statusStyle}">${statusText}</span>
+          </div>
+        `;
+        card.addEventListener('click', () => claimAlbumMilestone(tabId, m));
+        wrap.appendChild(card);
+      });
+      strip.appendChild(wrap);
+    }
+
     function renderAlbumGrid() {
       const unlockedCount = saveData.unlockedCards.length, total = BUNNY_CATALOG.length;
       const pct = Math.round((unlockedCount / total) * 100);
       document.getElementById('album-progress-bar').style.width = `${pct}%`;
       document.getElementById('album-progress-label').textContent = `${unlockedCount} / ${total} 已收集 (${pct}%)`;
       document.querySelectorAll('.album-filter-btn').forEach(btn => btn.classList.toggle('game-btn-pink', btn.dataset.albumFilter === state.albumFilter));
+      renderAlbumMilestones();
 
       const grid = document.getElementById('album-grid');
       grid.innerHTML = '';
@@ -6896,21 +7147,237 @@
 
       document.getElementById('btn-garden-build-done').addEventListener('click', () => setGardenEditMode(false));
 
-      // Account Login / Save Backup / Tutorial Modal
+      // Account Profile, Watercolor Avatar Frame Wardrobe & Save Backup Modal
+      function renderProfileWardrobe() {
+        if (!Array.isArray(saveData.ownedFrames)) saveData.ownedFrames = [];
+        const avId = saveData.account.avatar || 'sp_strawberry';
+        const activeFr = saveData.activeFrame || '';
+        const avEl = document.getElementById('profile-preview-avatar');
+        if (avEl) avEl.src = SPRITE_SRCS[avId] || SPRITE_SRCS.sp_strawberry;
+        const frEl = document.getElementById('profile-preview-frame');
+        if (frEl) {
+          if (activeFr && SPRITE_SRCS[activeFr]) { frEl.src = SPRITE_SRCS[activeFr]; frEl.classList.remove('hidden'); }
+          else { frEl.src = ''; frEl.classList.add('hidden'); }
+        }
+        const nameEl = document.getElementById('profile-preview-name');
+        if (nameEl) nameEl.textContent = saveData.account.nickname || '兔兔玩家';
+        const activeMeta = AVATAR_FRAMES.find(f => f.id === activeFr);
+        const badgeEl = document.getElementById('profile-preview-frame-badge');
+        if (badgeEl) badgeEl.textContent = activeMeta ? activeMeta.name : '未配戴頭像框';
+        const cntEl = document.getElementById('profile-frame-count');
+        if (cntEl) cntEl.textContent = `已收藏水彩頭像框 ${saveData.ownedFrames.length} / ${AVATAR_FRAMES.length}`;
+
+        const fPicker = document.getElementById('profile-frame-picker');
+        if (fPicker) {
+          fPicker.innerHTML = '';
+          // None option
+          const noneBtn = document.createElement('button');
+          noneBtn.type = 'button';
+          noneBtn.className = 'rounded-xl p-1.5 flex flex-col items-center justify-center transition-transform active:scale-95';
+          noneBtn.style.cssText = !activeFr
+            ? 'background:#FFF3D6;border:2px solid #D97706;'
+            : 'background:#FFFDF9;border:1.5px solid rgba(90,58,40,0.16);';
+          noneBtn.innerHTML = `
+            <div style="width:38px;height:38px;border-radius:9999px;border:2px dashed rgba(90,58,40,0.3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#8C6D5D;">無框</div>
+            <div class="text-[9px] font-black text-[#5A3A28] mt-1">簡約</div>
+          `;
+          noneBtn.addEventListener('click', () => {
+            saveData.activeFrame = '';
+            SFX.tap(); persistSave(); syncGlobalCounters(); renderProfileWardrobe();
+          });
+          fPicker.appendChild(noneBtn);
+
+          AVATAR_FRAMES.forEach(fr => {
+            const owned = saveData.ownedFrames.includes(fr.id);
+            const active = activeFr === fr.id;
+            const prog = getAlbumThemeCount(fr.themeId);
+            const readyInAlbum = !owned && prog >= fr.goal;
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'rounded-xl p-1.5 flex flex-col items-center justify-center transition-transform active:scale-95 relative';
+            btn.style.cssText = active
+              ? 'background:#FFF3D6;border:2px solid #D97706;'
+              : owned
+                ? 'background:#FFFDF9;border:1.5px solid rgba(90,58,40,0.18);'
+                : readyInAlbum
+                  ? 'background:#FEF3C7;border:1.5px solid #F59E0B;'
+                  : 'background:#F6EFE7;border:1.5px solid rgba(90,58,40,0.12);';
+            btn.innerHTML = `
+              <div style="position:relative;width:40px;height:40px;display:flex;align-items:center;justify-content:center;">
+                <img src="${SPRITE_SRCS[fr.id]}" alt="${fr.name}" style="width:40px;height:40px;object-fit:contain;${owned ? '' : 'opacity:0.45;filter:grayscale(0.6);'}" />
+              </div>
+              <div class="text-[9px] font-black text-[#5A3A28] mt-0.5 truncate w-full text-center">${fr.short}</div>
+              <div class="text-[8px] font-bold" style="color:${active ? '#D97706' : readyInAlbum ? '#EA580C' : '#8C6D5D'};">${active ? '配戴中' : owned ? '可換上' : readyInAlbum ? '去圖鑑領' : `${Math.min(prog, fr.goal)}/${fr.goal}`}</div>
+            `;
+            btn.addEventListener('click', () => {
+              if (owned) {
+                saveData.activeFrame = fr.id;
+                SFX.found(); persistSave(); syncGlobalCounters(); renderProfileWardrobe();
+                showToast(`已換上「${fr.name}」！`);
+              } else if (readyInAlbum) {
+                closeAllModals(); state.albumFilter = fr.themeId; openAlbumModal();
+                showToast(`點擊上方「${fr.name}」即可領取！`);
+              } else {
+                SFX.wrong();
+                showToast(`${fr.name}：${fr.hint} 解鎖`);
+              }
+            });
+            fPicker.appendChild(btn);
+          });
+        }
+
+        const aPicker = document.getElementById('profile-avatar-picker');
+        if (aPicker) {
+          aPicker.innerHTML = '';
+          const pool = [...new Set(['sp_strawberry', 'sp_farmer', 'sp_sakura', 'sp_macaron', ...saveData.unlockedCards])].filter(id => SPRITE_SRCS[id]);
+          pool.forEach(id => {
+            const sel = avId === id;
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'shrink-0 rounded-full flex items-center justify-center transition-transform active:scale-95';
+            btn.style.cssText = `width:42px;height:42px;background:#FFFDF9;border:${sel ? '2.5px solid #EA580C' : '1.5px solid rgba(90,58,40,0.18)'};`;
+            btn.innerHTML = `<img src="${SPRITE_SRCS[id]}" alt="兔兔頭像" style="width:34px;height:34px;object-fit:contain;" />`;
+            btn.addEventListener('click', () => {
+              saveData.account.avatar = id;
+              SFX.tap(); persistSave(); syncGlobalCounters(); renderProfileWardrobe();
+            });
+            aPicker.appendChild(btn);
+          });
+        }
+      }
+
       function openLoginModal() {
         document.getElementById('input-nickname').value = saveData.account.nickname || '';
         document.getElementById('input-save-code').value = '';
+        renderProfileWardrobe();
         document.getElementById('modal-login').classList.remove('hidden');
       }
       function saveAccountBinding(provider, bound) {
         const nick = (document.getElementById('input-nickname').value || '').trim() || '兔兔小隊長';
-        saveData.account = { bound, provider, nickname: nick, avatar: saveData.unlockedCards[0] || 'sp_strawberry' };
-        persistSave(); syncGlobalCounters(); closeAllModals(); SFX.found();
-        showToast(`歡迎「${nick}」！`);
+        saveData.account = { bound, provider, nickname: nick, avatar: saveData.account.avatar || saveData.unlockedCards[0] || 'sp_strawberry' };
+        persistSave(); syncGlobalCounters(); renderProfileWardrobe(); SFX.found();
+        showToast(`已儲存「${nick}」！`);
       }
       document.getElementById('btn-home-account').addEventListener('click', openLoginModal);
       document.getElementById('btn-close-login').addEventListener('click', closeAllModals);
       document.getElementById('btn-save-guest').addEventListener('click', () => saveAccountBinding('本機', false));
+
+      // Daily Lucky Gacha (#7)
+      let gachaSpinning = false;
+      const GACHA_PAID_COST = 80;
+      const GACHA_MAX_PAID = 5;
+      function ensureGachaFresh() {
+        const t = todayStr();
+        if (!saveData.gacha || saveData.gacha.date !== t) {
+          saveData.gacha = { date: t, freeUsed: false, paidCount: 0 };
+        }
+      }
+      function updateGachaUI() {
+        ensureGachaFresh();
+        const g = saveData.gacha;
+        const pill = document.getElementById('gacha-quota-pill');
+        const btn = document.getElementById('btn-gacha-spin');
+        if (!g.freeUsed) {
+          if (pill) pill.textContent = '今日免費 1 次！';
+          if (btn) { btn.textContent = '免費抽一次！'; btn.disabled = false; btn.style.opacity = '1'; }
+        } else if (g.paidCount < GACHA_MAX_PAID) {
+          const left = GACHA_MAX_PAID - g.paidCount;
+          if (pill) pill.textContent = `今日金幣加抽剩餘 ${left}/${GACHA_MAX_PAID} 次`;
+          if (btn) { btn.textContent = `${GACHA_PAID_COST} 金幣再抽一次`; btn.disabled = false; btn.style.opacity = '1'; }
+        } else {
+          if (pill) pill.textContent = '今日扭蛋次數已用完，明天再來！';
+          if (btn) { btn.textContent = '明日再來免費抽'; btn.disabled = true; btn.style.opacity = '0.55'; }
+        }
+      }
+      function openGachaModal() {
+        ensureGachaFresh();
+        document.getElementById('gacha-idle-view').classList.remove('hidden');
+        document.getElementById('gacha-result-view').classList.add('hidden');
+        updateGachaUI();
+        document.getElementById('modal-gacha').classList.remove('hidden');
+      }
+      function spinDailyGacha() {
+        if (gachaSpinning) return;
+        ensureGachaFresh();
+        const g = saveData.gacha;
+        const isFree = !g.freeUsed;
+        if (!isFree) {
+          if (g.paidCount >= GACHA_MAX_PAID) { SFX.wrong(); showToast('今日扭蛋次數已達上限！'); return; }
+          if (saveData.coins < GACHA_PAID_COST) { SFX.wrong(); showToast(`需要 ${GACHA_PAID_COST} 金幣才能加抽！`); return; }
+          saveData.coins -= GACHA_PAID_COST;
+          g.paidCount += 1;
+        } else {
+          g.freeUsed = true;
+        }
+        gachaSpinning = true;
+        const idleV = document.getElementById('gacha-idle-view');
+        const resV = document.getElementById('gacha-result-view');
+        const capImg = document.getElementById('gacha-capsule-img');
+        idleV.classList.remove('hidden'); resV.classList.add('hidden');
+        let ticks = 0;
+        const shakeId = setInterval(() => {
+          ticks++;
+          SFX.tap();
+          if (capImg) capImg.style.transform = ticks % 2 === 0 ? 'rotate(-10deg) scale(1.06)' : 'rotate(10deg) scale(1.06)';
+        }, 120);
+        setTimeout(() => {
+          clearInterval(shakeId);
+          if (capImg) capImg.style.transform = '';
+          gachaSpinning = false;
+          if (!Array.isArray(saveData.ownedFrames)) saveData.ownedFrames = [];
+          const roll = Math.random() * 100;
+          let prize = { img: SPRITE_SRCS.ui_coin, badge: '幸運金幣', color: '#C47F17', title: '+60 金幣', sub: '已入袋' };
+          if (roll < 30) {
+            saveData.coins += 60;
+            prize = { img: SPRITE_SRCS.ui_coin, badge: '幸運金幣', color: '#C47F17', title: '+60 金幣', sub: '日常小確幸！' };
+          } else if (roll < 50) {
+            saveData.coins += 120;
+            prize = { img: SPRITE_SRCS.ui_coin, badge: '雙倍好運', color: '#D97706', title: '+120 金幣', sub: '手氣很不錯喔！' };
+          } else if (roll < 58) {
+            saveData.coins += 250;
+            prize = { img: SPRITE_SRCS.ui_coin, badge: '大獎金幣', color: '#EA580C', title: '+250 金幣', sub: '滿滿一袋金幣！' };
+          } else if (roll < 69) {
+            saveData.items.time_plus = (saveData.items.time_plus || 0) + 1;
+            prize = { img: 'assets/item_time_plus.png', badge: '冒險道具', color: '#2D6A54', title: '魔法加時鐘 ×1', sub: '尋寶時可延長 30 秒' };
+          } else if (roll < 79) {
+            saveData.items.golden_carrot = (saveData.items.golden_carrot || 0) + 1;
+            prize = { img: 'assets/item_golden_carrot.png', badge: '冒險道具', color: '#D97706', title: '黃金紅蘿蔔 ×1', sub: '直接幫你找到兔兔' };
+          } else if (roll < 87) {
+            saveData.items.carrot_juice = (saveData.items.carrot_juice || 0) + 1;
+            prize = { img: 'assets/item_carrot_juice.png', badge: '冒險道具', color: '#EA580C', title: '體力胡蘿蔔汁 ×1', sub: '隨時恢復 1 點體力' };
+          } else if (roll < 92) {
+            if (!saveData.ownedFrames.includes('frame_royal')) {
+              saveData.ownedFrames.push('frame_royal');
+              if (!saveData.activeFrame) saveData.activeFrame = 'frame_royal';
+              prize = { img: SPRITE_SRCS.frame_royal, badge: '限定大獎', color: '#B45309', title: '傳說黃金星冠框', sub: '已收藏！主頁左上角可換上' };
+            } else {
+              saveData.coins += 200;
+              prize = { img: SPRITE_SRCS.ui_coin, badge: '星冠轉換', color: '#D97706', title: '+200 金幣', sub: '已擁有星冠框，改贈金幣！' };
+            }
+          } else {
+            const targetRarity = roll < 97 ? 'SR' : 'SSR';
+            const lockedPool = BUNNY_CATALOG.filter(b => b.rarity === targetRarity && !saveData.unlockedCards.includes(b.id));
+            if (lockedPool.length > 0) {
+              const pick = lockedPool[Math.floor(Math.random() * lockedPool.length)];
+              saveData.unlockedCards.push(pick.id);
+              prize = { img: SPRITE_SRCS[pick.id], badge: `${targetRarity} 稀有兔兔`, color: targetRarity === 'SSR' ? '#D97706' : '#8652A8', title: pick.name, sub: '新兔兔已收入圖鑑！' };
+            } else {
+              saveData.coins += 180;
+              prize = { img: SPRITE_SRCS.ui_coin, badge: '全滿獎勵', color: '#8652A8', title: '+180 金幣', sub: '此稀有度已收齊，改贈金幣！' };
+            }
+          }
+          document.getElementById('gacha-result-img').src = prize.img;
+          const rb = document.getElementById('gacha-result-badge');
+          rb.textContent = prize.badge; rb.style.background = prize.color;
+          document.getElementById('gacha-result-title').textContent = prize.title;
+          document.getElementById('gacha-result-sub').textContent = prize.sub;
+          idleV.classList.add('hidden'); resV.classList.remove('hidden');
+          SFX.found(); persistSave(); syncGlobalCounters(); updateGachaUI();
+        }, 650);
+      }
+      document.getElementById('btn-home-gacha').addEventListener('click', openGachaModal);
+      document.getElementById('btn-close-gacha').addEventListener('click', closeAllModals);
+      document.getElementById('btn-gacha-spin').addEventListener('click', spinDailyGacha);
       document.getElementById('btn-export-save').addEventListener('click', exportSaveCode);
       document.getElementById('btn-import-save').addEventListener('click', importSaveCode);
       document.getElementById('btn-replay-tutorial').addEventListener('click', () => { closeAllModals(); openTutorial(); });

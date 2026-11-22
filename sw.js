@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bunny-hide-seek-v32';
+const CACHE_NAME = 'bunny-hide-seek-v33';
 const CORE_URLS = [
   './',
   './index.html',
