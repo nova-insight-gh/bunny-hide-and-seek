@@ -765,8 +765,9 @@
               </button>
             </div>
             <div class="flex items-center pointer-events-auto" style="gap:4px;">
-              <button id="btn-farm-weather" type="button" class="rounded-full font-black shadow-sm active:scale-95 whitespace-nowrap" style="background:rgba(255,250,240,0.92);color:#5A3A28;border:1.5px solid #D9B88F;font-size:10px;padding:4px 8px;">
-                暖陽晴天
+              <button id="btn-farm-weather" type="button" class="rounded-full font-black shadow-sm active:scale-95 whitespace-nowrap flex items-center" style="background:rgba(255,250,240,0.92);color:#5A3A28;border:1.5px solid #D9B88F;font-size:10px;padding:3px 8px 3px 5px;gap:3px;">
+                <img id="farm-weather-icon" src="assets/weather_sunny.png" alt="天氣" class="w-4 h-4 object-contain shrink-0" />
+                <span id="farm-weather-label">晴天</span>
               </button>
               <button id="btn-farm-ad-boost" type="button" class="rounded-full font-black shadow-sm active:scale-95 whitespace-nowrap" style="background:#EDF6FC;color:#3B6E9C;border:1.5px solid #6CA6D9;font-size:10px;padding:4px 8px;">
                 廣告 -30分
@@ -1642,6 +1643,16 @@
       farm_bed_bolobao: "assets/farm_bed_bolobao.png",
       farm_bed_pumpkin: "assets/farm_bed_pumpkin.png",
       farm_bed_macaron: "assets/farm_bed_macaron.png",
+      farm_butterfly: "assets/farm_butterfly.png",
+      farm_weed: "assets/farm_weed.png",
+      farm_bloom: "assets/farm_bloom.png",
+      farm_waterdrop: "assets/farm_waterdrop.png",
+      farm_rainbow: "assets/farm_rainbow.png",
+      farm_sakura_petal: "assets/farm_sakura_petal.png",
+      weather_sunny: "assets/weather_sunny.png",
+      weather_rain: "assets/weather_rain.png",
+      weather_rainbow: "assets/weather_rainbow.png",
+      weather_sakura: "assets/weather_sakura.png",
       bg_meadow: "assets/bg_meadow.webp",
       bg_sakura: "assets/bg_sakura.webp",
       bg_hk: "assets/bg_hk.webp",
@@ -2231,7 +2242,11 @@
       const wInfo = getFarmWeather();
       const wPill = document.getElementById('btn-farm-weather');
       if (wPill) {
-        wPill.textContent = wInfo.shortLabel;
+        const wLbl = document.getElementById('farm-weather-label');
+        const wIco = document.getElementById('farm-weather-icon');
+        if (wLbl) wLbl.textContent = wInfo.shortLabel;
+        else wPill.textContent = wInfo.shortLabel;
+        if (wIco && wInfo.icon && SPRITE_SRCS[wInfo.icon]) wIco.src = SPRITE_SRCS[wInfo.icon];
         wPill.style.background = wInfo.bg;
         wPill.style.color = wInfo.color;
         wPill.style.borderColor = wInfo.border;
@@ -2758,16 +2773,18 @@
       }
       gCtx.restore();
 
-      // Screen-space Dynamic Weather Overlay (Rainbow arc / Rain streaks / Sakura petals)
+      // Screen-space Dynamic Weather Overlay (Watercolor Rainbow PNG / Rain streaks / Sakura Petal PNG)
       const curW = getFarmWeather().id;
       if (curW === 'rainbow') {
-        gCtx.save();
-        const cols = ['rgba(255,154,162,0.28)', 'rgba(255,218,133,0.28)', 'rgba(162,226,184,0.28)', 'rgba(148,202,248,0.28)'];
-        cols.forEach((col, i) => {
-          gCtx.strokeStyle = col; gCtx.lineWidth = 8;
-          gCtx.beginPath(); gCtx.arc(vw * 0.85, 115, 118 - i * 9, Math.PI, Math.PI * 1.55); gCtx.stroke();
-        });
-        gCtx.restore();
+        const rbImg = IMAGES.farm_rainbow;
+        if (rbImg && rbImg.complete && rbImg.naturalWidth > 0) {
+          gCtx.save();
+          gCtx.globalAlpha = 0.84 + Math.sin(tSec * 1.6) * 0.06;
+          const rbW = Math.min(vw * 0.88, 330);
+          const rbH = rbW * 0.5;
+          gCtx.drawImage(rbImg, (vw - rbW) / 2, 54 + Math.sin(tSec * 1.2) * 3, rbW, rbH);
+          gCtx.restore();
+        }
       } else if (curW === 'rain') {
         gCtx.save();
         gCtx.strokeStyle = 'rgba(165, 212, 248, 0.55)'; gCtx.lineWidth = 1.6;
@@ -2776,11 +2793,15 @@
         }
         gCtx.restore();
       } else if (curW === 'sakura') {
+        const petImg = IMAGES.farm_sakura_petal;
         gCtx.save();
         for (const wp of gardenState.weatherParticles) {
           gCtx.save(); gCtx.translate(wp.x, wp.y); gCtx.rotate(wp.rot);
-          gCtx.fillStyle = 'rgba(255, 186, 210, 0.78)';
-          gCtx.beginPath(); gCtx.ellipse(0, 0, wp.size, wp.size * 0.55, 0, 0, Math.PI * 2); gCtx.fill();
+          if (petImg && petImg.complete && petImg.naturalWidth > 0) {
+            const ps = wp.size * 2.4;
+            gCtx.globalAlpha = 0.88;
+            gCtx.drawImage(petImg, -ps / 2, -ps / 2, ps, ps);
+          }
           gCtx.restore();
         }
         gCtx.restore();
@@ -5251,32 +5272,32 @@
             c.translate(center.x, center.y + 4);
             c.rotate(sway);
             c.drawImage(sproutImg, -sSize / 2, -sSize * 0.78, sSize, sSize);
-            // Stage 2 (>= 50% progress): Cute blooming pink/cream flower buds!
-            if (prog >= 0.5) {
-              const buds = [[-sSize*0.26, -sSize*0.42, '#F9A8D4'], [sSize*0.24, -sSize*0.38, '#FDE68A'], [0, -sSize*0.64, '#FBCFE8']];
-              for (const [bx, by, col] of buds) {
-                c.fillStyle = col; c.strokeStyle = '#5A3A28'; c.lineWidth = 1.4;
-                c.beginPath(); c.arc(bx, by, 4.2, 0, Math.PI * 2); c.fill(); c.stroke();
-              }
+            // Stage 2 (>= 50% progress): Watercolor blooming pastel flower cluster PNG!
+            if (prog >= 0.5 && IMAGES.farm_bloom && IMAGES.farm_bloom.complete && IMAGES.farm_bloom.naturalWidth > 0) {
+              const bSz = sSize * 0.72;
+              c.drawImage(IMAGES.farm_bloom, -bSz / 2, -sSize * 0.96, bSz, bSz);
             }
             c.restore();
           }
-          // Field mini-event: Cute Weed tuft or fluttering Butterfly!
-          if (p.event === 'butterfly') {
-            const bfx = center.x + Math.sin(tSec * 4 + idx) * 14;
-            const bfy = center.y - 12 + Math.cos(tSec * 6 + idx) * 5;
-            const flap = 0.65 + Math.abs(Math.sin(tSec * 14 + idx)) * 0.45;
-            c.save(); c.translate(bfx, bfy);
-            c.fillStyle = '#FBCFE8'; c.strokeStyle = '#5A3A28'; c.lineWidth = 1.2;
-            c.beginPath(); c.ellipse(-5 * flap, -2, 5.5 * flap, 4.2, -0.3, 0, Math.PI * 2); c.fill(); c.stroke();
-            c.beginPath(); c.ellipse(5 * flap, -2, 5.5 * flap, 4.2, 0.3, 0, Math.PI * 2); c.fill(); c.stroke();
+          // Field mini-event: Watercolor Weed tuft PNG or fluttering Butterfly PNG!
+          if (p.event === 'butterfly' && IMAGES.farm_butterfly && IMAGES.farm_butterfly.complete && IMAGES.farm_butterfly.naturalWidth > 0) {
+            const bfx = center.x + Math.sin(tSec * 3.8 + idx) * 14;
+            const bfy = center.y - 14 + Math.cos(tSec * 5.6 + idx) * 5;
+            const flapX = 0.62 + Math.abs(Math.sin(tSec * 12 + idx)) * 0.38;
+            const bSz = 26;
+            c.save();
+            c.translate(bfx, bfy);
+            c.rotate(Math.sin(tSec * 3.8 + idx) * 0.18);
+            c.scale(flapX, 1);
+            c.drawImage(IMAGES.farm_butterfly, -bSz / 2, -bSz / 2, bSz, bSz);
             c.restore();
-          } else if (p.event === 'weed') {
-            const wx2 = center.x - 14, wy2 = center.y + 8;
-            c.save(); c.strokeStyle = '#4D7C0F'; c.lineWidth = 2.4;
-            c.beginPath(); c.moveTo(wx2, wy2); c.lineTo(wx2 - 6, wy2 - 11);
-            c.moveTo(wx2, wy2); c.lineTo(wx2, wy2 - 13);
-            c.moveTo(wx2, wy2); c.lineTo(wx2 + 6, wy2 - 10); c.stroke();
+          } else if (p.event === 'weed' && IMAGES.farm_weed && IMAGES.farm_weed.complete && IMAGES.farm_weed.naturalWidth > 0) {
+            const wx2 = center.x - 15, wy2 = center.y + 8;
+            const wSz = 24;
+            c.save();
+            c.translate(wx2, wy2);
+            c.rotate(Math.sin(tSec * 3.2 + idx) * 0.08);
+            c.drawImage(IMAGES.farm_weed, -wSz / 2, -wSz * 0.85, wSz, wSz);
             c.restore();
           }
           // Compact top-right badge showing clearly WHICH crop is growing without covering the seedling
@@ -5300,20 +5321,9 @@
           c.font = '900 8.5px "Noto Sans TC", sans-serif';
           c.textAlign = 'center'; c.textBaseline = 'middle';
           c.fillText(formatFarmCountdown(rem), center.x, top + sz - 5.5);
-          if (!p.watered) {
-            const wx = left + 8, wy = top + 9 + Math.sin(tSec * 5 + idx) * 1.6;
-            c.save();
-            c.fillStyle = 'rgba(237, 246, 252, 0.96)';
-            c.strokeStyle = '#6CA6D9';
-            c.lineWidth = 1.4;
-            c.beginPath(); c.arc(wx, wy, 9.5, 0, Math.PI * 2); c.fill(); c.stroke();
-            c.fillStyle = '#3B82F6';
-            c.beginPath();
-            c.moveTo(wx, wy - 5.5);
-            c.bezierCurveTo(wx + 4.5, wy, wx + 4.2, wy + 5.2, wx, wy + 5.2);
-            c.bezierCurveTo(wx - 4.2, wy + 5.2, wx - 4.5, wy, wx, wy - 5.5);
-            c.fill();
-            c.restore();
+          if (!p.watered && IMAGES.farm_waterdrop && IMAGES.farm_waterdrop.complete && IMAGES.farm_waterdrop.naturalWidth > 0) {
+            const wx = left + 8, wy = top + 9 + Math.sin(tSec * 5 + idx) * 1.8;
+            c.drawImage(IMAGES.farm_waterdrop, wx - 11, wy - 11, 22, 22);
           }
         }
 
@@ -5941,10 +5951,10 @@
 
     // ---- PHASE 3: WEATHER, HOT CROPS, WILD BUNNY, SWIPE HARVEST, REPLANT, CAFE & DEX ----
     const FARM_WEATHERS = [
-      { id: 'sunny',   name: '暖陽晴天', shortLabel: '晴天',          desc: '陽光明媚的好天氣，兔兔們在農場開心地跳來跳去！', bg: 'rgba(255,250,240,0.92)', color: '#6B4F40', border: '#D9B88F' },
-      { id: 'rain',    name: '毛毛細雨', shortLabel: '細雨 速+20%',   desc: '全場作物自動免澆水，生長速度額外加速 +20%！', bg: '#EDF6FC', color: '#3B6E9C', border: '#6CA6D9' },
-      { id: 'rainbow', name: '彩虹放晴', shortLabel: '彩虹 黃金×2',   desc: '天空掛起粉彩彩虹，黃金突變大作物機率直接雙倍！', bg: '#FFF8EB', color: '#9A5410', border: '#E5B974' },
-      { id: 'sakura',  name: '櫻花微風', shortLabel: '櫻花 價+15%',   desc: '漫天櫻花飄落農場，農夫市集全場作物賣價額外 +15%！', bg: '#FFF1F5', color: '#B54A6A', border: '#E89EB5' }
+      { id: 'sunny',   icon: 'weather_sunny',   name: '暖陽晴天', shortLabel: '晴天',          desc: '陽光明媚的好天氣，兔兔們在農場開心地跳來跳去！', bg: 'rgba(255,250,240,0.92)', color: '#6B4F40', border: '#D9B88F' },
+      { id: 'rain',    icon: 'weather_rain',    name: '毛毛細雨', shortLabel: '細雨 速+20%',   desc: '全場作物自動免澆水，生長速度額外加速 +20%！', bg: '#EDF6FC', color: '#3B6E9C', border: '#6CA6D9' },
+      { id: 'rainbow', icon: 'weather_rainbow', name: '彩虹放晴', shortLabel: '彩虹 黃金×2',   desc: '天空掛起粉彩彩虹，黃金突變大作物機率直接雙倍！', bg: '#FFF8EB', color: '#9A5410', border: '#E5B974' },
+      { id: 'sakura',  icon: 'weather_sakura',  name: '櫻花微風', shortLabel: '櫻花 價+15%',   desc: '漫天櫻花飄落農場，農夫市集全場作物賣價額外 +15%！', bg: '#FFF1F5', color: '#B54A6A', border: '#E89EB5' }
     ];
 
     function getFarmWeather() {
