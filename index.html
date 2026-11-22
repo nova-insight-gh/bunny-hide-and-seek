@@ -467,7 +467,7 @@
 </head>
 <body>
   <div id="app-shell">
-    <div id="logo-splash" aria-label="Nova Insight Studio" style="flex-direction:column;gap:14px;">
+    <div id="logo-splash" aria-label="Nova Insight Studio">
       <div class="logo-rig">
         <img class="logo-ring" src="assets/logo/ring.png" alt="" />
         <img class="logo-moon" src="assets/logo/moon.png" alt="" />
@@ -476,9 +476,24 @@
         <img class="logo-seal" src="assets/logo/seal.png" alt="" />
         <img class="logo-text" src="assets/logo/text.png" alt="Nova Insight Studio" />
       </div>
-      <div id="splash-progress-wrap" style="width:140px;height:5px;border-radius:9999px;background:rgba(90,58,40,0.14);overflow:hidden;opacity:0;transition:opacity 0.25s ease;">
-        <div id="splash-progress-bar" style="width:12%;height:100%;border-radius:9999px;background:linear-gradient(90deg,#FF924C,#FFB830);transition:width 0.18s ease;"></div>
+    </div>
+
+    <div id="bunny-loader" class="is-hidden" aria-label="載入中">
+      <div class="loader-stage">
+        <img class="loader-ground-carrot" src="assets/ui_carrot_single.png" alt="紅蘿蔔" />
+        <img class="loader-sparkle" src="assets/ui_star.webp" alt="" />
+        <div class="loader-runner">
+          <div class="loader-shadow"></div>
+          <div class="loader-bunny-wrap">
+            <img class="loader-bunny-img" src="assets/decoy_white.webp" alt="兔兔" />
+            <img class="loader-carry-carrot" src="assets/ui_carrot_single.png" alt="" />
+          </div>
+        </div>
       </div>
+      <div class="w-52 h-3 bg-[#EAD9C3] rounded-full p-0.5 border-2 border-[#5A3A28] overflow-hidden mb-2">
+        <div id="loader-progress-bar" class="h-full rounded-full bg-gradient-to-r from-[#FF924C] to-[#FFB830] transition-all duration-200" style="width: 15%"></div>
+      </div>
+      <div id="loader-label" class="text-xs font-black text-[#5A3A28] tracking-wide">正在準備兔兔樂園…</div>
     </div>
 
     <!-- ===================================================================== -->
@@ -2468,110 +2483,141 @@
       const clampX = (v) => Math.max(minX, Math.min(maxX, v));
       const clampY = (v) => Math.max(minY, Math.min(maxY, v));
 
+      // Solid 3D prop obstacles so bunnies hop around tables/swings/houses instead of clipping or jittering!
+      const propObstacles = [];
+      for (const t of saveData.gardenGrid) {
+        const meta = DECOR_BY_ID[t.id];
+        if (meta && meta.layer === 'prop') {
+          const pc = cellCenter(t.col, t.row, m);
+          propObstacles.push({ x: pc.x, y: pc.y + 4, r: m.cell * 0.44 });
+        }
+      }
+      const isBlockedByProp = (wx, wy) => propObstacles.some(o => Math.hypot(wx - o.x, wy - o.y) < o.r);
+
       for (let i = 0; i < gardenState.bunnies.length; i++) {
         const b = gardenState.bunnies[i];
         if (b.reactTime > 0) b.reactTime = Math.max(0, b.reactTime - dt);
-        if (b.facingCooldown > 0) b.facingCooldown = Math.max(0, b.facingCooldown - dt);
         if (!b.heartReady && nowMs >= (saveData.gardenCoinReadyAt[b.id] || 0)) {
           b.heartReady = true;
         }
-        if (!b.mode) {
-          b.mode = 'roam';
-          b.modeTimer = 1.4 + Math.random() * 2.4;
+        if (b.bubbleTimer > 0) b.bubbleTimer = Math.max(0, b.bubbleTimer - dt);
+
+        // Initialize discrete natural rabbit hop state
+        if (b.hopRest === undefined) {
+          b.hopping = false;
+          b.hopProgress = 0;
+          b.hopDuration = 0.44;
+          b.hopHeight = 14;
+          b.hopFromX = b.x; b.hopFromY = b.y;
+          b.hopToX = b.x; b.hopToY = b.y;
+          b.hopRest = 0.6 + Math.random() * 1.6;
           b.destX = clampX(b.x); b.destY = clampY(b.y);
-          b.arrived = true;
-          b.idlePause = 0.4;
-          b.hopAmp = 0;
+          b.mode = 'roam';
+          b.modeTimer = 2.0 + Math.random() * 2.5;
         }
 
-        if (b.bubbleTimer > 0) b.bubbleTimer = Math.max(0, b.bubbleTimer - dt);
+        // If currently mid-hop, finish this single smooth parabolic jump cleanly!
+        if (b.hopping) {
+          b.hopProgress += dt / b.hopDuration;
+          if (b.hopProgress >= 1) {
+            b.hopping = false;
+            b.hopProgress = 0;
+            b.x = b.hopToX;
+            b.y = b.hopToY;
+            b.hopRest = 0.36 + Math.random() * 0.42;
+          } else {
+            b.x = b.hopFromX + (b.hopToX - b.hopFromX) * b.hopProgress;
+            b.y = b.hopFromY + (b.hopToY - b.hopFromY) * b.hopProgress;
+          }
+          continue;
+        }
+
+        // Sitting completely still on the ground between hops (ZERO buzzing/vibration!)
         b.modeTimer -= dt;
         if (b.modeTimer <= 0) {
-          // Duty Helper Bunnies actively patrol planted farm plots and pause smoothly beside them!
+          let foundSpot = false;
           if (b.isFarmHelper && saveData.farm && Array.isArray(saveData.farm.plots) && saveData.farm.plots.length > 0 && Math.random() < 0.78) {
             const pList = saveData.farm.plots.filter(p => p && p.cropId);
             const pickP = (pList.length > 0 ? pList : saveData.farm.plots)[Math.floor(Math.random() * (pList.length > 0 ? pList.length : saveData.farm.plots.length))];
             if (pickP) {
               const pc = cellCenter(pickP.col, pickP.row, m);
               const side = Math.random() < 0.5 ? -1 : 1;
-              b.mode = 'roam';
-              b.visitKey = null;
-              b.destX = clampX(pc.x + side * (30 + Math.random() * 14));
-              b.destY = clampY(pc.y + 14 + Math.random() * 14);
-              b.arrived = false;
-              b.idlePause = 0.15;
-              b.modeTimer = 4.2 + Math.random() * 2.8;
+              b.destX = clampX(pc.x + side * (34 + Math.random() * 14));
+              b.destY = clampY(pc.y + 18 + Math.random() * 12);
+              b.mode = 'roam'; b.visitKey = null;
+              b.modeTimer = 5.0 + Math.random() * 3.0;
               const cheers = ['顧田中！', '快長大！', '幫手澆水！', '好香呀！', '豐收啦！'];
               b.bubbleText = cheers[Math.floor(Math.random() * cheers.length)];
               b.bubbleTimer = 2.6;
-              continue;
+              foundSpot = true;
             }
           }
-          // 30% chance to pick a fixed cozy spot beside an uncrowded decor tile (no jittery orbiting!)
-          if (magnets.length > 0 && Math.random() < 0.30) {
+          if (!foundSpot && magnets.length > 0 && Math.random() < 0.30) {
             const avail = magnets.filter(mg => (magCounts.get(`${mg.col},${mg.row}`) || 0) < 2);
             if (avail.length > 0) {
               const pick = avail[Math.floor(Math.random() * avail.length)];
               const c = cellCenter(pick.col, pick.row, m);
-              const ang = Math.random() * Math.PI * 2;
-              const rad = m.cell * 0.62 + Math.random() * 10;
-              b.mode = 'visit';
-              b.visitKey = `${pick.col},${pick.row}`;
-              b.destX = clampX(c.x + Math.cos(ang) * rad);
-              b.destY = clampY(c.y + Math.sin(ang) * (rad * 0.78));
-              b.arrived = false;
-              b.idlePause = 0.2;
-              magCounts.set(b.visitKey, (magCounts.get(b.visitKey) || 0) + 1);
-              b.modeTimer = 4.5 + Math.random() * 3.5;
-            } else {
-              b.mode = 'roam'; b.visitKey = null;
-              b.destX = clampX(minX + Math.random() * (maxX - minX));
-              b.destY = clampY(minY + Math.random() * (maxY - minY));
-              b.arrived = false; b.idlePause = 0.3; b.modeTimer = 3.6 + Math.random() * 3.4;
+              for (let tries = 0; tries < 6; tries++) {
+                const ang = Math.random() * Math.PI * 2;
+                const rad = m.cell * 0.78 + Math.random() * 12;
+                const tx = clampX(c.x + Math.cos(ang) * rad);
+                const ty = clampY(c.y + Math.sin(ang) * rad);
+                if (!isBlockedByProp(tx, ty)) {
+                  b.mode = 'visit'; b.visitKey = `${pick.col},${pick.row}`;
+                  b.destX = tx; b.destY = ty;
+                  magCounts.set(b.visitKey, (magCounts.get(b.visitKey) || 0) + 1);
+                  b.modeTimer = 5.5 + Math.random() * 3.5;
+                  foundSpot = true;
+                  break;
+                }
+              }
             }
-          } else {
-            b.mode = 'roam';
-            b.visitKey = null;
-            b.destX = clampX(minX + Math.random() * (maxX - minX));
-            b.destY = clampY(minY + Math.random() * (maxY - minY));
-            b.arrived = false;
-            b.idlePause = 0.5 + Math.random() * 1.2;
-            b.modeTimer = 3.8 + Math.random() * 3.8;
+          }
+          if (!foundSpot) {
+            b.mode = 'roam'; b.visitKey = null;
+            for (let tries = 0; tries < 8; tries++) {
+              const tx = clampX(minX + Math.random() * (maxX - minX));
+              const ty = clampY(minY + Math.random() * (maxY - minY));
+              if (!isBlockedByProp(tx, ty)) { b.destX = tx; b.destY = ty; break; }
+            }
+            b.modeTimer = 4.5 + Math.random() * 4.0;
           }
         }
 
-        if (b.idlePause > 0) {
-          b.idlePause = Math.max(0, b.idlePause - dt);
-          b.hopAmp = Math.max(0, (b.hopAmp || 0) - dt * 4);
+        if (b.hopRest > 0) {
+          b.hopRest -= dt;
           continue;
         }
 
-        if (b.arrived) {
-          b.hopAmp = Math.max(0, (b.hopAmp || 0) - dt * 5);
-          continue;
-        }
-
+        // Start a single clean hop toward (destX, destY), steering around any solid prop!
         const dx = b.destX - b.x, dy = b.destY - b.y;
         const dist = Math.hypot(dx, dy);
-        if (dist > 4.5) {
-          const spd = 64;
-          const step = Math.min(dist, spd * dt);
-          b.x += (dx / dist) * step;
-          b.y += (dy / dist) * step;
-          if (Math.abs(dx) > 10 && (b.facingCooldown || 0) <= 0) {
-            const wantFacing = dx >= 0 ? 1 : -1;
-            if (wantFacing !== b.facing) {
-              b.facing = wantFacing;
-              b.facingCooldown = 0.45;
-            }
+        if (dist > 14) {
+          const baseAng = Math.atan2(dy, dx);
+          const stepLen = Math.min(dist, 34 + Math.random() * 12);
+          const offsets = [0, 0.85, -0.85, 1.55, -1.55];
+          let chosenX = null, chosenY = null;
+          for (const off of offsets) {
+            const tx = clampX(b.x + Math.cos(baseAng + off) * stepLen);
+            const ty = clampY(b.y + Math.sin(baseAng + off) * stepLen);
+            if (!isBlockedByProp(tx, ty)) { chosenX = tx; chosenY = ty; break; }
           }
-          b.hopPhase += dt * 8.2;
-          b.hopAmp = Math.min(1, (b.hopAmp || 0) + dt * 5);
+          if (chosenX !== null) {
+            b.hopFromX = b.x; b.hopFromY = b.y;
+            b.hopToX = chosenX; b.hopToY = chosenY;
+            if (Math.abs(chosenX - b.x) > 5) b.facing = chosenX >= b.x ? 1 : -1;
+            b.hopping = true;
+            b.hopProgress = 0;
+            b.hopDuration = 0.42 + Math.random() * 0.10;
+            b.hopHeight = 13 + Math.random() * 5;
+          } else {
+            // Completely surrounded: simply rest calmly and pick a new destination next cycle
+            b.hopRest = 1.0;
+            b.modeTimer = 0.2;
+          }
         } else {
-          b.x = b.destX;
-          b.y = b.destY;
-          b.arrived = true;
-          b.hopAmp = Math.max(0, (b.hopAmp || 0) - dt * 5);
+          // Arrived at cozy spot: relax peacefully until next modeTimer!
+          b.hopRest = 0.9 + Math.random() * 1.1;
         }
       }
 
@@ -2602,8 +2648,8 @@
       const wType = getFarmWeather().id;
       const vwNow = m.vw || 400, vhNow = m.vh || 700;
 
-      // Drifting clouds high along the top edge (sunny / rain / rainbow) so they animate smoothly without blocking farm plots
-      const wantClouds = wType === 'rain' ? 4 : (wType === 'rainbow' || wType === 'sunny') ? 3 : 0;
+      // Soft drifting clouds only during rain weather (zero clouds blocking rainbow or sunny sky!)
+      const wantClouds = wType === 'rain' ? 3 : 0;
       if (wantClouds > 0) {
         while (gardenState.weatherClouds.length < wantClouds) {
           const ci = gardenState.weatherClouds.length;
@@ -2796,15 +2842,26 @@
           if (!img || !img.complete) continue;
           const h = Math.max(52, cell * 0.88);
           const w = h * (img.naturalWidth / (img.naturalHeight || 1));
-          let jumpY = Math.abs(Math.sin(b.hopPhase)) * 9 * (b.hopAmp || 0);
+          let jumpY = 0, sx = 1, sy = 1;
+          if (b.hopping) {
+            const hp = Math.sin(b.hopProgress * Math.PI);
+            jumpY = hp * (b.hopHeight || 14);
+            sx = 1 - hp * 0.06;
+            sy = 1 + hp * 0.08;
+          } else {
+            const br = Math.sin(tSec * 2.4 + b.phase);
+            sx = 1 + br * 0.02;
+            sy = 1 - br * 0.02;
+          }
           if (b.reactTime > 0) jumpY += Math.sin((b.reactTime / 0.45) * Math.PI) * 20;
 
+          const sh = Math.max(0.65, 1 - jumpY / 48);
           gCtx.fillStyle = 'rgba(60, 40, 25, 0.18)';
-          gCtx.beginPath(); gCtx.ellipse(b.x, b.y + 2, w * 0.34, 6, 0, 0, Math.PI * 2); gCtx.fill();
+          gCtx.beginPath(); gCtx.ellipse(b.x, b.y + 2, w * 0.34 * sh, 6 * sh, 0, 0, Math.PI * 2); gCtx.fill();
 
           gCtx.save();
           gCtx.translate(b.x, b.y - jumpY);
-          gCtx.scale(b.facing, 1);
+          gCtx.scale(b.facing * sx, sy);
           gCtx.drawImage(img, -w / 2, -h + 5, w, h);
           gCtx.restore();
 
@@ -2865,32 +2922,65 @@
       }
       gCtx.restore();
 
-      // Screen-space Animated Weather Overlay (Wide High-Sky Rainbow + Drifting Clouds + Rain Ripples + Sakura)
+      // Screen-space Animated Weather Overlay (Giant Top-Right -> Bottom-Right Progressive Rainbow + Rain Ripples + Sakura)
       const curW = getFarmWeather().id;
       if (curW === 'rainbow') {
         const rbImg = IMAGES.farm_rainbow;
         if (rbImg && rbImg.complete && rbImg.naturalWidth > 0) {
-          gCtx.save();
-          const rbW = vw * 1.18;
-          const rbH = rbW * (260 / 760);
-          const rbX = (vw - rbW) / 2;
-          const rbY = 26 + Math.sin(tSec * 1.1) * 3;
-          gCtx.globalAlpha = 0.72 + Math.sin(tSec * 1.6) * 0.10;
-          gCtx.drawImage(rbImg, rbX, rbY, rbW, rbH);
-          // Animated shimmering starlight sparkles drifting along the high rainbow arch
-          if (IMAGES.ui_star && IMAGES.ui_star.complete) {
-            for (const sp of gardenState.weatherSparkles) {
-              const p = sp.life / sp.maxLife;
-              const a = Math.sin(p * Math.PI);
-              const sx = rbX + sp.t * rbW;
-              const arch = Math.sin(sp.t * Math.PI);
-              const sy = rbY + rbH * (0.86 - arch * 0.72) + sp.offY;
-              const sz = sp.size * (0.65 + a * 0.45);
-              gCtx.globalAlpha = a * 0.85;
-              gCtx.drawImage(IMAGES.ui_star, sx - sz / 2, sy - sz / 2, sz, sz);
+          const cycle = tSec % 14.0;
+          let reveal = 0, masterAlpha = 0;
+          if (cycle < 4.2) {
+            // Smoothly grow/paint downward from Top-Right to Bottom-Right!
+            const u = cycle / 4.2;
+            reveal = 1 - Math.pow(1 - u, 2.2); // easeOut
+            masterAlpha = Math.min(1, u * 3.0) * 0.82;
+          } else if (cycle < 10.6) {
+            reveal = 1.0;
+            masterAlpha = 0.74 + Math.sin(tSec * 1.8) * 0.08;
+          } else if (cycle < 12.8) {
+            reveal = 1.0;
+            masterAlpha = (1 - (cycle - 10.6) / 2.2) * 0.76;
+          }
+
+          if (masterAlpha > 0.01 && reveal > 0.01) {
+            const rbH = vh * 0.88;
+            const rbW = rbH * (480 / 840);
+            const rbX = vw - rbW * 0.76;
+            const rbY = vh * 0.06;
+
+            gCtx.save();
+            // Progressive reveal clip from Top-Right downward toward Bottom-Right
+            gCtx.beginPath();
+            gCtx.rect(rbX - 20, rbY - 10, rbW + 40, (rbH + 20) * reveal);
+            gCtx.clip();
+            gCtx.globalAlpha = masterAlpha;
+            gCtx.drawImage(rbImg, rbX, rbY, rbW, rbH);
+            gCtx.restore();
+
+            // Twinkling golden sparkles along the revealed right-side rainbow arc + glowing growth tip!
+            if (IMAGES.ui_star && IMAGES.ui_star.complete) {
+              gCtx.save();
+              for (const sp of gardenState.weatherSparkles) {
+                if (sp.t > reveal) continue;
+                const p = sp.life / sp.maxLife;
+                const a = Math.sin(p * Math.PI) * masterAlpha;
+                const curveX = Math.sin(sp.t * Math.PI); // bulges inward cleanly along the arc
+                const sx = rbX + rbW * (0.78 - curveX * 0.44) + sp.offY * 0.5;
+                const sy = rbY + sp.t * rbH;
+                const sz = sp.size * (0.65 + a * 0.5);
+                gCtx.globalAlpha = Math.min(1, a * 1.1);
+                gCtx.drawImage(IMAGES.ui_star, sx - sz / 2, sy - sz / 2, sz, sz);
+              }
+              if (reveal > 0.05 && reveal < 0.98) {
+                const tipCurve = Math.sin(reveal * Math.PI);
+                const tipX = rbX + rbW * (0.78 - tipCurve * 0.44);
+                const tipY = rbY + reveal * rbH;
+                gCtx.globalAlpha = 0.92;
+                gCtx.drawImage(IMAGES.ui_star, tipX - 13, tipY - 13, 26, 26);
+              }
+              gCtx.restore();
             }
           }
-          gCtx.restore();
         }
       } else if (curW === 'rain') {
         gCtx.save();
@@ -6652,11 +6742,18 @@
       document.addEventListener('pointerdown', () => BGM.unlockAndStart(), { once: true });
     }
 
-    function updateSplashProgress(progressPct = 20) {
-      const wrap = document.getElementById('splash-progress-wrap');
-      const bar = document.getElementById('splash-progress-bar');
-      if (wrap) wrap.style.opacity = '1';
-      if (bar) bar.style.width = `${Math.max(10, Math.min(100, progressPct))}%`;
+    function showBunnyLoader(label, progressPct = 20) {
+      const el = document.getElementById('bunny-loader');
+      const bar = document.getElementById('loader-progress-bar');
+      const txt = document.getElementById('loader-label');
+      if (txt && label) txt.textContent = label;
+      if (bar) bar.style.width = `${Math.max(8, Math.min(100, progressPct))}%`;
+      if (el) el.classList.remove('is-hidden');
+    }
+
+    function hideBunnyLoader() {
+      const el = document.getElementById('bunny-loader');
+      if (el) el.classList.add('is-hidden');
     }
 
     function preloadImages(onProgress, cb) {
@@ -6692,39 +6789,37 @@
         navigator.serviceWorker.register('./sw.js').catch(() => {});
       }
       const splash = document.getElementById('logo-splash');
-      let splashMinElapsed = false, gameReady = false, splashLeft = false;
+      let splashDone = false, gameReady = false, currentPct = 10;
 
-      const tryLeaveSplash = () => {
-        if (splashLeft || !gameReady || !splashMinElapsed) return;
-        splashLeft = true;
+      const leaveSplash = () => {
+        if (splashDone) return;
+        splashDone = true;
+        if (!gameReady) {
+          showBunnyLoader(`正在載入兔兔資源… ${currentPct}%`, currentPct);
+        }
         splash.classList.add('is-leaving');
         setTimeout(() => splash.remove(), 420);
       };
 
-      setTimeout(() => {
-        splashMinElapsed = true;
-        if (!gameReady) updateSplashProgress(25);
-        tryLeaveSplash();
-      }, 2800);
-      splash.addEventListener('pointerdown', () => {
-        splashMinElapsed = true;
-        tryLeaveSplash();
-      });
+      setTimeout(leaveSplash, 3100);
+      splash.addEventListener('pointerdown', leaveSplash);
 
       preloadImages(
         (pct) => {
-          if (splashMinElapsed && !gameReady) updateSplashProgress(pct);
+          currentPct = pct;
+          if (splashDone && !gameReady) {
+            showBunnyLoader(`正在載入兔兔資源… ${pct}%`, pct);
+          }
         },
         () => {
           gameReady = true;
-          updateSplashProgress(100);
           syncGlobalCounters();
           switchView('home');
           if (!saveData.tutorialDone) openTutorial();
           lastFrameTime = performance.now();
           if (state.rafId) cancelAnimationFrame(state.rafId);
           state.rafId = requestAnimationFrame(mainLoop);
-          tryLeaveSplash();
+          hideBunnyLoader();
         }
       );
     };
