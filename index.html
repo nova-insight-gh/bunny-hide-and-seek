@@ -747,23 +747,32 @@
               +開墾
             </button>
           </div>
-          <div class="flex items-center justify-between pointer-events-none" style="gap:4px;">
+          <div class="flex items-center justify-between flex-wrap pointer-events-none" style="gap:4px;">
             <div class="flex items-center pointer-events-auto" style="gap:4px;">
-              <button id="btn-farm-orders" type="button" class="rounded-full font-black shadow-sm active:scale-95 whitespace-nowrap flex items-center" style="position:relative;overflow:visible;background:#FFF6F8;color:#B54A6A;border:1.5px solid #E89EB5;font-size:10px;padding:4px 9px;gap:3px;">
+              <button id="btn-farm-orders" type="button" class="rounded-full font-black shadow-sm active:scale-95 whitespace-nowrap flex items-center" style="position:relative;overflow:visible;background:#FFF6F8;color:#B54A6A;border:1.5px solid #E89EB5;font-size:10px;padding:4px 8px;gap:3px;">
                 <img src="assets/item_carrot_juice.png" alt="訂單" class="w-3.5 h-3.5 object-contain shrink-0" />
-                <span>外賣訂單</span>
+                <span>訂單</span>
                 <span id="farm-order-badge" style="display:none;position:absolute;top:-5px;right:-4px;min-width:15px;height:15px;padding:0 3px;border-radius:9999px;background:#D97C98;color:#FFFFFF;border:1.5px solid #FFF9F0;font-size:9px;font-weight:900;line-height:1;align-items:center;justify-content:center;">1</span>
               </button>
-              <button id="btn-farm-landscape" type="button" class="rounded-full font-black shadow-sm active:scale-95 whitespace-nowrap" style="background:rgba(255,250,240,0.92);color:#6B4F40;border:1.5px solid #D9B88F;font-size:10px;padding:4px 8px;">
-                景觀 0 (+0%)
+              <button id="btn-farm-cafe" type="button" class="rounded-full font-black shadow-sm active:scale-95 whitespace-nowrap flex items-center" style="background:#FFF8EB;color:#9A5410;border:1.5px solid #E5B974;font-size:10px;padding:4px 8px;gap:3px;">
+                <img src="assets/crop_milktea.png" alt="茶檔" class="w-3.5 h-3.5 object-contain shrink-0" />
+                <span>茶檔</span>
+              </button>
+              <button id="btn-farm-dex" type="button" class="rounded-full font-black shadow-sm active:scale-95 whitespace-nowrap flex items-center" style="position:relative;overflow:visible;background:#F4FBF7;color:#2D6A54;border:1.5px solid #7CCBB0;font-size:10px;padding:4px 8px;gap:3px;">
+                <img src="assets/ui_star.webp" alt="圖鑑" class="w-3.5 h-3.5 object-contain shrink-0" />
+                <span>圖鑑</span>
+                <span id="farm-dex-badge" style="display:none;position:absolute;top:-5px;right:-4px;width:10px;height:10px;border-radius:9999px;background:#F97316;border:1.5px solid #FFF9F0;"></span>
               </button>
             </div>
             <div class="flex items-center pointer-events-auto" style="gap:4px;">
+              <button id="btn-farm-weather" type="button" class="rounded-full font-black shadow-sm active:scale-95 whitespace-nowrap" style="background:rgba(255,250,240,0.92);color:#5A3A28;border:1.5px solid #D9B88F;font-size:10px;padding:4px 8px;">
+                暖陽晴天
+              </button>
               <button id="btn-farm-ad-boost" type="button" class="rounded-full font-black shadow-sm active:scale-95 whitespace-nowrap" style="background:#EDF6FC;color:#3B6E9C;border:1.5px solid #6CA6D9;font-size:10px;padding:4px 8px;">
                 廣告 -30分
               </button>
-              <button id="btn-farm-harvest-all" type="button" class="hidden rounded-full font-black text-white shadow-sm active:scale-95 whitespace-nowrap" style="background:#52A88B;border:1.5px solid #3C8A70;font-size:10px;padding:4px 9px;">
-                一鍵收成
+              <button id="btn-farm-harvest-all" type="button" class="hidden rounded-full font-black text-white shadow-sm active:scale-95 whitespace-nowrap" style="background:#52A88B;border:1.5px solid #3C8A70;font-size:10px;padding:4px 8px;">
+                收成
               </button>
             </div>
           </div>
@@ -774,8 +783,9 @@
           <div class="flex items-center justify-between px-1 gap-1.5">
             <span id="farm-plant-bar-hint" class="text-[11px] font-black text-[#5A3A28] truncate">選好種子，連點空農田即可快速播種！</span>
             <div class="flex items-center gap-1 shrink-0">
-              <button id="btn-farm-plant-all" type="button" class="text-[10px] font-black px-2 py-0.5 rounded-lg text-white active:scale-95" style="background:#52A88B;">一鍵種滿</button>
-              <button id="btn-farm-plant-done" type="button" class="text-[10px] font-black px-2 py-0.5 rounded-lg bg-[#F97316] text-white">完成</button>
+              <button id="btn-farm-replant" type="button" class="text-[10px] font-black px-2 py-0.5 rounded-lg active:scale-95 whitespace-nowrap" style="background:#EDF6FC;color:#3B6E9C;border:1px solid #6CA6D9;">再種一輪</button>
+              <button id="btn-farm-plant-all" type="button" class="text-[10px] font-black px-2 py-0.5 rounded-lg text-white active:scale-95 whitespace-nowrap" style="background:#52A88B;">一鍵種滿</button>
+              <button id="btn-farm-plant-done" type="button" class="text-[10px] font-black px-2 py-0.5 rounded-lg bg-[#F97316] text-white whitespace-nowrap">完成</button>
             </div>
           </div>
           <div id="farm-plant-palette" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" style="touch-action:pan-x;-webkit-overflow-scrolling:touch;"></div>
@@ -1436,6 +1446,32 @@
         </div>
       </div>
     </div>
+
+    <!-- ================= MODAL: BUNNY FARM CAFE / CRAFTING (兔兔茶檔加工坊) ================= -->
+    <div id="modal-farm-cafe" class="hidden absolute inset-0 z-50 bg-black/55 backdrop-blur-[2px] flex items-end sm:items-center justify-center p-3">
+      <div class="game-panel animate-pop w-full max-h-[86%] rounded-3xl px-4 pb-4 pt-6 flex flex-col relative">
+        <button id="btn-close-farm-cafe" type="button" class="game-btn absolute top-2.5 right-2.5 rounded-xl w-9 h-9 flex items-center justify-center font-black z-30 text-sm">✕</button>
+        <div class="banner-header">
+          <img class="img-banner-ribbon" src="" alt="橫幅" />
+          <span class="banner-header-title">兔兔茶檔加工坊</span>
+        </div>
+        <p class="shrink-0 text-[11px] font-bold text-[#7C5A46] text-center mb-2">用自家收成的農作物現場製作體力胡蘿蔔汁、高價套餐與冒險道具！</p>
+        <div id="farm-cafe-list" class="flex-1 min-h-0 space-y-2.5 overflow-y-auto no-scrollbar pt-0.5 pb-2"></div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL: FARM CROP WEIGHT & GOLDEN DEX (農作重量與黃金圖鑑) ================= -->
+    <div id="modal-farm-dex" class="hidden absolute inset-0 z-50 bg-black/55 backdrop-blur-[2px] flex items-end sm:items-center justify-center p-3">
+      <div class="game-panel animate-pop w-full max-h-[88%] rounded-3xl px-4 pb-4 pt-6 flex flex-col relative">
+        <button id="btn-close-farm-dex" type="button" class="game-btn absolute top-2.5 right-2.5 rounded-xl w-9 h-9 flex items-center justify-center font-black z-30 text-sm">✕</button>
+        <div class="banner-header">
+          <img class="img-banner-ribbon" src="" alt="橫幅" />
+          <span class="banner-header-title">農作重量與黃金圖鑑</span>
+        </div>
+        <div id="farm-dex-milestones" class="shrink-0 space-y-1.5 mb-2.5"></div>
+        <div id="farm-dex-grid" class="flex-1 min-h-0 grid grid-cols-2 gap-2 overflow-y-auto no-scrollbar pt-0.5 pb-2 content-start"></div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -1493,6 +1529,7 @@
       ssr_shell_ride: "assets/ssr_shell_ride.webp",
       ssr_cake_train: "assets/ssr_cake_train.webp",
       ssr_paper_plane: "assets/ssr_paper_plane.webp",
+      ssr_farm_king: "assets/ssr_farm_king.png",
       b_sandwich: "assets/b_sandwich.webp",
       b_watermelon: "assets/b_watermelon.png",
       b_butterfly: "assets/b_butterfly_clean.png",
@@ -1658,6 +1695,7 @@
       ['b_duckring',        '小鴨泳圈兔',     'park', 'SR',  '腰間套著黃色小鴨泳圈，隨時準備跳進水池玩水！'],
       ['ssr_cloud_ride',    '雲朵飛天兔',     'park', 'SSR', '坐著會微笑的粉藍軟綿綿雲朵飄過公園上空！'],
       ['ssr_strawberry_car','草莓跑車兔',     'park', 'SSR', '開著巨型紅通通草莓跑車在草地上兜風！'],
+      ['ssr_farm_king',     '黃金田園王冠兔', 'park', 'SSR', '集齊 10 款黃金突變作物即可召喚的傳說農場之王！'],
 
       // === 2. 櫻花庭園 (20隻: 10N / 5R / 3SR / 2SSR) ===
       ['decoy_grey',        '灰垂耳乖乖兔',   'sakura', 'N',   '溫柔安靜的灰毛垂耳兔，最喜歡坐在樹下賞花。'],
@@ -1993,7 +2031,7 @@
       stamina: 5,
       staminaUpdatedAt: Date.now(),
       items: { golden_carrot: 1, ssr_lure: 1, time_plus: 1, carrot_juice: 1 },
-      farm: { plotCount: 4, plots: [null, null, null, null], helpers: [], barn: {}, orders: { date: '', list: [], bonusClaimed: false } },
+      farm: { plotCount: 4, plots: [null, null, null, null], helpers: [], barn: {}, orders: { date: '', list: [], bonusClaimed: false }, dex: {}, dexClaimed: [], lastCropId: 'crop_carrot' },
       account: { bound: false, provider: '', nickname: '兔兔玩家', avatar: 'sp_strawberry' },
       levelsClearedTotal: 0,
       cardProgress: {},
@@ -2041,7 +2079,10 @@
           plots: pl,
           helpers: Array.isArray(parsed.farm.helpers) ? parsed.farm.helpers.slice(0, 3) : [],
           barn: (parsed.farm.barn && typeof parsed.farm.barn === 'object') ? parsed.farm.barn : {},
-          orders: (parsed.farm.orders && typeof parsed.farm.orders === 'object') ? parsed.farm.orders : { date: '', list: [], bonusClaimed: false }
+          orders: (parsed.farm.orders && typeof parsed.farm.orders === 'object') ? parsed.farm.orders : { date: '', list: [], bonusClaimed: false },
+          dex: (parsed.farm.dex && typeof parsed.farm.dex === 'object') ? parsed.farm.dex : {},
+          dexClaimed: Array.isArray(parsed.farm.dexClaimed) ? parsed.farm.dexClaimed : [],
+          lastCropId: parsed.farm.lastCropId || 'crop_carrot'
         };
       }
       if (parsed.account && typeof parsed.account === 'object') saveData.account = { ...saveData.account, ...parsed.account };
@@ -2097,6 +2138,11 @@
     const gardenState = {
       editMode: false,
       movingPlotIdx: null,
+      wildBunny: null,
+      wildTimer: 6,
+      weatherParticles: [],
+      swipeHarvesting: false,
+      swipeCombo: 0,
       bunnies: [], // animated bunny instances visiting garden
       particles: [],
       floatingTexts: [],
@@ -2182,8 +2228,16 @@
         hAllBtn.textContent = `收成 (${readyPlots})`;
       }
       const land = getGardenLandscapeStats();
-      const lPill = document.getElementById('btn-farm-landscape');
-      if (lPill) lPill.textContent = `景觀 ${land.score} (+${land.bonusPct}%)`;
+      const wInfo = getFarmWeather();
+      const wPill = document.getElementById('btn-farm-weather');
+      if (wPill) {
+        wPill.textContent = wInfo.shortLabel;
+        wPill.style.background = wInfo.bg;
+        wPill.style.color = wInfo.color;
+        wPill.style.borderColor = wInfo.border;
+      }
+      const dBdg = document.getElementById('farm-dex-badge');
+      if (dBdg) dBdg.style.display = hasClaimableFarmDexReward() ? 'block' : 'none';
       const readyOrdCnt = getDeliverableFarmOrderCount();
       const oBdg = document.getElementById('farm-order-badge');
       if (oBdg) {
@@ -2358,8 +2412,11 @@
       if (saveData.gardenBunnies.length === 0 && saveData.unlockedCards.length > 0) {
         saveData.gardenBunnies = saveData.unlockedCards.slice(0, 8);
       }
-      gardenState.bunnies = saveData.gardenBunnies.filter(id => BUNNY_BY_ID[id]).map((id, idx) => {
-        if (existing[id]) return existing[id];
+      ensureFarmState();
+      const helperSet = new Set(saveData.farm.helpers || []);
+      const combinedIds = [...new Set([...(saveData.farm.helpers || []), ...saveData.gardenBunnies])].filter(id => BUNNY_BY_ID[id]);
+      gardenState.bunnies = combinedIds.map((id, idx) => {
+        if (existing[id]) { existing[id].isFarmHelper = helperSet.has(id); return existing[id]; }
         const x = m.originX + 40 + Math.random() * Math.max(120, m.gridW - 80);
         const y = m.originY + 40 + Math.random() * Math.max(120, m.gridH - 80);
         return {
@@ -2372,7 +2429,10 @@
           magnetIndex: idx,
           hopPhase: Math.random() * Math.PI * 2,
           reactTime: 0,
-          heartReady: Date.now() >= (saveData.gardenCoinReadyAt[id] || 0)
+          heartReady: Date.now() >= (saveData.gardenCoinReadyAt[id] || 0),
+          isFarmHelper: helperSet.has(id),
+          bubbleText: '',
+          bubbleTimer: 0
         };
       });
     }
@@ -2403,8 +2463,27 @@
           b.idlePause = 0;
         }
 
+        if (b.bubbleTimer > 0) b.bubbleTimer = Math.max(0, b.bubbleTimer - dt);
         b.modeTimer -= dt;
         if (b.modeTimer <= 0) {
+          // Duty Helper Bunnies actively patrol planted farm plots and cheer crops on!
+          if (b.isFarmHelper && saveData.farm && Array.isArray(saveData.farm.plots) && saveData.farm.plots.length > 0 && Math.random() < 0.78) {
+            const pList = saveData.farm.plots.filter(p => p && p.cropId);
+            const pickP = (pList.length > 0 ? pList : saveData.farm.plots)[Math.floor(Math.random() * (pList.length > 0 ? pList.length : saveData.farm.plots.length))];
+            if (pickP) {
+              const pc = cellCenter(pickP.col, pickP.row, m);
+              b.mode = 'roam';
+              b.visitKey = null;
+              b.destX = pc.x + (Math.random() < 0.5 ? -30 : 30);
+              b.destY = pc.y + 18;
+              b.idlePause = 0.2;
+              b.modeTimer = 3.6 + Math.random() * 2.5;
+              const cheers = ['顧田中！', '快長大！', '幫手澆水！', '好香呀！', '豐收啦！'];
+              b.bubbleText = cheers[Math.floor(Math.random() * cheers.length)];
+              b.bubbleTimer = 2.6;
+              continue;
+            }
+          }
           // 72% chance to roam freely to a random cozy spot; 28% chance to visit an uncrowded carrot/grass tile!
           if (magnets.length > 0 && Math.random() < 0.28) {
             const avail = magnets.filter(mg => (magCounts.get(`${mg.col},${mg.row}`) || 0) < 2);
@@ -2464,6 +2543,43 @@
         const ft = gardenState.floatingTexts[i]; ft.life -= dt;
         if (ft.life <= 0) { gardenState.floatingTexts.splice(i, 1); continue; }
         ft.y -= 34 * dt;
+      }
+
+      // Stealing Wild Bunny spawn & lifetime tick
+      if (gardenState.wildBunny) {
+        gardenState.wildBunny.life -= dt;
+        if (gardenState.wildBunny.life <= 0) gardenState.wildBunny = null;
+      } else {
+        gardenState.wildTimer -= dt;
+        if (gardenState.wildTimer <= 0) {
+          gardenState.wildTimer = 28 + Math.random() * 18;
+          maybeSpawnFarmWildBunny(m);
+        }
+      }
+
+      // Dynamic Weather Ambient Particles (Rain streaks / Sakura petals)
+      const wType = getFarmWeather().id;
+      if (wType === 'rain' || wType === 'sakura') {
+        if (gardenState.weatherParticles.length < (wType === 'rain' ? 36 : 20)) {
+          gardenState.weatherParticles.push({
+            x: Math.random() * (m.vw || 400),
+            y: -15 - Math.random() * 80,
+            vx: wType === 'rain' ? -42 : (-18 - Math.random() * 16),
+            vy: wType === 'rain' ? (260 + Math.random() * 90) : (26 + Math.random() * 22),
+            rot: Math.random() * Math.PI * 2,
+            size: wType === 'rain' ? (10 + Math.random() * 8) : (4 + Math.random() * 3.5)
+          });
+        }
+        for (let i = gardenState.weatherParticles.length - 1; i >= 0; i--) {
+          const wp = gardenState.weatherParticles[i];
+          wp.x += wp.vx * dt; wp.y += wp.vy * dt; wp.rot += dt * 1.8;
+          if (wp.y > (m.vh || 700) + 20 || wp.x < -30) {
+            wp.x = Math.random() * ((m.vw || 400) + 60);
+            wp.y = -12;
+          }
+        }
+      } else if (gardenState.weatherParticles.length > 0) {
+        gardenState.weatherParticles = [];
       }
     }
 
@@ -2585,11 +2701,49 @@
           gCtx.drawImage(img, -w / 2, -h + 5, w, h);
           gCtx.restore();
 
-          if (b.heartReady && IMAGES.ui_coin && IMAGES.ui_coin.complete) {
+          if (b.isFarmHelper && b.bubbleTimer > 0 && b.bubbleText) {
+            gCtx.save();
+            gCtx.fillStyle = 'rgba(255, 252, 244, 0.94)';
+            gCtx.strokeStyle = '#52A88B';
+            gCtx.lineWidth = 1.4;
+            roundRect(gCtx, b.x - 28, b.y - h - 22, 56, 17, 8.5);
+            gCtx.fill(); gCtx.stroke();
+            gCtx.fillStyle = '#2D6A54';
+            gCtx.font = '900 8.5px "Noto Sans TC", sans-serif';
+            gCtx.textAlign = 'center'; gCtx.textBaseline = 'middle';
+            gCtx.fillText(b.bubbleText, b.x, b.y - h - 13.5);
+            gCtx.restore();
+          } else if (b.heartReady && IMAGES.ui_coin && IMAGES.ui_coin.complete) {
             const bob = Math.sin(tSec * 4 + b.phase) * 3.5;
             gCtx.drawImage(IMAGES.ui_coin, b.x - 10, b.y - h - 16 + bob, 20, 20);
           }
         }
+      }
+
+      // Draw Stealing Wild Bunny rustling bush!
+      if (gardenState.wildBunny && !gardenState.editMode) {
+        const wb = gardenState.wildBunny;
+        const bushImg = IMAGES.prop_bush;
+        const shake = Math.sin(tSec * 22) * 0.10;
+        const bob = Math.abs(Math.sin(tSec * 5)) * 4;
+        gCtx.save();
+        gCtx.translate(wb.x, wb.y);
+        gCtx.rotate(shake);
+        if (bushImg && bushImg.complete) {
+          gCtx.drawImage(bushImg, -30, -46, 60, 52);
+        }
+        if (IMAGES.ui_star && IMAGES.ui_star.complete) {
+          gCtx.drawImage(IMAGES.ui_star, 12, -52 - bob, 18, 18);
+        }
+        gCtx.restore();
+        gCtx.save();
+        gCtx.fillStyle = '#FFF6F8'; gCtx.strokeStyle = '#D97C98'; gCtx.lineWidth = 1.6;
+        roundRect(gCtx, wb.x - 28, wb.y - 68 - bob, 56, 17, 8.5);
+        gCtx.fill(); gCtx.stroke();
+        gCtx.fillStyle = '#B54A6A'; gCtx.font = '900 9px "Noto Sans TC", sans-serif';
+        gCtx.textAlign = 'center'; gCtx.textBaseline = 'middle';
+        gCtx.fillText('偷食兔！', wb.x, wb.y - 59.5 - bob);
+        gCtx.restore();
       }
 
       for (const pt of gardenState.particles) {
@@ -2603,6 +2757,34 @@
         gCtx.fillStyle = ft.color; gCtx.fillText(ft.text, ft.x, ft.y); gCtx.restore();
       }
       gCtx.restore();
+
+      // Screen-space Dynamic Weather Overlay (Rainbow arc / Rain streaks / Sakura petals)
+      const curW = getFarmWeather().id;
+      if (curW === 'rainbow') {
+        gCtx.save();
+        const cols = ['rgba(255,154,162,0.28)', 'rgba(255,218,133,0.28)', 'rgba(162,226,184,0.28)', 'rgba(148,202,248,0.28)'];
+        cols.forEach((col, i) => {
+          gCtx.strokeStyle = col; gCtx.lineWidth = 8;
+          gCtx.beginPath(); gCtx.arc(vw * 0.85, 115, 118 - i * 9, Math.PI, Math.PI * 1.55); gCtx.stroke();
+        });
+        gCtx.restore();
+      } else if (curW === 'rain') {
+        gCtx.save();
+        gCtx.strokeStyle = 'rgba(165, 212, 248, 0.55)'; gCtx.lineWidth = 1.6;
+        for (const wp of gardenState.weatherParticles) {
+          gCtx.beginPath(); gCtx.moveTo(wp.x, wp.y); gCtx.lineTo(wp.x - 3, wp.y + wp.size); gCtx.stroke();
+        }
+        gCtx.restore();
+      } else if (curW === 'sakura') {
+        gCtx.save();
+        for (const wp of gardenState.weatherParticles) {
+          gCtx.save(); gCtx.translate(wp.x, wp.y); gCtx.rotate(wp.rot);
+          gCtx.fillStyle = 'rgba(255, 186, 210, 0.78)';
+          gCtx.beginPath(); gCtx.ellipse(0, 0, wp.size, wp.size * 0.55, 0, 0, Math.PI * 2); gCtx.fill();
+          gCtx.restore();
+        }
+        gCtx.restore();
+      }
 
       // Screen-space banner when no bunnies are in the garden
       if (gardenState.bunnies.length === 0) {
@@ -2748,7 +2930,12 @@
         return;
       }
 
-      // Check Farm Plot taps (plant / harvest / unlock new plot)
+      // Check Stealing Wild Bunny bush tap first!
+      if (gardenState.wildBunny && Math.hypot(x - gardenState.wildBunny.x, y - (gardenState.wildBunny.y - 22)) <= 46) {
+        handleFarmWildBunnyTap();
+        return;
+      }
+      // Check Farm Plot taps (plant / harvest / water / clear weed-butterfly)
       if (handleFarmCanvasTap(x, y, m)) return;
 
       // Interact with bunnies to collect coins!
@@ -2780,6 +2967,20 @@
       if (gardenPointers.size === 1) {
         gDragStart = { x: e.clientX, y: e.clientY, camX: gardenState.camX, camY: gardenState.camY };
         gIsDragging = false;
+        gardenState.swipeHarvesting = false;
+        gardenState.swipeCombo = 0;
+        if (!gardenState.editMode && !gardenState.plantMode) {
+          const wpt = gardenScreenToWorld(e.clientX, e.clientY);
+          const gm = getGridMetrics();
+          const cCol = Math.floor((wpt.x - gm.originX) / gm.cell);
+          const cRow = Math.floor((wpt.y - gm.originY) / gm.cell);
+          ensureFarmState();
+          const rIdx = saveData.farm.plots.findIndex(p => p && p.col === cCol && p.row === cRow && p.cropId && Date.now() >= p.readyAt);
+          if (rIdx >= 0) {
+            gardenState.swipeHarvesting = true;
+            trySwipeHarvestAt(wpt.x, wpt.y, gm);
+          }
+        }
       } else if (gardenPointers.size === 2) {
         const pts = [...gardenPointers.values()];
         gPinchDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
@@ -2799,6 +3000,12 @@
           clampGardenCamera();
         }
       } else if (gardenPointers.size === 1 && gDragStart) {
+        if (gardenState.swipeHarvesting) {
+          gIsDragging = true;
+          const wpt = gardenScreenToWorld(e.clientX, e.clientY);
+          trySwipeHarvestAt(wpt.x, wpt.y, getGridMetrics());
+          return;
+        }
         const dx = e.clientX - gDragStart.x, dy = e.clientY - gDragStart.y;
         if (Math.hypot(dx, dy) > 8) gIsDragging = true;
         if (gIsDragging) {
@@ -2811,9 +3018,12 @@
 
     function onGardenPointerEnd(e) {
       if (!gardenPointers.has(e.pointerId)) return;
-      const wasTap = gardenPointers.size === 1 && !gIsDragging;
+      const wasTap = gardenPointers.size === 1 && !gIsDragging && !gardenState.swipeHarvesting;
+      if (gardenState.swipeHarvesting && gardenState.swipeCombo >= 2) {
+        showToast(`滑動掃田大豐收！連續收成 ${gardenState.swipeCombo} 塊農田！`);
+      }
       gardenPointers.delete(e.pointerId);
-      if (gardenPointers.size === 0) gDragStart = null;
+      if (gardenPointers.size === 0) { gDragStart = null; gardenState.swipeHarvesting = false; gardenState.swipeCombo = 0; }
       if (wasTap) handleGardenTap(e.clientX, e.clientY);
     }
     gardenCanvas.addEventListener('pointerup', onGardenPointerEnd);
@@ -4816,13 +5026,19 @@
         else if (sk.type === 'auto_harvest') { autoHarvest = true; guardName = (BUNNY_BY_ID[hid] && BUNNY_BY_ID[hid].name) || '夜間守護兔'; }
       }
       const land = getGardenLandscapeStats();
+      const w = getFarmWeather();
+      const totalSpeed = Math.min(60, speedPct + (w.id === 'rain' ? 20 : 0));
+      const weatherPrice = w.id === 'sakura' ? 15 : 0;
+      const goldenRate = Math.min(0.50, land.goldenChance * (w.id === 'rainbow' ? 2 : 1));
       return {
-        speedPct: Math.min(45, speedPct),
+        speedPct: totalSpeed,
         helperPricePct: Math.min(75, helperPricePct),
         landscapePct: land.bonusPct,
-        pricePct: Math.min(125, Math.min(75, helperPricePct) + land.bonusPct),
-        goldenChance: land.goldenChance,
+        weatherPricePct: weatherPrice,
+        pricePct: Math.min(140, Math.min(75, helperPricePct) + land.bonusPct + weatherPrice),
+        goldenChance: goldenRate,
         landscapeScore: land.score,
+        weather: w,
         autoHarvest,
         guardName
       };
@@ -4903,21 +5119,23 @@
       const crop = FARM_CROP_BY_ID[p.cropId];
       const isGolden = Boolean(p.golden);
       const qty = isGolden ? 2 : 1;
+      const weight = recordFarmDexHarvest(p.cropId, qty, isGolden);
       saveData.farm.barn[p.cropId] = (saveData.farm.barn[p.cropId] || 0) + qty;
       if (isGolden) saveData.coins += 15;
-      p.cropId = null; p.plantedAt = 0; p.readyAt = 0; p.golden = false; p.watered = false;
+      p.lastCropId = p.cropId;
+      p.cropId = null; p.plantedAt = 0; p.readyAt = 0; p.golden = false; p.watered = false; p.event = null;
       persistSave();
       syncGlobalCounters();
       if (!silent) {
         if (isGolden) {
           SFX.goldenCatch();
-          showToast(`黃金突變大豐收！「${crop ? crop.name : '農作物'}」×2 + 15 金幣！`);
+          showToast(`黃金特大豐收（${weight}kg）！「${crop ? crop.name : '農作物'}」×2 + 15 金幣！`);
         } else {
           SFX.found();
-          showToast(`成功收成「${crop ? crop.name : '農作物'}」×1！已放進農夫市集倉庫。`);
+          showToast(`收成「${crop ? crop.name : '農作物'}」（${weight}kg）×1！已存入倉庫。`);
         }
       }
-      return { qty, isGolden };
+      return { qty, isGolden, weight };
     }
 
     function harvestAllReadyPlots() {
@@ -4929,9 +5147,11 @@
         if (p && p.cropId && now >= p.readyAt) {
           const isG = Boolean(p.golden);
           const qty = isG ? 2 : 1;
+          recordFarmDexHarvest(p.cropId, qty, isG);
           saveData.farm.barn[p.cropId] = (saveData.farm.barn[p.cropId] || 0) + qty;
           if (isG) { goldenCnt += 1; saveData.coins += 15; }
-          p.cropId = null; p.plantedAt = 0; p.readyAt = 0; p.golden = false; p.watered = false;
+          p.lastCropId = p.cropId;
+          p.cropId = null; p.plantedAt = 0; p.readyAt = 0; p.golden = false; p.watered = false; p.event = null;
           count += qty;
         }
       }
@@ -5025,12 +5245,38 @@
           if (sproutImg && sproutImg.complete && sproutImg.naturalWidth > 0) {
             const totalMs = Math.max(1, (p.readyAt || nowMs) - (p.plantedAt || nowMs));
             const prog = Math.max(0, Math.min(1, (nowMs - (p.plantedAt || nowMs)) / totalMs));
-            const sSize = sz * (0.44 + prog * 0.14);
+            const sSize = sz * (0.42 + prog * 0.22);
             const sway = Math.sin(tSec * 3.0 + idx * 1.3) * 0.08;
             c.save();
             c.translate(center.x, center.y + 4);
             c.rotate(sway);
             c.drawImage(sproutImg, -sSize / 2, -sSize * 0.78, sSize, sSize);
+            // Stage 2 (>= 50% progress): Cute blooming pink/cream flower buds!
+            if (prog >= 0.5) {
+              const buds = [[-sSize*0.26, -sSize*0.42, '#F9A8D4'], [sSize*0.24, -sSize*0.38, '#FDE68A'], [0, -sSize*0.64, '#FBCFE8']];
+              for (const [bx, by, col] of buds) {
+                c.fillStyle = col; c.strokeStyle = '#5A3A28'; c.lineWidth = 1.4;
+                c.beginPath(); c.arc(bx, by, 4.2, 0, Math.PI * 2); c.fill(); c.stroke();
+              }
+            }
+            c.restore();
+          }
+          // Field mini-event: Cute Weed tuft or fluttering Butterfly!
+          if (p.event === 'butterfly') {
+            const bfx = center.x + Math.sin(tSec * 4 + idx) * 14;
+            const bfy = center.y - 12 + Math.cos(tSec * 6 + idx) * 5;
+            const flap = 0.65 + Math.abs(Math.sin(tSec * 14 + idx)) * 0.45;
+            c.save(); c.translate(bfx, bfy);
+            c.fillStyle = '#FBCFE8'; c.strokeStyle = '#5A3A28'; c.lineWidth = 1.2;
+            c.beginPath(); c.ellipse(-5 * flap, -2, 5.5 * flap, 4.2, -0.3, 0, Math.PI * 2); c.fill(); c.stroke();
+            c.beginPath(); c.ellipse(5 * flap, -2, 5.5 * flap, 4.2, 0.3, 0, Math.PI * 2); c.fill(); c.stroke();
+            c.restore();
+          } else if (p.event === 'weed') {
+            const wx2 = center.x - 14, wy2 = center.y + 8;
+            c.save(); c.strokeStyle = '#4D7C0F'; c.lineWidth = 2.4;
+            c.beginPath(); c.moveTo(wx2, wy2); c.lineTo(wx2 - 6, wy2 - 11);
+            c.moveTo(wx2, wy2); c.lineTo(wx2, wy2 - 13);
+            c.moveTo(wx2, wy2); c.lineTo(wx2 + 6, wy2 - 10); c.stroke();
             c.restore();
           }
           // Compact top-right badge showing clearly WHICH crop is growing without covering the seedling
@@ -5137,7 +5383,7 @@
         btn.innerHTML = `
           <img src="${SPRITE_SRCS[c.img]}" alt="${c.name}" class="w-9 h-9 object-contain shrink-0 ${unlocked ? '' : 'locked-silhouette'}" />
           <div class="leading-tight">
-            <div class="text-[10px] font-black text-[#5A3A28] whitespace-nowrap">${c.name}</div>
+            <div class="text-[10px] font-black text-[#5A3A28] whitespace-nowrap flex items-center gap-1"><span>${c.name}</span>${isDailyHotCrop(c.id) ? '<span class="px-1 rounded text-[8px] font-black text-white" style="background:#D97C98;">熱賣×1.5</span>' : ''}</div>
             <div class="text-[9px] font-bold whitespace-nowrap" style="color:${unlocked ? '#4B82B0' : '#8C7B6E'};">${unlocked ? `${timeStr} · ${c.seedCost}幣` : `需${reqName}`}</div>
           </div>
         `;
@@ -5175,7 +5421,10 @@
       p.plantedAt = Date.now();
       p.readyAt = Date.now() + growMs;
       p.golden = Math.random() < b.goldenChance;
-      p.watered = false;
+      p.watered = (b.weather && b.weather.id === 'rain');
+      p.event = Math.random() < 0.36 ? (Math.random() < 0.5 ? 'butterfly' : 'weed') : null;
+      p.lastCropId = c.id;
+      saveData.farm.lastCropId = c.id;
       const m = getGridMetrics();
       const center = cellCenter(p.col, p.row, m);
       for (let i = 0; i < 8; i++) {
@@ -5239,7 +5488,20 @@
         }
       } else {
         const crop = FARM_CROP_BY_ID[p.cropId];
-        if (!p.watered) {
+        if (p.event) {
+          const ev = p.event;
+          p.event = null;
+          p.readyAt = Math.max(Date.now(), p.readyAt - 10 * 60 * 1000);
+          saveData.coins += 10;
+          persistSave(); syncGlobalCounters(); SFX.coin();
+          const evTxt = ev === 'butterfly' ? '蝴蝶祝福 -10分 +10幣！' : '除草完成 -10分 +10幣！';
+          gardenState.floatingTexts.push({ x: center.x, y: center.y - 24, text: evTxt, color: '#FEF08A', life: 1.1, maxLife: 1.1 });
+          for (let i = 0; i < 10; i++) {
+            const ang = (Math.PI * 2 * i) / 10;
+            gardenState.particles.push({ x: center.x, y: center.y - 6, vx: Math.cos(ang) * 46, vy: Math.sin(ang) * 46 - 30, size: 3.2, color: ev === 'butterfly' ? '#F9A8D4' : '#86EFAC', life: 0.55, maxLife: 0.55 });
+          }
+          showToast(ev === 'butterfly' ? '遇見田間蝴蝶祝福！縮短 10 分鐘並獲得 +10 金幣！' : '幫農田除草完成！縮短 10 分鐘並獲得 +10 金幣！');
+        } else if (!p.watered) {
           p.watered = true;
           p.readyAt = Math.max(Date.now(), p.readyAt - 15 * 60 * 1000);
           persistSave(); syncGlobalCounters(); SFX.coin();
@@ -5421,7 +5683,8 @@
       } else {
         entries.forEach(c => {
           const qty = saveData.farm.barn[c.id] || 0;
-          const unitPrice = Math.round(c.sellPrice * (1 + bonus.pricePct / 100));
+          const isHot = isDailyHotCrop(c.id);
+          const unitPrice = Math.round(c.sellPrice * (1 + bonus.pricePct / 100) * (isHot ? 1.5 : 1));
           const subTotal = qty * unitPrice;
           grandTotal += subTotal;
           const row = document.createElement('div');
@@ -5431,7 +5694,7 @@
               <img src="${SPRITE_SRCS[c.img]}" alt="${c.name}" class="w-10 h-10 object-contain" />
             </div>
             <div class="flex-1 min-w-0 text-left">
-              <div class="text-xs font-black text-[#5A3A28]">${c.name} × ${qty}</div>
+              <div class="text-xs font-black text-[#5A3A28] flex items-center gap-1 flex-wrap"><span>${c.name} × ${qty}</span>${isHot ? '<span class="px-1.5 py-0.5 rounded-full text-[9px] font-black text-white" style="background:#D97C98;">今日熱賣 ×1.5</span>' : ''}</div>
               <div class="text-[10px] font-bold text-[#8C6D5D]">單價 ${unitPrice} 金幣</div>
             </div>
             <button type="button" data-sell-crop="${c.id}" class="sell-crop-btn shrink-0 game-btn game-btn-gold px-3 py-1.5 rounded-xl text-xs font-black text-[#6B3E08]">
@@ -5446,7 +5709,7 @@
             const c = FARM_CROP_BY_ID[cid];
             const qty = saveData.farm.barn[cid] || 0;
             if (!c || qty <= 0) return;
-            const gain = qty * Math.round(c.sellPrice * (1 + getFarmBonuses().pricePct / 100));
+            const gain = qty * Math.round(c.sellPrice * (1 + getFarmBonuses().pricePct / 100) * (isDailyHotCrop(cid) ? 1.5 : 1));
             delete saveData.farm.barn[cid];
             saveData.coins += gain;
             persistSave(); syncGlobalCounters(); SFX.coin();
@@ -5469,7 +5732,7 @@
       FARM_CROPS.forEach(c => {
         const qty = saveData.farm.barn[c.id] || 0;
         if (qty > 0) {
-          total += qty * Math.round(c.sellPrice * (1 + bonus.pricePct / 100));
+          total += qty * Math.round(c.sellPrice * (1 + bonus.pricePct / 100) * (isDailyHotCrop(c.id) ? 1.5 : 1));
           items += qty;
           delete saveData.farm.barn[c.id];
         }
@@ -5675,6 +5938,285 @@
       }, 1000);
     }
 
+
+    // ---- PHASE 3: WEATHER, HOT CROPS, WILD BUNNY, SWIPE HARVEST, REPLANT, CAFE & DEX ----
+    const FARM_WEATHERS = [
+      { id: 'sunny',   name: '暖陽晴天', shortLabel: '晴天',          desc: '陽光明媚的好天氣，兔兔們在農場開心地跳來跳去！', bg: 'rgba(255,250,240,0.92)', color: '#6B4F40', border: '#D9B88F' },
+      { id: 'rain',    name: '毛毛細雨', shortLabel: '細雨 速+20%',   desc: '全場作物自動免澆水，生長速度額外加速 +20%！', bg: '#EDF6FC', color: '#3B6E9C', border: '#6CA6D9' },
+      { id: 'rainbow', name: '彩虹放晴', shortLabel: '彩虹 黃金×2',   desc: '天空掛起粉彩彩虹，黃金突變大作物機率直接雙倍！', bg: '#FFF8EB', color: '#9A5410', border: '#E5B974' },
+      { id: 'sakura',  name: '櫻花微風', shortLabel: '櫻花 價+15%',   desc: '漫天櫻花飄落農場，農夫市集全場作物賣價額外 +15%！', bg: '#FFF1F5', color: '#B54A6A', border: '#E89EB5' }
+    ];
+
+    function getFarmWeather() {
+      const slot = Math.floor(Date.now() / (2 * 3600 * 1000)) % FARM_WEATHERS.length;
+      return FARM_WEATHERS[slot];
+    }
+
+    function getDailyHotCrops() {
+      const ds = todayStr();
+      const dayNum = parseInt(ds.replace(/-/g, ''), 10) || 1;
+      const unlocked = FARM_CROPS.filter(c => !c.unlockBunny || saveData.unlockedCards.includes(c.unlockBunny));
+      const hot1 = unlocked[dayNum % unlocked.length] ? unlocked[dayNum % unlocked.length].id : 'crop_carrot';
+      let hot2 = FARM_CROPS[(dayNum * 3 + 2) % FARM_CROPS.length].id;
+      if (hot2 === hot1) hot2 = FARM_CROPS[(dayNum * 3 + 5) % FARM_CROPS.length].id;
+      return [hot1, hot2];
+    }
+
+    function isDailyHotCrop(cropId) {
+      return getDailyHotCrops().includes(cropId);
+    }
+
+    function maybeSpawnFarmWildBunny(m) {
+      ensureFarmState();
+      const activePlots = saveData.farm.plots.filter(p => p && p.cropId);
+      if (activePlots.length === 0) return;
+      const pickPlot = activePlots[Math.floor(Math.random() * activePlots.length)];
+      const pc = cellCenter(pickPlot.col, pickPlot.row, m);
+      const unowned = BUNNY_CATALOG.filter(b => b.id !== 'ssr_farm_king' && !saveData.unlockedCards.includes(b.id));
+      const pool = unowned.length > 0 ? unowned : BUNNY_CATALOG.filter(b => b.id !== 'ssr_farm_king');
+      const bunny = pool[Math.floor(Math.random() * pool.length)];
+      if (!bunny) return;
+      gardenState.wildBunny = {
+        id: bunny.id,
+        x: pc.x + (Math.random() < 0.5 ? -36 : 36),
+        y: pc.y + 12,
+        life: 32
+      };
+      SFX.rustle();
+      showToast('咦！農田旁的草叢在晃動，好像有偷食兔兔悄悄出現了！');
+    }
+
+    function handleFarmWildBunnyTap() {
+      const wb = gardenState.wildBunny;
+      if (!wb) return;
+      gardenState.wildBunny = null;
+      const meta = BUNNY_BY_ID[wb.id];
+      if (!meta) return;
+      if (!saveData.unlockedCards.includes(wb.id)) {
+        SFX.rustle();
+        openCaptureMiniGame(wb.id);
+      } else {
+        saveData.coins += 35;
+        persistSave(); syncGlobalCounters(); SFX.goldenCatch();
+        gardenState.floatingTexts.push({ x: wb.x, y: wb.y - 38, text: '+35 金幣！', color: '#FEF08A', life: 1.2, maxLife: 1.2 });
+        showToast(`捉住偷食的「${meta.name}」！牠留下了 +35 紅蘿蔔金幣！`);
+      }
+    }
+
+    function trySwipeHarvestAt(worldX, worldY, m) {
+      ensureFarmState();
+      const col = Math.floor((worldX - m.originX) / m.cell);
+      const row = Math.floor((worldY - m.originY) / m.cell);
+      const idx = saveData.farm.plots.findIndex(p => p && p.col === col && p.row === row && p.cropId && Date.now() >= p.readyAt);
+      if (idx < 0) return;
+      const p = saveData.farm.plots[idx];
+      const crop = FARM_CROP_BY_ID[p.cropId];
+      const center = cellCenter(p.col, p.row, m);
+      const res = harvestPlot(idx, true);
+      if (!res) return;
+      gardenState.swipeCombo += 1;
+      const notes = [523, 587, 659, 784, 880, 1046];
+      SFX.tone(notes[(gardenState.swipeCombo - 1) % notes.length], 0.14, 'triangle', 0.16);
+      const txt = res.isGolden ? `黃金 ${res.weight}kg ×2！` : `+1 ${crop ? crop.name : '作物'} (${res.weight}kg)`;
+      gardenState.floatingTexts.push({ x: center.x, y: center.y - 24, text: txt, color: res.isGolden ? '#FEF08A' : '#E8F8F2', life: 1.15, maxLife: 1.15 });
+      for (let i = 0; i < 10; i++) {
+        const ang = (Math.PI * 2 * i) / 10;
+        gardenState.particles.push({ x: center.x, y: center.y, vx: Math.cos(ang) * 50, vy: Math.sin(ang) * 50 - 34, size: 3.4, color: res.isGolden ? '#FACC15' : '#6BC4A6', life: 0.55, maxLife: 0.55 });
+      }
+    }
+
+    function replantLastBatch() {
+      ensureFarmState();
+      let planted = 0;
+      const fallbackId = saveData.farm.lastCropId || gardenState.selectedCropId || 'crop_carrot';
+      saveData.farm.plots.forEach((p, idx) => {
+        if (p && !p.cropId) {
+          const cid = p.lastCropId || fallbackId;
+          if (plantCropInPlot(idx, cid, true)) planted += 1;
+        }
+      });
+      if (planted > 0) {
+        persistSave(); syncGlobalCounters(); SFX.win();
+        showToast(`再種一輪完成！已按上一輪組合自動播種 ${planted} 塊農田！`);
+      } else {
+        SFX.tap();
+        showToast('目前沒有空農田，或金幣不足以重種上一輪作物喔！');
+      }
+    }
+
+    const FARM_CAFE_RECIPES = [
+      { id: 'rec_juice',   name: '鮮榨體力胡蘿蔔汁', img: 'item_carrot_juice',  reqs: [{ cropId: 'crop_carrot', qty: 2 }, { cropId: 'crop_strawberry', qty: 1 }], rewardType: 'item', rewardId: 'carrot_juice', rewardLabel: '體力胡蘿蔔汁 ×1 (+5體力)' },
+      { id: 'rec_hktea',   name: '港式下午茶套餐',   img: 'crop_milktea',       reqs: [{ cropId: 'crop_milktea', qty: 1 }, { cropId: 'crop_bolobao', qty: 1 }],    rewardType: 'coins', rewardVal: 600, rewardLabel: '+600 紅蘿蔔金幣（高價套餐）' },
+      { id: 'rec_gcarrot', name: '黃金幸運紅蘿蔔',   img: 'item_golden_carrot', reqs: [{ cropId: 'crop_carrot', qty: 2 }, { cropId: 'crop_watermelon', qty: 1 }],  rewardType: 'item', rewardId: 'golden_carrot', rewardLabel: '黃金紅蘿蔔 ×1 (捕捉+35%)' },
+      { id: 'rec_lure',    name: 'SSR 幸運誘兔點心', img: 'item_ssr_lure',      reqs: [{ cropId: 'crop_eggette', qty: 1 }, { cropId: 'crop_macaron', qty: 1 }],    rewardType: 'item', rewardId: 'ssr_lure', rewardLabel: 'SSR 幸運誘兔鈴 ×1' }
+    ];
+
+    function openFarmCafeModal() {
+      ensureFarmState();
+      const list = document.getElementById('farm-cafe-list');
+      list.innerHTML = '';
+      FARM_CAFE_RECIPES.forEach(rec => {
+        const canCraft = rec.reqs.every(r => (saveData.farm.barn[r.cropId] || 0) >= r.qty);
+        const reqHtml = rec.reqs.map(r => {
+          const c = FARM_CROP_BY_ID[r.cropId];
+          const have = saveData.farm.barn[r.cropId] || 0;
+          const ok = have >= r.qty;
+          return `<span class="inline-flex items-center gap-1 rounded-xl px-2 py-0.5 text-[10px] font-black" style="background:${ok ? '#E8F8F2' : '#FFFBF2'};border:1.5px solid ${ok ? '#52A88B' : 'rgba(90,58,40,0.2)'};color:${ok ? '#2D6A54' : '#8C5220'};">
+            <img src="${SPRITE_SRCS[c ? c.img : 'crop_carrot']}" class="w-4 h-4 object-contain" />${c ? c.name : ''} ${have}/${r.qty}
+          </span>`;
+        }).join('');
+        const row = document.createElement('div');
+        row.className = 'bg-white/95 rounded-2xl border-2 border-[#5A3A28]/15 p-2.5 flex flex-col gap-2';
+        row.innerHTML = `
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 min-w-0">
+              <div class="w-11 h-11 shrink-0 rounded-2xl flex items-center justify-center" style="background:#FFF8EB;border:1.5px solid #E5B974;">
+                <img src="${SPRITE_SRCS[rec.img]}" alt="${rec.name}" class="w-9 h-9 object-contain" />
+              </div>
+              <div class="min-w-0 text-left">
+                <div class="text-xs font-black text-[#5A3A28] truncate">${rec.name}</div>
+                <div class="text-[10px] font-bold" style="color:#2D6A54;">${rec.rewardLabel}</div>
+              </div>
+            </div>
+            <button type="button" data-craft-rec="${rec.id}" class="craft-rec-btn shrink-0 rounded-xl px-3 py-1.5 text-xs font-black whitespace-nowrap ${canCraft ? 'game-btn game-btn-gold text-[#6B3E08]' : 'bg-[#E7DDD3] text-[#8C7B6E]'}">
+              ${canCraft ? '立即製作' : '材料不足'}
+            </button>
+          </div>
+          <div class="flex items-center gap-1.5 flex-wrap">${reqHtml}</div>
+        `;
+        list.appendChild(row);
+      });
+      list.querySelectorAll('.craft-rec-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const rec = FARM_CAFE_RECIPES.find(x => x.id === btn.dataset.craftRec);
+          if (!rec) return;
+          if (!rec.reqs.every(r => (saveData.farm.barn[r.cropId] || 0) >= r.qty)) {
+            SFX.wrong(); showToast('倉庫內的農作物材料還不夠喔！'); return;
+          }
+          rec.reqs.forEach(r => {
+            saveData.farm.barn[r.cropId] = Math.max(0, (saveData.farm.barn[r.cropId] || 0) - r.qty);
+            if (saveData.farm.barn[r.cropId] === 0) delete saveData.farm.barn[r.cropId];
+          });
+          if (rec.rewardType === 'coins') {
+            saveData.coins += rec.rewardVal;
+          } else {
+            if (!saveData.items) saveData.items = { golden_carrot: 0, ssr_lure: 0, time_plus: 0, carrot_juice: 0 };
+            saveData.items[rec.rewardId] = (saveData.items[rec.rewardId] || 0) + 1;
+          }
+          persistSave(); syncGlobalCounters(); SFX.win();
+          openFarmCafeModal();
+          showToast(`製作成功！獲得「${rec.rewardLabel}」！`);
+        });
+      });
+      document.getElementById('modal-farm-cafe').classList.remove('hidden');
+    }
+
+    function recordFarmDexHarvest(cropId, qty, isGolden) {
+      ensureFarmState();
+      if (!saveData.farm.dex || typeof saveData.farm.dex !== 'object') saveData.farm.dex = {};
+      const entry = saveData.farm.dex[cropId] || { count: 0, maxWeight: 0, golden: false };
+      const rawW = isGolden ? (2.4 + Math.random() * 1.8) : (0.7 + Math.random() * 1.2);
+      const weight = Math.round(rawW * 10) / 10;
+      entry.count += qty;
+      if (weight > entry.maxWeight) entry.maxWeight = weight;
+      if (isGolden) entry.golden = true;
+      saveData.farm.dex[cropId] = entry;
+      return weight;
+    }
+
+    const FARM_DEX_MILESTONES = [
+      { id: 'dex_3',  req: 3,  label: '收集 3 款黃金作物',  rewardText: '+200 金幣 + 體力胡蘿蔔汁 ×2', coins: 200, item: 'carrot_juice', itemQty: 2 },
+      { id: 'dex_6',  req: 6,  label: '收集 6 款黃金作物',  rewardText: '+400 金幣 + SSR 誘兔鈴 ×2',   coins: 400, item: 'ssr_lure',     itemQty: 2 },
+      { id: 'dex_10', req: 10, label: '收集全部 10 款黃金', rewardText: '解鎖農場限定 SSR「黃金田園王冠兔」', ssr: 'ssr_farm_king' }
+    ];
+
+    function getGoldenDexCount() {
+      ensureFarmState();
+      const dex = saveData.farm.dex || {};
+      return FARM_CROPS.filter(c => dex[c.id] && dex[c.id].golden).length;
+    }
+
+    function hasClaimableFarmDexReward() {
+      ensureFarmState();
+      const gCnt = getGoldenDexCount();
+      const claimed = saveData.farm.dexClaimed || [];
+      return FARM_DEX_MILESTONES.some(m => gCnt >= m.req && !claimed.includes(m.id));
+    }
+
+    function openFarmDexModal() {
+      ensureFarmState();
+      const dex = saveData.farm.dex || {};
+      const claimed = saveData.farm.dexClaimed || [];
+      const gCnt = getGoldenDexCount();
+
+      const mWrap = document.getElementById('farm-dex-milestones');
+      mWrap.innerHTML = '';
+      FARM_DEX_MILESTONES.forEach(ms => {
+        const done = claimed.includes(ms.id);
+        const ready = gCnt >= ms.req && !done;
+        const bar = document.createElement('div');
+        bar.className = 'rounded-2xl px-2.5 py-1.5 flex items-center justify-between gap-2';
+        bar.style.cssText = done
+          ? 'background:#F2FAF6;border:1.5px solid #9AD6BE;'
+          : ready
+            ? 'background:#FFF8EB;border:1.5px solid #D97706;'
+            : 'background:rgba(255,255,255,0.88);border:1.5px solid rgba(90,58,40,0.16);';
+        bar.innerHTML = `
+          <div class="min-w-0 text-left">
+            <div class="text-[10px] font-black text-[#5A3A28]">${ms.label}（${Math.min(gCnt, ms.req)}/${ms.req}）</div>
+            <div class="text-[9.5px] font-bold text-[#7C5A46] truncate">${ms.rewardText}</div>
+          </div>
+          <button type="button" data-claim-dex="${ms.id}" class="claim-dex-btn shrink-0 rounded-xl px-2.5 py-1 text-[10px] font-black whitespace-nowrap ${done ? 'bg-[#E3F0DF] text-[#15803D]' : ready ? 'game-btn game-btn-orange' : 'bg-[#E7DDD3] text-[#8C7B6E]'}">
+            ${done ? '已領取 ✓' : ready ? '領取獎勵' : '未達成'}
+          </button>
+        `;
+        mWrap.appendChild(bar);
+      });
+      mWrap.querySelectorAll('.claim-dex-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const ms = FARM_DEX_MILESTONES.find(x => x.id === btn.dataset.claimDex);
+          if (!ms) return;
+          if (!Array.isArray(saveData.farm.dexClaimed)) saveData.farm.dexClaimed = [];
+          if (saveData.farm.dexClaimed.includes(ms.id) || getGoldenDexCount() < ms.req) return;
+          saveData.farm.dexClaimed.push(ms.id);
+          if (ms.coins) saveData.coins += ms.coins;
+          if (ms.item) {
+            if (!saveData.items) saveData.items = { golden_carrot: 0, ssr_lure: 0, time_plus: 0, carrot_juice: 0 };
+            saveData.items[ms.item] = (saveData.items[ms.item] || 0) + (ms.itemQty || 1);
+          }
+          if (ms.ssr) {
+            if (!saveData.unlockedCards.includes(ms.ssr)) saveData.unlockedCards.push(ms.ssr);
+            if (!saveData.gardenBunnies.includes(ms.ssr)) saveData.gardenBunnies.push(ms.ssr);
+            rebuildGardenBunnies();
+          }
+          persistSave(); syncGlobalCounters(); SFX.win();
+          openFarmDexModal();
+          showToast(`領取成功！獲得：${ms.rewardText}！`);
+        });
+      });
+
+      const grid = document.getElementById('farm-dex-grid');
+      grid.innerHTML = '';
+      FARM_CROPS.forEach(c => {
+        const rec = dex[c.id] || { count: 0, maxWeight: 0, golden: false };
+        const card = document.createElement('div');
+        card.className = 'rounded-2xl border-2 p-2 flex items-center gap-2 text-left';
+        card.style.cssText = rec.golden
+          ? 'background:#FFFBEB;border-color:#D97706;'
+          : 'background:rgba(255,255,255,0.92);border-color:rgba(90,58,40,0.16);';
+        card.innerHTML = `
+          <img src="${SPRITE_SRCS[c.img]}" alt="${c.name}" class="w-10 h-10 object-contain shrink-0 ${rec.count > 0 ? '' : 'locked-silhouette'}" />
+          <div class="min-w-0 leading-tight">
+            <div class="text-[11px] font-black text-[#5A3A28] truncate">${c.name}</div>
+            <div class="text-[9.5px] font-bold text-[#7C5A46]">已收 ${rec.count} 次</div>
+            <div class="text-[9.5px] font-black" style="color:${rec.golden ? '#B45309' : '#4B82B0'};">${rec.maxWeight > 0 ? `最高 ${rec.maxWeight}kg` : '尚未收成'}${rec.golden ? ' ★金' : ''}</div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+      document.getElementById('modal-farm-dex').classList.remove('hidden');
+    }
+
     // =========================================================================
     // 13. BIND ALL CONTROLS & BOOT
     // =========================================================================
@@ -5705,11 +6247,18 @@
       document.getElementById('btn-close-farm-orders').addEventListener('click', () => document.getElementById('modal-farm-orders').classList.add('hidden'));
       document.getElementById('btn-farm-orders-bonus').addEventListener('click', claimFarmOrdersDailyBonus);
       document.getElementById('btn-farm-ad-boost').addEventListener('click', watchFarmAdBoost);
-      document.getElementById('btn-farm-landscape').addEventListener('click', () => {
+      document.getElementById('btn-farm-weather').addEventListener('click', () => {
+        const w = getFarmWeather();
         const land = getGardenLandscapeStats();
+        const hots = getDailyHotCrops().map(id => FARM_CROP_BY_ID[id] ? FARM_CROP_BY_ID[id].name : '').filter(Boolean).join('、');
         SFX.tap();
-        showToast(`花園景觀分 ${land.score}：作物賣價與訂單金幣 +${land.bonusPct}%、黃金突變機率 ${Math.round(land.goldenChance*100)}%！多買擺設可再提升。`);
+        showToast(`${w.name}：${w.desc}｜今日熱賣×1.5：${hots}｜景觀分 ${land.score}`);
       });
+      document.getElementById('btn-farm-cafe').addEventListener('click', openFarmCafeModal);
+      document.getElementById('btn-close-farm-cafe').addEventListener('click', () => document.getElementById('modal-farm-cafe').classList.add('hidden'));
+      document.getElementById('btn-farm-dex').addEventListener('click', openFarmDexModal);
+      document.getElementById('btn-close-farm-dex').addEventListener('click', () => document.getElementById('modal-farm-dex').classList.add('hidden'));
+      document.getElementById('btn-farm-replant').addEventListener('click', replantLastBatch);
       document.getElementById('btn-close-clear').addEventListener('click', () => switchView('home'));
       document.getElementById('btn-clear-home').addEventListener('click', () => switchView('home'));
       document.getElementById('btn-farm-market').addEventListener('click', openFarmMarketModal);
