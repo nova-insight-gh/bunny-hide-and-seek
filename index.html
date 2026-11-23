@@ -1225,20 +1225,20 @@
         <div id="gacha-stage" style="background:radial-gradient(circle at 50% 42%, #FFFDF9 0%, #FFF2E3 72%, #FDE8D2 100%);border:2px solid rgba(90,58,40,0.16);border-radius:24px;padding:10px 10px 14px;margin-bottom:10px;min-height:262px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;touch-action:none;">
           <!-- Stage 1 & 2: Hand-Painted Bunny Gachapon Machine + Interactive Rotatable Crank -->
           <div id="gacha-machine-scene" style="position:relative;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;">
-            <div id="gacha-machine-wrap" style="position:relative;display:inline-block;height:224px;line-height:0;user-select:none;-webkit-user-select:none;">
-              <img src="assets/gacha_machine.png" alt="兔兔扭蛋機" draggable="false" style="height:224px;width:auto;display:block;pointer-events:none;filter:drop-shadow(0 6px 10px rgba(90,58,40,0.16));" />
+            <div id="gacha-machine-wrap" style="position:relative;display:inline-block;height:218px;line-height:0;user-select:none;-webkit-user-select:none;">
+              <img src="assets/gacha_machine.png" alt="兔兔扭蛋機" draggable="false" style="height:218px;width:auto;display:block;pointer-events:none;filter:drop-shadow(0 6px 10px rgba(90,58,40,0.16));" />
               <div id="gacha-dial-btn" class="gacha-dial-ready" style="position:absolute;left:49.5%;top:71.5%;width:45%;aspect-ratio:1/1;transform:translate(-50%,-50%);cursor:grab;touch-action:none;z-index:5;display:flex;align-items:center;justify-content:center;" title="拖動或點擊轉動旋鈕">
                 <img id="gacha-dial-img" src="assets/gacha_dial.png" alt="轉動旋鈕" draggable="false" style="width:100%;height:100%;object-fit:contain;pointer-events:none;transform:rotate(0deg);transform-origin:50% 50%;" />
               </div>
-              <button id="gacha-drop-cap" type="button" class="hidden" style="position:absolute;left:50%;top:72%;width:92px;height:92px;transform:translate(-50%,10px);z-index:12;background:transparent;border:none;padding:0;cursor:pointer;">
+              <button id="gacha-drop-cap" type="button" class="hidden" style="position:absolute;left:50%;top:64%;width:90px;height:90px;transform:translate(-50%,10px);z-index:12;background:transparent;border:none;padding:0;cursor:pointer;display:none;">
                 <img id="gacha-drop-cap-img" src="assets/gacha_cap_pink.png" alt="點擊敲開扭蛋" draggable="false" class="gacha-cap-wobble" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 6px 12px rgba(90,58,40,0.28));" />
               </button>
             </div>
-            <div id="gacha-hint-pill" class="mt-1.5 px-3 py-0.5 rounded-full text-[11px] font-black text-[#7C5A46]" style="background:rgba(255,253,249,0.9);border:1.5px solid rgba(90,58,40,0.14);">用手轉動兔兔旋鈕試試手氣！</div>
+            <div id="gacha-hint-pill" class="px-3 py-0.5 rounded-full text-[11px] font-black text-[#7C5A46]" style="margin-top:24px;background:rgba(255,253,249,0.94);border:1.5px solid rgba(90,58,40,0.14);">用手轉動兔兔旋鈕試試手氣！</div>
           </div>
 
           <!-- Stage 3: Opened Bunny Capsule + Springing Prize Reveal -->
-          <div id="gacha-result-view" class="hidden flex flex-col items-center justify-center w-full py-1">
+          <div id="gacha-result-view" class="hidden flex-col items-center justify-center w-full py-1" style="display:none;">
             <div style="position:relative;width:150px;height:142px;display:flex;align-items:center;justify-content:center;">
               <img src="assets/gacha_cap_open.png" alt="打開的兔兔扭蛋" style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:116px;height:116px;object-fit:contain;opacity:0.92;pointer-events:none;" />
               <img id="gacha-result-img" src="" alt="扭蛋獎勵" class="gacha-prize-spring" style="position:relative;z-index:2;width:96px;height:96px;margin-bottom:26px;object-fit:contain;filter:drop-shadow(0 6px 12px rgba(90,58,40,0.24));" />
@@ -1250,22 +1250,22 @@
         </div>
 
         <!-- Prize Preview Icons -->
-        <div class="bg-white/85 rounded-2xl border border-[#5A3A28]/15 px-2.5 py-1.5 mb-2.5 flex items-center justify-around">
+        <div class="bg-white/85 rounded-2xl border border-[#5A3A28]/15 px-2 py-1.5 mb-2.5" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;">
           <div class="flex flex-col items-center gap-0.5">
             <img src="assets/frame_royal.png" alt="黃金星冠框" style="width:28px;height:28px;object-fit:contain;" />
-            <span class="text-[9px] font-black text-[#9A5410]">星冠頭像框</span>
+            <span class="text-[9px] font-black text-[#9A5410] truncate">星冠頭像框</span>
           </div>
           <div class="flex flex-col items-center gap-0.5">
-            <img src="assets/sp_macaron.png" alt="稀有兔兔" style="width:28px;height:28px;object-fit:contain;" />
-            <span class="text-[9px] font-black text-[#8652A8]">SR/SSR 兔兔</span>
+            <img src="assets/sp_macaron.webp" alt="稀有兔兔" style="width:28px;height:28px;object-fit:contain;" />
+            <span class="text-[9px] font-black text-[#8652A8] truncate">SR/SSR 兔兔</span>
           </div>
           <div class="flex flex-col items-center gap-0.5">
             <img src="assets/item_time_plus.png" alt="冒險道具" style="width:28px;height:28px;object-fit:contain;" />
-            <span class="text-[9px] font-black text-[#2D6A54]">冒險道具</span>
+            <span class="text-[9px] font-black text-[#2D6A54] truncate">冒險道具</span>
           </div>
           <div class="flex flex-col items-center gap-0.5">
-            <img src="assets/ui_coin.png" alt="金幣" style="width:28px;height:28px;object-fit:contain;" />
-            <span class="text-[9px] font-black text-[#6B3E08]">60~250 幣</span>
+            <img src="assets/ui_coin.webp" alt="金幣" style="width:28px;height:28px;object-fit:contain;" />
+            <span class="text-[9px] font-black text-[#6B3E08] truncate">60~250 幣</span>
           </div>
         </div>
 
@@ -7394,12 +7394,12 @@
         const dBtn = document.getElementById('gacha-dial-btn');
         const dropBtn = document.getElementById('gacha-drop-cap');
         const hint = document.getElementById('gacha-hint-pill');
-        if (mScene) mScene.classList.remove('hidden');
-        if (resV) resV.classList.add('hidden');
+        if (mScene) { mScene.classList.remove('hidden'); mScene.style.display = 'inline-flex'; }
+        if (resV) { resV.classList.add('hidden'); resV.style.display = 'none'; }
         if (mWrap) mWrap.classList.remove('gacha-rattling');
         if (dImg) { dImg.style.transition = 'transform 0.25s ease-out'; dImg.style.transform = 'rotate(0deg)'; }
         if (dBtn) dBtn.classList.add('gacha-dial-ready');
-        if (dropBtn) { dropBtn.classList.add('hidden'); dropBtn.classList.remove('gacha-cap-dropping'); }
+        if (dropBtn) { dropBtn.classList.add('hidden'); dropBtn.style.display = 'none'; dropBtn.classList.remove('gacha-cap-dropping'); }
         if (hint) hint.textContent = '用手轉動兔兔旋鈕試試手氣！';
         updateGachaUI();
       }
@@ -7490,6 +7490,7 @@
           if (dropImg) dropImg.src = (gachaPendingPrize && gachaPendingPrize.rare) ? SPRITE_SRCS.gacha_cap_gold : SPRITE_SRCS.gacha_cap_pink;
           if (dropBtn) {
             dropBtn.classList.remove('hidden');
+            dropBtn.style.display = 'block';
             dropBtn.classList.remove('gacha-cap-dropping');
             void dropBtn.offsetWidth;
             dropBtn.classList.add('gacha-cap-dropping');
@@ -7506,6 +7507,7 @@
         const p = gachaPendingPrize;
         gachaPhase = 'revealed';
         const mScene = document.getElementById('gacha-machine-scene');
+        const dropBtn = document.getElementById('gacha-drop-cap');
         const resV = document.getElementById('gacha-result-view');
         const resImg = document.getElementById('gacha-result-img');
         if (resImg) {
@@ -7518,8 +7520,9 @@
         if (rb) { rb.textContent = p.badge; rb.style.background = p.color; }
         document.getElementById('gacha-result-title').textContent = p.title;
         document.getElementById('gacha-result-sub').textContent = p.sub;
-        if (mScene) mScene.classList.add('hidden');
-        if (resV) resV.classList.remove('hidden');
+        if (dropBtn) { dropBtn.classList.add('hidden'); dropBtn.style.display = 'none'; }
+        if (mScene) { mScene.classList.add('hidden'); mScene.style.display = 'none'; }
+        if (resV) { resV.classList.remove('hidden'); resV.style.display = 'flex'; }
         SFX.found();
         updateGachaUI();
       }
